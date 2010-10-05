@@ -1,5 +1,7 @@
 function [w,fval]=wmmi(train_label,x)
 %calculate w by maximize the mutual information
+%by luyi
+%on 10-5-2010
 
 w0=randn(1,size(x,2)); w0=w0/norm(w0);
 options=optimset('Display','iter','GradObj','on','LargeScale','off','DerivativeCheck','off');

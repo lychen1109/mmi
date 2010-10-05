@@ -26,5 +26,7 @@ while iter< MAX_iter && norm(g)>Tol
     fprintf(fid,'iter=%d, I=%f, norm_g=%f, w=(%f,%f,%f,%f)\n',iter,I1,norm(g),w1(1),w1(2),w1(3),w1(4));
     g=mymi_grad(train_label,w1,x,sigma);
 end
+
+%close the file
 fclose(fid);
 
