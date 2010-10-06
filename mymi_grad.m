@@ -1,8 +1,19 @@
 function g=mymi_grad(train_label,w,x,sigma)
 % gradiant of mutual information
 
+%size of w and x should fit
+if size(w,2) ~= size(x,2)
+   fprintf('Size of w and x do not fit.\n'); return; 
+end
+
 y=x*w';
 N=size(y,1);
+
+% size of train_label and y should fit
+if N~=size(train_label,1)
+   fprintf('Size of label and sample do not fit.\n');return; 
+end
+
 g=zeros(size(w));
 
 for i=1:N
