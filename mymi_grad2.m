@@ -25,7 +25,7 @@ J_sp=size(y_sp,1);
 g=zeros(size(w));
 tmpa=(J_au/N)^2+(J_sp/N)^2;%sum component used in loop
 
-for i=1:J_au   
+parfor i=1:J_au   
    tmp=0;
    for j=1:J_au
       tmp=tmp+gauss_kernel((y_au(j,:)-y_au(i,:))',sigma)*(y_au(j,:)-y_au(i,:))'; 
@@ -50,7 +50,7 @@ for i=1:J_au
    g=g+(gVIN+gVALL-2*gVBTW)*x_au(i,:);
 end
 
-for i=1:J_sp
+parfor i=1:J_sp
     tmp=0;
     for j=1:J_sp
         tmp=tmp+gauss_kernel((y_sp(j,:)-y_sp(i,:))',sigma)*(y_sp(j,:)-y_sp(i,:))';
