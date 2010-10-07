@@ -21,7 +21,7 @@ fprintf(fid,'iter=%d, norm_g=%f, w=(%f,%f,%f,%f)\n',iter,norm(g),w0(1),w0(2),w0(
 while iter< MAX_iter && norm(g)>Tol
     iter=iter+1;
     w0=w0+step*g;w0=w0/norm(w0);
-    g=mymi_grad(train_label,w0,x,sigma);
+    g=mymi_grad2(train_label,w0,x,sigma);
     fprintf(fid,'iter=%d, norm_g=%f, w=(%f,%f,%f,%f)\n',iter,norm(g),w0(1),w0(2),w0(3),w0(4));    
 end
 
