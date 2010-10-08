@@ -1,4 +1,4 @@
-function w0=gradient_descend(train_label,x,w0,sigma)
+function w0=gradient_descend(train_label,x,w0,sigma,itermax)
 %calculate w with gradiient descend method
 
 %fid=fopen('MMI3.txt','w');
@@ -11,18 +11,24 @@ if isempty(w0)
 end
 
 step=1;
-MAX_iter=200;
-Tol=1e-4;
-iter=0;
-
+MAX_iter=itermax;
+Tol=1e-7;
+iter=1;
+Ipre=mymi2(train_label,x*w0',sigma);
 g=mymi_grad2(train_label,w0,x,sigma);
-fprintf(fid,'iter=%d, norm_g=%f, w=(%f,%f,%f,%f)\n',iter,norm(g),w0(1),w0(2),w0(3),w0(4));
+w0=w0+step*g;w0=w0/norm(w0);
+I=mymi2(train_label,x*w0',sigma);
+deltaI=I-Ipre;
+fprintf(fid,'iter=%d, deltaI=%e,norm_g=%e, w=(%f,%f,%f,%f)\n',iter,deltaI,norm(g),w0(1),w0(2),w0(3),w0(4));
 
-while iter< MAX_iter && norm(g)>Tol
+while iter< MAX_iter && deltaI>Tol
     iter=iter+1;
-    w0=w0+step*g;w0=w0/norm(w0);
+    Ipre=I;
     g=mymi_grad2(train_label,w0,x,sigma);
-    fprintf(fid,'iter=%d, norm_g=%f, w=(%f,%f,%f,%f)\n',iter,norm(g),w0(1),w0(2),w0(3),w0(4));    
+    w0=w0+step*g;w0=w0/norm(w0);
+    I=mymi2(train_label,x*w0',sigma);
+    deltaI=I-Ipre;
+    fprintf(fid,'iter=%d, deltaI=%e,norm_g=%e, w=(%f,%f,%f,%f)\n',iter,deltaI,norm(g),w0(1),w0(2),w0(3),w0(4));    
 end
 
 %close the file
