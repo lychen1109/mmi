@@ -1,16 +1,17 @@
-function visualize_groups(group_idx,grp)
+function visualize_groups(group_idx,map)
 %draw group points
 
 origin=[256,256];
-points=ones(size(group_idx));
-points(group_idx==grp)=0;
+points=2*ones(size(group_idx));%set the background as white
+points(group_idx==1)=0;
+points(group_idx==2)=1;
 
 points=points(origin(1)-20:origin(1)+20,origin(2)-20:origin(2)+20);
 points(end+1,:)=0;
 points(:,end+1)=0;
 
 pcolor(points);
-colormap gray(2)
+colormap(map)
 axis ij
 axis square
 
