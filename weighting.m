@@ -11,7 +11,7 @@ for grp=grp_start:grp_end
     wlda=lda(train_label,x);
     [w,flag]=gradient_descend(train_label,x,wlda',sigma,MAX_iter,step);
     weight_idx(group_idx==grp)=w';
-    fprintf('w for group %d = (%f,%f,%f,%f)\n',grp,w(0),w(1),w(2),w(3));
+    fprintf('w for group %d = (%f,%f,%f,%f)\n',grp,w(1),w(2),w(3),w(4));
     output(flag);
 end
 
