@@ -30,7 +30,7 @@ if DEBUG
     fprintf(fid,'iter=%d, deltaI=%e,norm_g=(%e,%e,%e,%e), w=(%f,%f,%f,%f)\n',iter,deltaI,g(1),g(2),g(3),g(4),w0(1),w0(2),w0(3),w0(4));
 end
 
-while iter< MAX_iter && deltaI>Tol && maxabs(g)>Tol
+while iter< MAX_iter && abs(deltaI)>Tol && maxabs(g)>Tol
     iter=iter+1;
     Ipre=I;
     g=mymi_grad2(train_label,w0,x,sigma);
@@ -42,9 +42,9 @@ while iter< MAX_iter && deltaI>Tol && maxabs(g)>Tol
     end
 end
 
-if ~iter<MAX_iter
+if iter >= MAX_iter
     flag=2;
-elseif deltaI<Tol
+elseif abs(deltaI)<Tol
     flag=0;
 else
     flag=1;
