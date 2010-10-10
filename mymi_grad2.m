@@ -15,6 +15,11 @@ if N~=size(train_label,1)
    fprintf('Size of label and sample do not fit.\n');return; 
 end
 
+%start matlabpool if it's not started
+if matlabpool('size') == 0
+    matlabpool;
+end
+
 x_au=x(train_label==0,:);
 x_sp=x(train_label==1,:);
 y_au=x_au*w';
