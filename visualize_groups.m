@@ -1,16 +1,13 @@
-function visualize_groups(group_idx,map)
-%draw group points
+function visualize_groups(color_idx,map,B)
+%draw group points. B is the boundary 256-B:256+B
 
 origin=[256,256];
-points=2*ones(size(group_idx));%set the background as white
-points(group_idx==1)=0;
-points(group_idx==2)=1;
 
-points=points(origin(1)-20:origin(1)+20,origin(2)-20:origin(2)+20);
-points(end+1,:)=0;
-points(:,end+1)=0;
+color_idx=color_idx(origin(1)-B:origin(1)+B,origin(2)-B:origin(2)+B);
+color_idx(end+1,:)=0;
+color_idx(:,end+1)=0;
 
-pcolor(points);
+pcolor(color_idx);
 colormap(map)
 axis ij
 axis square
