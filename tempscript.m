@@ -1,8 +1,8 @@
-function autrain=tempscript(audata)
+function autrain=tempscript(audata,selection)
 %checkout training data
 
 autrain=[];
-for i=4:9
+for i=selection
     imgs=audata{i};
     autrain=[autrain;imgs];
 end
