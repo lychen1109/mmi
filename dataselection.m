@@ -1,4 +1,4 @@
-function autrain=tempscript(audata,selection)
+function autrain=dataselection(audata,selection)
 %checkout training data
 
 autrain=[];
