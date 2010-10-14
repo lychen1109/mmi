@@ -1,4 +1,4 @@
-function [N,S,E,W]=group_bound_check(group_idx)
+function bound=group_bound_check(group_idx)
 %check the location farthest bins used
 
 N=256;
@@ -29,3 +29,5 @@ N=N-256;
 S=S-256;
 E=E-256;
 W=W-256;
+
+bound=[N,S,E,W];
