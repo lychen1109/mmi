@@ -7,6 +7,6 @@ f=zeros(size(transmat,3),49);
 for i=1:49
     idx=I(i);
     [sx,sy]=ind2sub(size(bin_mi),idx);
-    tmp=f(sx,sy,:);
+    tmp=transmat(sx,sy,:);
     f(:,i)=tmp(:);
 end
