@@ -1,8 +1,8 @@
-function features=group_feature_extract(groupsize,candidate_group)
+function features=group_feature_extract(groupsize,candidate_group,transmat)
 %extract feature to be transformed
 
-ss=load('train_feature.mat','train_feature');
-train_feature=ss.train_feature;
+ss=load(transmat);
+train_feature=ss.transmat;
 samplesize=size(train_feature,3);
 pointnum=length(candidate_group);
 features=zeros(samplesize,pointnum);
