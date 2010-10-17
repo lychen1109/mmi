@@ -1,13 +1,16 @@
-function features=group_feature_extract(groupsize,candidate_group,filename)
+function features=group_feature_extract(group_idx,grp,autrain,sptrain)
 %extract feature to be transformed
 
-ss=load(filename);
-train_feature=ss.transmat;
-samplesize=size(train_feature,3);
-pointnum=length(candidate_group);
+imgs=[autrain;sptrain];
+samplesize=size(imgs,1);
+
+points=find(group_idx==grp);
+pointnum=length(points);
+
 features=zeros(samplesize,pointnum);
 for i=1:pointnum
-   [sx,sy]=ind2sub(groupsize,candidate_group(i));
-   tmp=train_feature(sx,sy,:);
-   features(:,i)=tmp(:);
+   D=tpm(imgs(i)); 
+   tmp=D(:,:,1);
+   f=tmp(points);
+   features(i,:)=f';
 end
