@@ -55,13 +55,20 @@ tmpVIN=0;
 if nargout>1
     tmpgVIN=zeros(size(w));
 end
-parfor i=1:J_au^2
-    gk=gauss_kernel(D(:,i),sigma);
-    tmpVIN=tmpVIN+gk;
-    if nargout>1
+
+if nargout>1
+    parfor i=1:J_au^2
+        gk=gauss_kernel(D(:,i),sigma);
+        tmpVIN=tmpVIN+gk;
         tmpgVIN=tmpgVIN+gk*D(:,i)*D3(:,i)';
     end
+else
+    parfor i=1:J_au^2
+        gk=gauss_kernel(D(:,i),sigma);
+        tmpVIN=tmpVIN+gk;        
+    end
 end
+
 VIN=VIN+(1/N^2)*tmpVIN;
 if nargout>1
     gVIN=gVIN+tmpgVIN/(N*sigma)^2;
@@ -86,13 +93,20 @@ tmpVIN=0;
 if nargout>1
     tmpgVIN=zeros(size(w));
 end
-parfor i=1:J_sp^2
-    gk=gauss_kernel(D(:,i),sigma);
-    tmpVIN=tmpVIN+gk;
-    if nargout>1
+
+if nargout>1
+    parfor i=1:J_sp^2
+        gk=gauss_kernel(D(:,i),sigma);
+        tmpVIN=tmpVIN+gk;
         tmpgVIN=tmpgVIN+gk*D(:,i)*D3(:,i)';
     end
+else
+    parfor i=1:J_sp^2
+        gk=gauss_kernel(D(:,i),sigma);
+        tmpVIN=tmpVIN+gk;        
+    end
 end
+
 VIN=VIN+tmpVIN/N^2;
 if nargout>1
     gVIN=gVIN+tmpgVIN/(N*sigma)^2;
@@ -118,13 +132,20 @@ tmpVALL=0;
 if nargout>1
     tmpgVALL=zeros(size(w));
 end
-parfor i=1:N^2
-    gk=gauss_kernel(D(:,i),sigma);
-    tmpVALL=tmpVALL+gk;
-    if nargout>1
-        tmpgVALL=tmpgVALL+gk*D(:,i)*D3(:,i)';
+
+if nargout>1
+    parfor i=1:N^2
+        gk=gauss_kernel(D(:,i),sigma);
+        tmpVALL=tmpVALL+gk;        
+        tmpgVALL=tmpgVALL+gk*D(:,i)*D3(:,i)';        
+    end
+else
+    parfor i=1:N^2
+        gk=gauss_kernel(D(:,i),sigma);
+        tmpVALL=tmpVALL+gk;        
     end
 end
+
 VALL=tmpVALL*tmpa/N^2;
 if nargout>1
     gVALL=tmpgVALL*tmpa/(N*sigma)^2;
@@ -156,13 +177,20 @@ tmp=0;
 if nargout>1
     tmpg=zeros(size(w));
 end
-parfor i=1:J_au^2
-   gk=gauss_kernel(D(:,i),sigma);
-   tmp=tmp+gk;
-   if nargout>1
-       tmpg=tmpg+gk*D(:,i)*D3(:,i)';
-   end
+
+if nargout>1
+    parfor i=1:J_au^2
+        gk=gauss_kernel(D(:,i),sigma);
+        tmp=tmp+gk;
+        tmpg=tmpg+gk*D(:,i)*D3(:,i)';
+    end
+else
+    parfor i=1:J_au^2
+        gk=gauss_kernel(D(:,i),sigma);
+        tmp=tmp+gk;        
+    end
 end
+
 VBTW=VBTW+tmp*J_au/N^3;
 if nargout>1
     gVBTW=gVBTW+tmpg*(J_au/N)/(N*sigma)^2;
@@ -187,13 +215,20 @@ tmp=0;
 if nargout>1
     tmpg=zeros(size(w));
 end
-parfor i=1:J_au*J_sp
-    gk=gauss_kernel(D(:,i),sigma);
-    tmp=tmp+gk;
-    if nargout>1
+
+if nargout>1
+    parfor i=1:J_au*J_sp
+        gk=gauss_kernel(D(:,i),sigma);
+        tmp=tmp+gk;
         tmpg=tmpg+gk*D(:,i)*D3(:,i)';
     end
+else
+    parfor i=1:J_au*J_sp
+        gk=gauss_kernel(D(:,i),sigma);
+        tmp=tmp+gk;        
+    end
 end
+
 VBTW=VBTW+tmp*J_sp/N^3;
 if nargout>1
     gVBTW=gVBTW+tmpg*0.5/(N*sigma)^2;
@@ -218,13 +253,20 @@ tmp=0;
 if nargout>1
     tmpg=zeros(size(w));
 end
-parfor i=1:J_au*J_sp
-    gk=gauss_kernel(D(:,i),sigma);
-    tmp=tmp+gk;
-    if nargout>1
+
+if nargout>1
+    parfor i=1:J_au*J_sp
+        gk=gauss_kernel(D(:,i),sigma);
+        tmp=tmp+gk;
         tmpg=tmpg+gk*D(:,i)*D3(:,i)';
     end
+else
+    parfor i=1:J_au*J_sp
+        gk=gauss_kernel(D(:,i),sigma);
+        tmp=tmp+gk;        
+    end
 end
+
 VBTW=VBTW+tmp*J_au/N^3;
 if nargout>1
     gVBTW=gVBTW+tmpg*0.5/(N*sigma)^2;
@@ -249,13 +291,20 @@ tmp=0;
 if nargout>1
     tmpg=zeros(size(w));
 end
-parfor i=1:J_sp^2
-    gk=gauss_kernel(D(:,i),sigma);
-    tmp=tmp+gk;
-    if nargout>1
+
+if nargout>1
+    parfor i=1:J_sp^2
+        gk=gauss_kernel(D(:,i),sigma);
+        tmp=tmp+gk;
         tmpg=tmpg+gk*D(:,i)*D3(:,i)';
     end
+else
+    parfor i=1:J_sp^2
+        gk=gauss_kernel(D(:,i),sigma);
+        tmp=tmp+gk;        
+    end
 end
+
 VBTW=VBTW+tmp*J_sp/N^3;
 if nargout>1
     gVBTW=gVBTW+tmpg*(J_sp/N)/(N*sigma)^2;
