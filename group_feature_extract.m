@@ -9,7 +9,8 @@ pointnum=length(points);
 
 features=zeros(samplesize,pointnum);
 for i=1:pointnum
-   D=tpm(imgs(i)); 
+   img=reshape(imgs(i,:),128,128);
+   D=tpm(img); 
    tmp=D(:,:,1);
    f=tmp(points);
    features(i,:)=f';
