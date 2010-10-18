@@ -8,7 +8,7 @@ points=find(group_idx==grp);
 pointnum=length(points);
 
 features=zeros(samplesize,pointnum);
-for i=1:pointnum
+for i=1:samplesize
    img=reshape(imgs(i,:),128,128);
    D=tpm(img); 
    tmp=D(:,:,1);
