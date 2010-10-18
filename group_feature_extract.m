@@ -1,10 +1,9 @@
-function features=group_feature_extract(group_idx,grp,autrain,sptrain)
+function features=group_feature_extract(points,autrain,sptrain)
 %extract feature to be transformed
 
 imgs=[autrain;sptrain];
 samplesize=size(imgs,1);
 
-points=find(group_idx==grp);
 pointnum=length(points);
 
 features=zeros(samplesize,pointnum);
