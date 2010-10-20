@@ -1,16 +1,13 @@
-function features=group_feature_extract(points,autrain,sptrain)
+function features=group_feature_extract(points,transmat)
 %extract feature to be transformed
 
-imgs=[autrain;sptrain];
-samplesize=size(imgs,1);
-
+samplesize=size(transmat,3);
 pointnum=length(points);
-
 features=zeros(samplesize,pointnum);
-for i=1:samplesize
-   img=reshape(imgs(i,:),128,128);
-   D=tpm(img); 
-   tmp=D(:,:,1);
-   f=tmp(points);
-   features(i,:)=f';
+T=13;
+
+for i=1:pointnum
+   [sx,sy]=ind2sub([2*T+1 2*T+1],points(i));
+   f=transmat(sx,sy,:);
+   features(:,i)=f(:);
 end
