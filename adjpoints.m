@@ -1,4 +1,4 @@
-functoin points=adjpoints(currentpoints,group_idx)
+function points=adjpoints(currentpoints,group_idx)
 %return the adjacent points of the input ones
 
 adjgroup=-10;%used to temperary identify selected points
