@@ -3,20 +3,19 @@ function color_idx=colormapping(group_idx)
 
 color_idx=zeros(size(group_idx));
 
-% omitted bins are marked as gray
+% omitted bins are marked as white
 color_idx(group_idx==-1)=0;
-
-% unused bins are marked as white
-color_idx(group_idx==0)=1;
 
 MAXGROUP=max(group_idx(:));
 
 for grp=1:MAXGROUP    
-    [color_idx,filled]=colorfill(color_idx,grp,group_idx);
-    if ~filled
-        fprintf('colormapping failed.\n');
-        return;
-    end    
+    if ~isempty(find(group_idx==grp,1))
+        [color_idx,filled]=colorfill(color_idx,grp,group_idx);
+        if ~filled
+            fprintf('colormapping failed.\n');
+            return;
+        end
+    end
 end
 
 function [color_idx,filled]=colorfill(color_idx,grp,group_idx)
@@ -24,42 +23,42 @@ function [color_idx,filled]=colorfill(color_idx,grp,group_idx)
 % - points should have the same color
 % - the color doesn't conflict with nearby colors
 
-MAXCOLOR=6;%more color can be used be extand colormap
-STARTCOLOR=2;%color 0 and 1 is reserved
-points=find(group_idx==grp);
-B=size(group_idx,1);%boundary of group_idx
+MAXCOLOR=6;
+STARTCOLOR=1;%color 0 is reserved
 
-color=STARTCOLOR;
-conflict=false;
+colorbag=STARTCOLOR:MAXCOLOR;
 filled=false;
 
-while color<MAXCOLOR+1
-   for p=1:length(points)
-       [sx,sy]=ind2sub(size(group_idx),points(p));
-       for k=-1:1
-           for l=-1:1
-               if sx+k>0 && sx+k<B && sy+l>0 && sy+l<B && group_idx(sx+k,sy+l)>0 && group_idx(sx+k,sy+l) ~=grp && color_idx(sx+k,sy+l)==color
-                  conflict=true;
-                  break;
-               end
-           end
-           if conflict
-              break; 
-           end
-       end
-       if conflict
-           break;
-       end
-   end
-   if ~conflict
+while ~isempty(colorbag)
+   randidx=myrandint(1,1,length(colorbag));
+   color=colorbag(randidx);   
+   if ~isconflict(group_idx,color_idx,grp,color)
        color_idx(group_idx==grp)=color;
        filled=true;
-       break;
+       return;
    else
-       color=color+1;
-       conflict=false;
+       colorbag(randidx)=[];       
    end
 end
 
+function c=isconflict(group_idx,color_idx,grp,color)
+%check weather it's ok to use this color
+points=find(group_idx==grp);
+T=13;
+for i=1:length(points)
+    [sx,sy]=ind2sub(size(group_idx),points(i));
+    for k=-1:1
+        for l=-1:1
+            if sx+k>0 && sx+k<=2*T+1 && sy+l>0 && sy+l<=2*T+1 %the point is within bound
+                if group_idx(sx+k,sy+l)~=grp && color_idx(sx+k,sy+l)==color
+                    c=true;
+                    return;
+                end
+            end
+        end
+    end
+end
+c=false;
+    
 
 
