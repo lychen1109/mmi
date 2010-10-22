@@ -1,26 +1,25 @@
-function weight_idx=weighting(group_idx,train_label,sigma,grp_start,grp_end,MAX_iter,step)
+function weight_idx=weighting(group_idx,label,transmat)
 %calculate the weighting of bins
 
+MAX_iter=300;
+step=1;
 weight_idx=zeros(size(group_idx));
-ss=load('train_feature');
-train_feature=ss.train_feature;
+MAXGROUP=max(group_idx(:));
 
-for grp=grp_start:grp_end
-    points=find(group_idx==grp);
-    x=group_feature_extract_withinput(size(group_idx),points,train_feature);
-    wlda=lda(train_label,x);
-    [w,flag]=gradient_descend(train_label,x,wlda',sigma,MAX_iter,step);
-    weight_idx(group_idx==grp)=w';
-    fprintf('w for group %d =\n',grp);
-    disp(w);
-    output(flag);
+for grp=1:1 %MAXGROUP
+    if isempty(find(group_idx==grp,1))
+        continue;
+    end
+    x=group_feature_extract(find(group_idx==grp),transmat);
+    if size(x,2)>1
+        w0=lda(label,x);
+        y=x*w0;
+        sigma=(max(y)-min(y))/2;    
+        [w,flag,iter]=gradient_descend(label,x,w0',sigma,MAX_iter,step);
+        fprintf('w for group %d reached after %d iters with flag %d\n',grp,iter,flag);
+    else
+        w=1;
+    end    
+    weight_idx(group_idx==grp)=w';        
 end
 
-function output(flag)
-if flag==0
-    fprintf('increase of MI is smaller than tolerant.\n');
-elseif flag==1
-    fprintf('max magnitude of gradient is smaller than tolerent.\n');
-else
-    fprintf('max iteration is reached.\n');
-end
