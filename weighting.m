@@ -2,7 +2,7 @@ function weight_idx=weighting(group_idx,label,transmat)
 %calculate the weighting of bins
 
 MAX_iter=1000;
-step=10;
+step=100;
 weight_idx=zeros(size(group_idx));
 MAXGROUP=max(group_idx(:));
 

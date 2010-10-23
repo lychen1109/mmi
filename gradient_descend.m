@@ -4,7 +4,7 @@ function [w,flag,iter]=gradient_descend(label,x,MAX_iter,step,display)
 %flag=2: itermax reached
 %display 0:nothing 1:iteration
 
-Tol=1e-7;%a small number for precision
+Tol=1e-6;%a small number for precision
 %M=3000;%number of random sample drawed
 flag=-1;
 iter=1;
