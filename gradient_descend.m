@@ -1,42 +1,74 @@
-function [w0,flag,iter]=gradient_descend(train_label,x,w0,sigma,MAX_iter,step)
+function [w,flag,iter]=gradient_descend(label,x,MAX_iter,step,display)
 %calculate w with gradiient descend method
 %flag=0: deltaI<Tol
-%flag=1: max(|g|)<Tol
 %flag=2: itermax reached
+%display 0:nothing 1:iteration
 
-if isempty(w0)    
-    tmp=randn(1,4);
-    w0=tmp/norm(tmp);       
+Tol=1e-7;%a small number for precision
+M=3000;%number of random sample drawed
+flag=-1;
+iter=1;
+MIN_iter=30;%at least 30 iteration is required
+
+if size(x,2)<2
+    w=1;    
+    return;
 end
 
-Tol=1e-6;%a small number for precision
+%initialize with LDA
+w=lda(label,x)';
+y=x*w';
+sigma=(max(y)-min(y))/2;
 
-iter=0;
-[Ipre,gpre]=mymi3(train_label,w0,x,sigma,0);
 deltaI=inf;
+J0=length(label(label==0));
+J1=length(label(label==1));
+x0=x(label==0,:);
+x1=x(label==1,:);
+gk0=gauss_kernel(0,sigma);
 
-while iter< MAX_iter && abs(deltaI)>Tol && maxabs(gpre)>Tol
+while iter< MAX_iter && (iter<MIN_iter || deltaI>Tol)            
+    %draw M sample pairs
+    samples=randomsample(J0,J1,M);    
+    Ipre=0;
+    g=zeros(size(w));
+    parfor i=1:M        
+        samplepair=samples(i,:);
+        l0=samplepair(1);
+        l1=samplepair(2);
+        d=w*(x1(l1,:)'-x0(l0,:)');
+        gk=gauss_kernel(d,sigma);
+        Ipre=Ipre+0.25*(gk0-gk);
+        g=g-(1/8*sigma^2)*gk*d*(x0(l0,:)-x1(l1,:));        
+    end     
+    Ipre=Ipre/M;
+    g=g/M;
+    %update w
+    w=w+step*g;w=w/norm(w);
+    
+    %calculate new I
+    Inew=0;
+    parfor i=1:M
+        samplepair=samples(i,:);
+        l0=samplepair(1);
+        l1=samplepair(2);
+        d=w*(x1(l1,:)'-x0(l0,:)');
+        gk=gauss_kernel(d,sigma);
+        Inew=Inew+0.25*(gk0-gk);        
+    end
+    Inew=Inew/M;
+    deltaI=Inew-Ipre;    
+    if display==1
+        fprintf('iteration %d delta %e (%e,%e)\n',iter,deltaI,Inew,Ipre);
+    end
     iter=iter+1;
-    w0=w0+step*gpre;w0=w0/norm(w0);    
-    [Inew,gnew]=mymi3(train_label,w0,x,sigma,0);
-    deltaI=Inew-Ipre;
-    Ipre=Inew;
-    gpre=gnew;
 end
 
 if iter >= MAX_iter
     flag=2;
-elseif abs(deltaI)<=Tol
-    flag=0;
 else
-    flag=1;
+    flag=0;
 end
 
-%close the file
-%fclose(fid);
 
-function ma=maxabs(g)
-%max absolute value of gradient
-tmp=abs(g);
-ma=max(tmp(:));
 
