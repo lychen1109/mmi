@@ -5,7 +5,7 @@ function [w,flag,iter]=gradient_descend(label,x,MAX_iter,step,display)
 %display 0:nothing 1:iteration
 
 Tol=1e-7;%a small number for precision
-M=3000;%number of random sample drawed
+%M=3000;%number of random sample drawed
 flag=-1;
 iter=1;
 MIN_iter=30;%at least 30 iteration is required
@@ -23,13 +23,15 @@ sigma=(max(y)-min(y))/2;
 deltaI=inf;
 J0=length(label(label==0));
 J1=length(label(label==1));
+M=J0*J1;
 x0=x(label==0,:);
 x1=x(label==1,:);
 gk0=gauss_kernel(0,sigma);
 
 while iter< MAX_iter && (iter<MIN_iter || deltaI>Tol)            
     %draw M sample pairs
-    samples=randomsample(J0,J1,M);    
+    %samples=randomsample(J0,J1,M);
+    samples=fullsample(J0,J1);
     Ipre=0;
     g=zeros(size(w));
     parfor i=1:M        
