@@ -1,10 +1,13 @@
-function [w,flag,iter]=gradient_descend(label,x,MAX_iter,step,display)
+function [w,flag,iter]=gradient_descend(label,x,MAX_iter,step,display,Tol)
 %calculate w with gradiient descend method
 %flag=0: deltaI<Tol
 %flag=2: itermax reached
 %display 0:nothing 1:iteration
 
-Tol=1e-3;%a small number for precision
+%a small number for precision
+if isempty(Tol)
+    Tol=1e-6;
+end
 %M=3000;%number of random sample drawed
 flag=-1;
 iter=1;
@@ -49,7 +52,7 @@ while iter< MAX_iter && (iter<MIN_iter || deltaI>Tol)
     %update w
     w=w+step*g;w=w/norm(w);    
     
-    deltaI=(Inew-Ipre)/Inew;    
+    deltaI=Inew-Ipre;    
     if display==1
         fprintf('iteration %d delta %e (%e)\n',iter,deltaI,Inew);
     end
