@@ -95,34 +95,5 @@ while ~isempty(find(group_idx==0,1))
     end    
 end
 
-%code for testing subfunctions
-% singlebin=find(group_idx==3);
-% candidategroup=2;
-% currentgroup=1;
-% dist=bin2group(singlebin,currentgroup,group_idx);
-% fprintf('bin2group result is %f\n',dist);
-% dist=group2group(candidategroup,currentgroup,group_idx);
-% fprintf('group2group result is %f\n',dist);
 
-function dist=bin2group(bin,group,group_idx)
-%single bin to group distance
-dist=-inf;
-points=find(group_idx==group);
-[x0,y0]=ind2sub(size(group_idx),bin);
-for i=1:length(points)
-    [sx,sy]=ind2sub(size(group_idx),points(i));
-    dist=max(dist,norm([sx-x0,sy-y0]));
-end
 
-function dist=group2group(candidategroup,group,group_idx)
-%candidate group to currentgroup distance
-dist=-inf;
-candidates=find(group_idx==candidategroup);
-currentgroup=find(group_idx==group);
-for i=1:length(candidates)
-    [x0,y0]=ind2sub(size(group_idx),candidates(i));
-    for j=1:length(currentgroup)
-        [sx,sy]=ind2sub(size(group_idx),currentgroup(j));
-        dist=max(dist,norm([sx-x0,sy-y0]));
-    end
-end
