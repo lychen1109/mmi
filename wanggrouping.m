@@ -4,7 +4,7 @@ function [group_idx,groupcombine,boundhit,deltas]=wanggrouping(group_idx,bin_mi,
 grp=0;
 groupcombine=0;%record time of group combine
 %threshold=2.2e-007;% 60% combine rate according to random sampling
-threshold=0.0005;%error decrease
+threshold=0;%error decrease
 boundhit=0;%record when MAXDIST is reached
 %sigma=0.5;
 deltas=[];%check the distribution of max delta
@@ -68,7 +68,7 @@ while ~isempty(find(group_idx==0,1))
             end
             [maxdelta,maxidx]=max(deltaI(:));
             deltas=[deltas maxdelta];
-            if maxdelta>=threshold
+            if maxdelta>threshold
                 if group_idx(candidates(maxidx))==0
                     group_idx(candidates(maxidx))=grp;
                     fprintf('bin %d is selected.\n',candidates(maxidx));
