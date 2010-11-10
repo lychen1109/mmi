@@ -2,7 +2,7 @@ function [bestc,bestg,bestcv]=svmgrid(dataTrain,grpTrain,rangec,rangeg)
 %parameter selection
 
 if nargin<4
-    rangec=-5:2:15;
+    rangec=-5:2:13;
     rangeg=5:-2:-15;
 end
 
