@@ -17,7 +17,7 @@ for i=1:k
     grpTest=class(holdoutCVP.test,:);
     grpPred=svmpredict(grpTest,dataTest,model);
     
-    ac(i)=sum(grpPred~=grpTest)/400;
+    ac(i)=sum(grpPred==grpTest)/400;
 end
 
     
