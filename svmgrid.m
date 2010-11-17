@@ -1,13 +1,13 @@
-function [bestc,bestg,bestcv]=svmgrid(dataTrain,grpTrain,type,rangec,rangeg)
+function [bestc,bestg,bestcv]=svmgrid(dataTrain,grpTrain,display,type,rangec,rangeg)
 %parameter selection
 
-if nargin<3
+if nargin<4
     type=2;
 end
 
-if nargin<4
-    rangec=-5:2:13;
-    rangeg=5:-2:-15;
+if nargin<5
+    rangec=-5:2:15;
+    rangeg=3:-2:-15;
 end
 
 searchnum=length(rangec)*length(rangeg);
@@ -32,7 +32,9 @@ parfor i=1:searchnum
     end
     cv=svmtrain(grpTrain,dataTrain,cmd);    
     cvidx(i)=cv;
-    %fprintf('%g %g %g (best c=%g, g=%g, rate=%g)\n',log2c,log2g,cv,bestc,bestg,bestcv);    
+    if display>0
+        fprintf('%g %g %g\n',log2c,log2g,cv);
+    end
 end
 
 [bestcv,I]=max(cvidx);
