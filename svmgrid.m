@@ -1,4 +1,4 @@
-function [bestc,bestg,bestcv]=svmgrid(dataTrain,grpTrain,display,type,rangec,rangeg)
+function [bestc,bestg,bestcv]=svmgrid(dataTrain,grpTrain,display,type,rangec,rangeg,mem)
 %parameter selection
 
 if nargin<4
@@ -26,9 +26,9 @@ parfor i=1:searchnum
     log2c=param(1);
     log2g=param(2);
     if type==0
-        cmd=['-v 5 -c ' num2str(2^log2c) ' -t 0'];
+        cmd=['-v 5 -c ' num2str(2^log2c) ' -t 0 -m ' num2str(mem)];
     else
-        cmd=['-v 5 -c ' num2str(2^log2c) ' -g ' num2str(2^log2g)];
+        cmd=['-v 5 -c ' num2str(2^log2c) ' -g ' num2str(2^log2g) ' -m ' num2str(mem)];
     end
     cv=svmtrain(grpTrain,dataTrain,cmd);    
     cvidx(i)=cv;
