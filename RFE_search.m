@@ -2,7 +2,7 @@ function history=RFE_search(label,data,history,featinc)
 %use RFE algotirhm to remove useless feature
 %featinc: features to include
 
-[bestc,bestg,bestcv]=svmgrid(data(:,featinc==1),label,0,2,-3:2:11,-11:2:1,500);
+[bestc,bestg,bestcv]=svmgrid(data(:,featinc==1),label,0,2,-3:2:9,-11:2:1,500);
 cv_tmp=history.cv;
 history.cv=[cv_tmp;bestcv];
 
