@@ -11,7 +11,7 @@ model=svmtrain(label,data(:,featinc),cmd);
 
 delta=zeros(size(featinc));
 delta_W2=RFE_evaluate(model);
-delta(featinc==1)=delta_W2(:);
+delta(featinc)=delta_W2(:);
 delta_tmp=history.delta;
 history.delta=[delta_tmp;delta];
 
