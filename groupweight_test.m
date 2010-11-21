@@ -1,0 +1,1 @@
+tic;[Ipre,Gpre]=groupweight(1,8,weight_idx,obs_scale(holdoutCVP.training,:),label(holdoutCVP.training,:));toc
