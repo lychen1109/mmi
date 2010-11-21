@@ -1,4 +1,4 @@
-function weight_idx=weightinit(history)
+function [weight_idx,feat]=weightinit(history)
 %initialize weight_idx
 
 cv=history.cv;
@@ -14,5 +14,6 @@ Y=find(feat);
 X=1:n_group;
 idx=sub2ind(size(weight_idx),X,Y);
 weight_idx(idx)=1;
+weight_idx=weight_idx';
 
 
