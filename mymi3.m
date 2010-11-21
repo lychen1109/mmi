@@ -1,4 +1,4 @@
-function [I,g]=mymi3(train_label,w,x,sigma,checkpool)
+function [I,g]=mymi3(train_label,w,x,sigma)
 %calculate I and g in one program
 
 %size of w and x should fit
@@ -10,11 +10,6 @@ N=size(x,1);
 % size of train_label and x should fit
 if N~=size(train_label,1)
    fprintf('Size of label and sample do not fit.\n');return; 
-end
-
-%start matlabpool if it's not started
-if checkpool && matlabpool('size') == 0
-    matlabpool;
 end
 
 y=x*w';
