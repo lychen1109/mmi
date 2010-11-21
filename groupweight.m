@@ -1,4 +1,4 @@
-function mask=groupweight(grp,feat_idx,weight_idx,dataTrain,label,Max_iter,step,Tol,display)
+function groupweight(grp,feat_idx,weight_idx,dataTrain,label,Max_iter,step,Tol,display)
 %calculate group weight
 % [weight_idx,iter]=groupweight(grp,feat_idx,weight_idx,dataTrain,label,Max
 % _iter,step,Tol,display)
@@ -27,5 +27,18 @@ mask=zeros(size(weight_idx));
 mask(:,grp)=feat;
 
 deltaI=inf;
+iter=0;
+while deltaI>Tol && iter<Max_iter
+    weight_idx=weight_idx+step*Gpre.*mask;
+    [Inew,Gnew]=mymi3(label,weight_idx',dataTrain,sigma);
+    deltaI=(Inew-Ipre)/Ipre;
+    Ipre=Inew;
+    Gpre=Gnew;
+    iter=iter+1;
+    if display>0
+        fprintf('iter=%d, deltaI=%g\n',iter,deltaI);
+    end
+end
+
 
 
