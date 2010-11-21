@@ -5,8 +5,8 @@ function sigma=mmi_sigma(y)
 N=size(y,1);
 max_dist=0;
 
-for i=1:N
-    for j=1:N
+for i=1:N-1
+    for j=i+1:N
         dist=norm(y(i,:)-y(j,:));
         if dist > max_dist
            max_dist=dist; 
