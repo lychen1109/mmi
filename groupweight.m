@@ -19,26 +19,37 @@ weight_idx(:,grp)=w;
 %initialize sigma
 y=dataTrain*weight_idx;
 sigma=mmi_sigma(y);
-
-[Ipre,Gpre]=mymi3(label,weight_idx',dataTrain,sigma);
-Gpre=Gpre';
+sigma2=0;%So that we can enter the loop
 
 mask=zeros(size(weight_idx));
 mask(:,grp)=feat;
 
-deltaI=inf;
-iter=0;
-while deltaI>Tol && iter<Max_iter
-    weight_idx=weight_idx+step*Gpre.*mask;
-    [Inew,Gnew]=mymi3(label,weight_idx',dataTrain,sigma);
-    deltaI=(Inew-Ipre)/Ipre;
-    Ipre=Inew;
-    Gpre=Gnew;
-    iter=iter+1;
-    if display>0
-        fprintf('iter=%d, deltaI=%g\n',iter,deltaI);
+while sigma>sigma2
+    [Ipre,Gpre]=mymi3(label,weight_idx',dataTrain,sigma);
+    Gpre=Gpre';
+    deltaI=inf;
+    iter=0;
+    while deltaI>Tol && iter<Max_iter
+        weight_idx=weight_idx+step*Gpre.*mask;
+        w=weight_idx(:,grp);
+        weight_idx(:,grp)=w/norm(w);
+        [Inew,Gnew]=mymi3(label,weight_idx',dataTrain,sigma);
+        Gnew=Gnew';
+        deltaI=(Inew-Ipre)/Ipre;
+        Ipre=Inew;
+        Gpre=Gnew;
+        iter=iter+1;
+        if display>0
+            fprintf('iter=%d, deltaI=%g\n',iter,deltaI);
+        end
     end
+    sigma=sigma*0.9;
+    y=dataTrain*weight_idx;
+    sigma2=mmi_sigma2(label,y);
 end
+
+
+
 
 
 
