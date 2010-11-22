@@ -309,6 +309,7 @@ end
 I=VIN+VALL-2*VBTW;
 if nargout>1
     g=gVIN+gVALL-2*gVBTW;
+    g=g';
 end
 
 
