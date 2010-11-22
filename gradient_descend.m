@@ -1,4 +1,4 @@
-function [w,flag,iter]=gradient_descend(label,x,MAX_iter,step,display,Tol)
+function [w,iter]=gradient_descend(label,x,MAX_iter,step,display,Tol)
 %calculate w with gradiient descend method
 %flag=0: deltaI<Tol
 %flag=2: itermax reached
@@ -8,7 +8,6 @@ function [w,flag,iter]=gradient_descend(label,x,MAX_iter,step,display,Tol)
 if isempty(Tol)
     Tol=1e-6;
 end
-flag=-1;
 iter=1;
 
 if size(x,2)<2
@@ -37,11 +36,7 @@ while iter< MAX_iter && deltaI>Tol
     Ipre=Inew;
 end
 
-if iter >= MAX_iter
-    flag=2;
-else
-    flag=0;
-end
+
 
 
 
