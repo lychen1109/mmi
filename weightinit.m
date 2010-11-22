@@ -1,11 +1,7 @@
-function [weight_idx,feat]=weightinit(history)
+function [weight_idx,feat]=weightinit(history,N)
 %initialize weight_idx
 
-cv=history.cv;
-[~,I]=max(cv);
-%disp(I);
-feat=history.feat(I,:);
-%disp(sum(feat));
+feat=history.feat(end-N+2,:);
 
 n_feat=size(feat,2);
 n_group=sum(feat);
