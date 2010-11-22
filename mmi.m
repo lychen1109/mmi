@@ -1,40 +1,40 @@
-function [w,iter]=mmi(label,x,MAX_iter,step,display,Tol)
+function [w,iter]=mmi(label,x,N,MAX_iter,step,display,Tol)
 %calculate w with gradiient descend method
 %display 0:nothing 1:iteration
 
-%a small number for precision
-if isempty(Tol)
-    Tol=1e-6;
-end
-iter=1;
+if nargin<4, MAX_iter=1000; end
+if nargin<5, step=0.1; end
+if nargin<6, display=0; end
+if nargin<7, Tol=1e-6; end
 
-if size(x,2)<2
-    w=1;    
-    return;
-end
+n_feat=size(x,2);
+w=rand(n_feat,N);
+w=orth(w);
 
-%initialize with LDA
-w=lda(label,x)';
-y=x*w';
-sigma=(max(y)-min(y))/2;
+y=x*w;
+sigma=mmi_sigma(y);
+sigma2=0;
 
-deltaI=inf;
-Ipre=0;
-while iter< MAX_iter && deltaI>Tol            
-    [Inew,g]=mymi3(label,w,x,sigma,0);
-    
-    %update w
-    w=w+step*g;w=w/norm(w);    
-    
-    deltaI=Inew-Ipre;    
-    if display==1
-        fprintf('iteration %d delta %e (%e)\n',iter,deltaI,Inew);
+while sigma>sigma2
+    fprintf('Trying with sigma=%g\n',sigma);
+    [Ipre,Gpre]=mymi3(label,w',x,sigma);
+    deltaI=inf;
+    iter=0;
+    while iter< MAX_iter && deltaI>Tol        
+        w=w+step*Gpre;
+        w=orth(w);
+        [Inew,Gnew]=mymi3(label,w',x,sigma);
+        deltaI=(Inew-Ipre)/Ipre;
+        iter=iter+1;
+        Ipre=Inew;
+        Gpre=Gnew;
+        if display>0
+            fprintf('iter %d, delta %e\n',iter,deltaI);
+        end        
     end
-    iter=iter+1;
-    Ipre=Inew;
+    sigma=sigma*0.9;
+    y=x*w;
+    sigma2=mmi_sigma2(label,y);
 end
-
-
-
 
 
