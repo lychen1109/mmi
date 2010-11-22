@@ -4,7 +4,7 @@ function [w,iter]=mmi(label,x,N,MAX_iter,step,display,Tol)
 
 if nargin<4, MAX_iter=1000; end
 if nargin<5, step=0.1; end
-if nargin<6, display=0; end
+if nargin<6, display=1; end
 if nargin<7, Tol=1e-6; end
 
 n_feat=size(x,2);
