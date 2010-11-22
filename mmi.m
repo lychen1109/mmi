@@ -1,7 +1,5 @@
-function [w,iter]=gradient_descend(label,x,MAX_iter,step,display,Tol)
+function [w,iter]=mmi(label,x,MAX_iter,step,display,Tol)
 %calculate w with gradiient descend method
-%flag=0: deltaI<Tol
-%flag=2: itermax reached
 %display 0:nothing 1:iteration
 
 %a small number for precision
