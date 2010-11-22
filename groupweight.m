@@ -12,9 +12,9 @@ w=weight_idx(:,grp);
 feat=zeros(1,size(dataTrain,2));
 feat(w>0)=1;
 feat(feat_idx)=1;
-w_lda=lda(label,dataTrain(:,feat==1));
-w(feat==1)=w_lda;
-weight_idx(:,grp)=w;
+% w_lda=lda(label,dataTrain(:,feat==1));
+% w(feat==1)=w_lda;
+% weight_idx(:,grp)=w;
 
 %initialize sigma
 y=dataTrain*weight_idx;
