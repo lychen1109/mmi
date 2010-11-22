@@ -25,6 +25,7 @@ mask=zeros(size(weight_idx));
 mask(:,grp)=feat;
 
 while sigma>sigma2
+    fprintf('Trying with sigma=%g\n',sigma);
     [Ipre,Gpre]=mymi3(label,weight_idx',dataTrain,sigma);
     Gpre=Gpre';
     deltaI=inf;
