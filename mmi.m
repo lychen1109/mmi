@@ -2,7 +2,7 @@ function [w,iter]=mmi(label,x,N,MAX_iter,step,display,Tol)
 %calculate w with gradiient descend method
 %display 0:nothing 1:iteration
 
-if nargin<4, MAX_iter=1000; end
+if nargin<4, MAX_iter=1e+4; end
 if nargin<5, step=0.1; end
 if nargin<6, display=1; end
 if nargin<7, Tol=1e-6; end
