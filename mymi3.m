@@ -1,6 +1,7 @@
 function [I,g]=mymi3(train_label,w,x,sigma)
 %calculate I and g in one program
 
+w=w';%so that comparable with other functions
 %size of w and x should fit
 if size(w,2) ~= size(x,2)
    fprintf('Size of w and x do not fit.\n'); return; 
