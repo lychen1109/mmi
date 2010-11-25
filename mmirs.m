@@ -11,7 +11,7 @@ while iter< MAX_iter
     pairs=randomsample2(label,4000);
     [Ipre,Gpre]=mymi3s(label,w,x,pairs,sigma);
     w=w+step*Gpre;
-    w=orth(w);
+    w=w/norm(w);
     Inew=mymi3s(label,w,x,pairs,sigma);
     deltaI=(Inew-Ipre)/Ipre;
     iter=iter+1;    
