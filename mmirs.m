@@ -8,11 +8,11 @@ if nargin<7, display=1; end
 
 iter=0;
 while iter< MAX_iter
-    pairs=randomsample2(label,4000);
-    [Ipre,Gpre]=mymi3s(label,w,x,pairs,sigma);
+    sampleCVP=cvpartition(label,'holdout',100);
+    [Ipre,Gpre]=mymi3(label(sampleCVP.test,:),w,x(sampleCVP.test,:),sigma);
     w=w+step*Gpre;
     w=w/norm(w);
-    Inew=mymi3s(label,w,x,pairs,sigma);
+    Inew=mymi3(label(sampleCVP.test,:),w,x(sampleCVP.test,:),sigma);
     deltaI=(Inew-Ipre)/Ipre;
     iter=iter+1;    
     if display>0
