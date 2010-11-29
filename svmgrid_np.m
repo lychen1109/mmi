@@ -1,5 +1,5 @@
 function [bestc,bestg,bestcv]=svmgrid_np(dataTrain,grpTrain,display,type,rangec,rangeg,mem)
-%parameter selection
+%parameter selection, nonparallel version
 
 if nargin<4
     type=2;
