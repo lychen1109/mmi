@@ -50,20 +50,15 @@ y=x*w;
 D=(y(i1,:)-y(i2,:))';
 GK=gauss_kernel(D,sigma);
 if label(i1)==label(i2)
-    Fin=GK*D*x(i2,:)/sigma^2/N^2;
+    Fin=GK*D*x(i2,:)/(2*sigma^2*N^2);
 else
     Fin=0;
 end
-Fall=J*GK*D*x(i2,:)/sigma^2/N^2;
+Fall=J*GK*D*x(i2,:)/(2*sigma^2*N^2);
 if label(i1)==0
     Jp=J0;
 else
     Jp=J1;
 end
-if label(i2)==0
-    Jc=J0;
-else
-    Jc=J1;
-end
-Fbtw=(Jp+Jc)*GK*D*x(i2,:)/(2*N^3*sigma^2);
+Fbtw=Jp*GK*D*x(i2,:)/(2*N^3*sigma^2);
 g1=Fin+Fall-2*Fbtw;
