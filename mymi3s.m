@@ -6,10 +6,8 @@ I=0;
 g=zeros(size(w'));
 
 parfor i=1:n_pairs    
-    I=I+I_calc(label,w,x,pairs(i,:),sigma);
-    if nargout>1
-        g=g+g_calc(label,w,x,pairs(i,:),sigma);
-    end
+    I=I+I_calc(label,w,x,pairs(i,:),sigma);    
+    g=g+g_calc(label,w,x,pairs(i,:),sigma);    
 end
 g=g';
 
