@@ -1,4 +1,4 @@
-function w=mmirs(label,x,w,sigma,MAX_iter,step,display,Tol)
+function [w,iter]=mmirs(label,x,w,sigma,MAX_iter,step,display,Tol)
 %calculate w with gradiient descend method
 %display 0:nothing 1:iteration
 
