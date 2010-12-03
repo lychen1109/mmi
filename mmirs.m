@@ -15,7 +15,7 @@ while iter< MAX_iter && deltaI>Tol
     w=w+step*Gpre;
     w=w/norm(w);
     Inew=mymi3s(label,w,x,pairs,sigma);
-    deltaI=(Inew-Ipre)/Ipre;
+    deltaI=(Inew-Ipre)/abs(Ipre);
     iter=iter+1;    
     if display>0
         fprintf('iter %d, delta %e\n',iter,deltaI);
