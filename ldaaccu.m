@@ -9,7 +9,7 @@ for i=1:n_feat
     datatest=feat(holdoutCVP.test,i);
     labeltrain=label(holdoutCVP.training);
     labeltest=label(holdoutCVP.test);
-    predict=classify(datatest,datatrain,labeltrain);
+    predict=classify(datatest,datatrain,labeltrain,'quadratic');
     n_test=size(labeltest,1);
     bin_ldaaccu(i)=sum(predict==labeltest)/n_test;
 end
