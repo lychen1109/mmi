@@ -19,6 +19,8 @@ while iter< MAX_iter && deltaI>Tol
     iter=iter+1;    
     if display>0
         fprintf('iter %d, delta %e\n',iter,deltaI);
+    elseif mod(iter,1000)==0
+        fprintf('iter %d, delta %e\n',iter,deltaI);
     end
 end
 
