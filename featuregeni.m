@@ -12,13 +12,10 @@ for i=1:n_files
     else
         img=double(img);
     end
-    img_y=0.3*img(:,:,1)+0.59*img(:,:,2)+0.11*img(:,:,3);
-    img_y=round(img_y);
+    [img_y,~,img_cr]=myrgb2ycbcr(img);    
     D=fun(img_y,T);
-    features(:,:,i)=D;
-    
-    img_cr=128+0.5*img(:,:,1)-0.419*img(:,:,2)-0.0813*img(:,:,3);
-    img_cr=round(img_cr);
+    features(:,:,i)=D;    
+        
     D_cr=fun(img_cr,T);
     features_cr(:,:,i)=D_cr;
 end
