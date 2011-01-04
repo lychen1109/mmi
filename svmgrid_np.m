@@ -1,30 +1,22 @@
-function [bestc,bestg,bestcv,Z]=svmgrid_np(dataTrain,grpTrain,display,type,rangec,rangeg,mem)
+function [bestc,bestg,bestcv,Z]=svmgrid_np(grpTrain,dataTrain,display,type,rangec,rangeg,kernel)
 %parameter selection, nonparallel version
-
-if nargin<4
-    type=2;
-end
-
-if nargin<5
-    rangec=-5:2:15;
-    rangeg=3:-2:-15;
-end
 
 bestcv=0;
 Z=zeros(length(rangeg),length(rangec));
 i=0;
 j=0;
+[n_data,~]=size(dataTrain);
 
 for log2g=rangeg
     i=i+1;
     for log2c=rangec
-        j=j+1;
-        if type==0
-            cmd=['-v 5 -c ' num2str(2^log2c) ' -t 0 -m ' num2str(mem)];
+        j=j+1;        
+        cmd=['-v 5 -c ' num2str(2^log2c) ' -g ' num2str(2^log2g) ' -t ' num2str(type)];
+        if type==4
+            cv=svmtrain(grpTrain,[(1:n_data)' dataTrain*kernel*dataTrain'],cmd);
         else
-            cmd=['-v 5 -c ' num2str(2^log2c) ' -g ' num2str(2^log2g) ' -m ' num2str(mem)];
+            cv=svmtrain(grpTrain,dataTrain,cmd);
         end
-        cv=svmtrain(grpTrain,dataTrain,cmd);
         Z(i,j)=cv;
         if bestcv<cv
             bestcv=cv;
