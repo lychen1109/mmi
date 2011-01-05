@@ -1,4 +1,4 @@
-function [bestc,bestg,bestcv,Z]=svmgrid_np(grpTrain,dataTrain,display,type,rangec,rangeg,kernel)
+function [bestg,bestc,bestcv,Z]=svmgrid_np(grpTrain,dataTrain,display,type,rangec,rangeg,kernel)
 %parameter selection, nonparallel version
 
 bestcv=0;
