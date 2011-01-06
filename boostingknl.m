@@ -1,4 +1,4 @@
-function [kernel,alpha,kernelb]=boostingknl(label,datatrain,T,kernel_init)
+function [kernel,alpha,kernelb]=boostingknl(label,datatrain,datatest,T,kernel_init)
 % Boosting kernel learner
 % T: number of iteration
 
@@ -19,7 +19,7 @@ for t=1:T
     D=D/sum(D(:));
     
     %call base kernel learner
-    kernelb(:,:,t)=baseknl(label,datatrain,D);
+    kernelb(:,:,t)=baseknl(label,datatrain,datatest,D);
     
     %calculate base kernel weight
     K_b=datatrain*kernelb(:,:,t)*datatrain';
