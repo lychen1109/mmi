@@ -1,4 +1,4 @@
-function kerneltest(label,data,cvp,kernel,cmd)
+function [accu_training,accu_test]=kerneltest(label,data,cvp,kernel,cmd)
 %test one kernel's training and test accuracy
 
 labeltrain=label(cvp.training);
@@ -10,6 +10,7 @@ n_test=size(datatest,1);
 
 model=svmtrain(labeltrain,[(1:n_train)' datatrain*kernel*datatrain'],cmd);
 predict_train=svmpredict(labeltrain, [(1:n_train)' datatrain*kernel*datatrain'], model);
-fprintf('training accuracy: %g\n',sum(predict_train==labeltrain)/n_train);
+accu_training=sum(predict_train==labeltrain)/n_train;
+
 predict_test=svmpredict(labeltest,[(1:n_test)' datatest*kernel*datatrain'],model);
-fprintf('test accuracy: %g\n',sum(predict_test==labeltest)/n_test);
+accu_test=sum(predict_test==labeltest)/n_test;
