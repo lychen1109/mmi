@@ -3,10 +3,9 @@ function [kernel,alpha,kernelb]=boostingknl(label,datatrain,datatest,T,kernel_in
 % T: number of iteration
 
 [~,d_data]=size(datatrain);
-if nargin<4
+kernel=kernel_init;
+if isempty(kernel)
     kernel=zeros(d_data,d_data);
-else
-    kernel=kernel_init;
 end
 
 alpha=zeros(T,1);
