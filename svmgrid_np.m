@@ -6,12 +6,13 @@ Z=zeros(length(rangeg),length(rangec));
 i=0;
 j=0;
 [n_data,~]=size(dataTrain);
+more_cmd=' -e 0.1 -h 1';
 
 for log2g=rangeg
     i=i+1;
     for log2c=rangec
         j=j+1;        
-        cmd=['-v 5 -c ' num2str(2^log2c) ' -g ' num2str(2^log2g) ' -t ' num2str(type)];
+        cmd=['-v 5 -c ' num2str(2^log2c) ' -g ' num2str(2^log2g) ' -t ' num2str(type) more_cmd];
         if type==4
             cv=svmtrain(grpTrain,[(1:n_data)' dataTrain*kernel*dataTrain'],cmd);
         else
