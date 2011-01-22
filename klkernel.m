@@ -8,12 +8,14 @@ K_test=zeros(n_test,n_train);
 
 for i=1:n_train
     for j=1:n_train
-        K_train(i,j)=kl_div(datatrain(i,:),datatrain(j,:),type);
+        kld=kl_div(datatrain(i,:),datatrain(j,:),type);
+        K_train(i,j)=exp(-kld);
     end
 end
 
 for i=1:n_test
     for j=1:n_train
-        K_test(i,j)=kl_div(datatest(i,:),datatrain(j,:),type);
+        kld=kl_div(datatest(i,:),datatrain(j,:),type);
+        K_test(i,j)=exp(-kld);
     end
 end
