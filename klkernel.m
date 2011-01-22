@@ -8,7 +8,7 @@ K_test=zeros(n_test,n_train);
 
 for i=1:n_train
     for j=1:n_train
-        K_train(i,j)=kl_div(datatrain(i,:),datatrain(i,:),type);
+        K_train(i,j)=kl_div(datatrain(i,:),datatrain(j,:),type);
     end
 end
 
