@@ -5,8 +5,8 @@ bestcv=0;
 n_training=length(grptrain);
 
 for log2g=rangeg
-    for log2c=rangec
-        kerneltrain=klkernel(datatrain,datatrain,2^log2g,'sym');
+    kerneltrain=klkernel(datatrain,datatrain,2^log2g,'sym');
+    for log2c=rangec        
         cmd=['-c ' num2str(2^log2c) ' -t 4 -v 5'];
         cv=svmtrain(grptrain,[(1:n_training)' kerneltrain],cmd);
         if bestcv<cv
