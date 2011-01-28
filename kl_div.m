@@ -23,8 +23,10 @@ switch type
     case 'js'
         logQ=log2((p+q)/2);
         KL=0.5*(sum(p.*(log2(p)-logQ))+sum(q.*(log2(q)-logQ)));
-    otherwise
+    case 'sym'
         KL1=sum(p.*(log2(p)-log2(q)));
         KL2=sum(q.*(log2(q)-log2(p)));
         KL=0.5*(KL1+KL2);
+    otherwise
+        error('no such type');
 end
