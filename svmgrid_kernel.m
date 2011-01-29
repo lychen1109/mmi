@@ -13,7 +13,7 @@ for log2g=rangeg
         case 'gauss'
             kerneltrain=rbfkernel(datatrain,datatrain,2^log2g);
         otherwise
-            error('no such kerneltype');    
+            error('Possible kerneltypes are: kld_sym, kld_js, gauss');    
     end    
     
     for log2c=rangec        
