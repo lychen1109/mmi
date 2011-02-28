@@ -1,7 +1,7 @@
 function log2g=gammalearn(labeltrain,datatrain,log2c,log2g,Tol)
 %learn the best gamma from training data
 
-Eta=0.01;
+Eta=0.1;
 %hold out validation set
 n_vali=400;
 validationcvp=cvpartition(labeltrain,'holdout',n_vali);
@@ -19,9 +19,9 @@ E(int_labeltest==1)=1-P(int_labeltest==1,1);
 E(int_labeltest==0)=P(int_labeltest==0,1);
 E_old=sum(E)/n_vali;
 fprintf('E init=%g\n',E_old);
-E_delt=10^4;
+E_delta=10^4;
 
-while E_delt>Tol
+while E_delta>Tol
     SVs=model.SVs;
     n_Sv=size(SVs,1);
     sv_coef=model.sv_coef;
@@ -44,7 +44,7 @@ while E_delt>Tol
         d_xi_svj(i,:)=drow;
         fi_ptheta(i)=fi_pthetai;
     end
-    E_ptheta=sum(Ei_pp.*Pi_pf.*fi_ptheta);
+    E_ptheta=sum(Ei_pp.*Pi_pf.*fi_ptheta)/n_vali;
     
     E_palpha=zeros(1,n_Sv+1);
     for j=1:n_Sv+1
@@ -60,6 +60,7 @@ while E_delt>Tol
         end
         E_palpha(j)=sum(Ei_pp.*Pi_pf.*fi_palphaj);
     end
+    E_palpha=E_palpha/n_vali;
     
     Y=sign(sv_coef);
     K_y=zeros(n_Sv,n_Sv);
