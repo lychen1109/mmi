@@ -85,6 +85,7 @@ while E_delta>Tol
     Alpha_ptheta=-inv(H)*H_ptheta*[abs(sv_coef);-model.rho];
     
     E_ptheta_final=E_ptheta+E_palpha*Alpha_ptheta;
+    fprintf('E_ptheta_final=%g+%g=%g',E_ptheta,E_palpha*Alpha_ptheta,E_ptheta_final);    
     log2g=log2g-Eta*E_ptheta_final;
     fprintf('log2g=%g\n',log2g);
     
