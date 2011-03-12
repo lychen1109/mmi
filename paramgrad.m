@@ -1,4 +1,4 @@
-function grad=paramgrad(labelv,datav,outputv,model,theta)
+function [grad,Like]=paramgrad(labelv,datav,outputv,model,theta)
 %Paramlearn: calculate gradient of parameter
 
 log2C=theta(1);
@@ -144,7 +144,12 @@ grad(3)=sum(LpA1)+sum(LpA2);
 grad(4)=sum(LpB1)+sum(LpB2);
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%calc objective function
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Like1=log(1./(1+exp(A*outputp+B)));
+Like2=log(1-1./(1+exp(A*outputn+B)));
+Like=sum(Like1)+sum(Like2);
 
 
 
