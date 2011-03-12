@@ -19,61 +19,86 @@ alpha2=abs(sv_coef(sv_coef<-C+eps));
 alpha3=sv_coef(sv_coef>0 & sv_coef<C-eps);
 alpha4=abs(sv_coef(sv_coef<0 & sv_coef>-C+eps));
 alphac=[alpha1;alpha2];
+disp('size of alphac');
+disp(size(alphac));
 alphau=[alpha3;alpha4];
+disp('size of alphau');
+disp(size(alphau));
 beta=[alphac;alphau;-model.rho];
 SVs=[SVs1;SVs2;SVs3;SVs4];%reorganized for easy calculation
 SVsu=[SVs3;SVs4]; %free support vectors
 SVsc=[SVs1;SVs2]; %bounded SVs
-Y=[ones(size(SVs1,1),1);-ones(size(SVs2,1),1);ones(size(SVs3,1),1);-ones(size(SVs4,1))]; %label of SVs
+Y=[ones(size(SVs1,1),1);-ones(size(SVs2,1),1);ones(size(SVs3,1),1);-ones(size(SVs4,1),1)]; %label of SVs
 Yu=[ones(size(SVs3,1),1);-ones(size(SVs4,1),1)];%label of free SVs
 Yc=[ones(size(SVs1,1),1);-ones(size(SVs2,1),1)];%label of bounded SVs
 
 N=size(datav,1);%number of validation set
 K=size(SVs,1); %number of support vectors
-M=zeros(K+1,1);%temp variable used in d calc
+fprintf('number of support vectors:%d\n',K);
+M1=zeros(K+1,1);%temp variable used in d calc
+M2=zeros(K+1,1);%temp variable used in full gradient calc
 outputvp=outputv(labelv==1);
 outputvn=outputv(labelv==0);
 delta=zeros(N,1);%gradient of objective function with output
 delta(labelv==1)=-A*exp(A.*outputvp+B)./(1+exp(A.*outputvp+B));
 delta(labelv==0)=A*exp(-A.*outputvn-B)./(1+exp(-A*outputvn-B));
 
-for l=1:N
-    Psi=ones(K+1,1);
+Psi=ones(N,K+1);
+Psipg=zeros(N,K+1);
+
+tic;
+for l=1:N    
     for k=1:K
-        Psi(k)=Y(k)*exp(-norm(datav(l,:)-SVs(k,:))^2);
+        Dnk=norm(datav(l,:)-SVs(k,:))^2;
+        Psi(l,k)=Y(k)*exp(-Dnk);
+        Psipg(l,k)=-Y(k)*exp(-Dnk)*Dnk*log(2)*2^log2g;
     end
-    M=M+delta(l)*Psi;
+    M1=M1+delta(l)*Psi(l,:)';
+    M2=M2+delta(l)*Psipg(l,:)';
 end
+t=toc;
+fprintf('M1 and M2 for d and full grad calculated in %g seconds.\n',t);
 
 P=zeros(K+1,K+1);
 Nc=size(SVs1,1)+size(SVs2,1); %number bounded SVs
+fprintf('number of bounded SV:%d\n',Nc);
 P(1:Nc,1:Nc)=eye(Nc);
 Nu=size(SVs3,1)+size(SVs4,1);%number unbounded SVs
+fprintf('number of unbounded SV:%d\n',Nu);
 Omegauu=zeros(Nu,Nu);
 
+tic;
 for i=1:Nu
     for j=1:Nu
-        Omegauu=Yu(i)*Yu(j)*exp(-norm(SVsu(i,:)-SVsu(j,:))^2);
+        Omegauu(i,j)=Yu(i)*Yu(j)*exp(-norm(SVsu(i,:)-SVsu(j,:))^2);
     end
 end
+t=toc;
+fprintf('Omegauu calculated in %g seconds.\n',t);
 
 P(Nc+1:K,Nc+1:K)=Omegauu;
 P(Nc+1:K,K+1)=-Yu;
 P(K+1,Nc+1:K)=-Yu';
-d=P'\M;
+tic;
+d=P'\M1;
+t=toc;
+fprintf('mldivide for d calculated in %g seconds.\n',t);
 
 qpC=zeros(K+1,1); %q gradient with C
 qpC(1:Nc)=ones(Nc,1)*log(2)*C;
 Omegauc=zeros(Nu,Nc);
 
+tic;
 for i=1:Nu
     for j=1:Nc
-        Omegauc=Yu(i)*Yc(j)*exp(-norm(SVsu(i,:)-SVsc(j,:))^2);
+        Omegauc(i,j)=Yu(i)*Yc(j)*exp(-norm(SVsu(i,:)-SVsc(j,:))^2);
     end
 end
+t=toc;
+fprintf('Omegauc calculated in %g seconds.\n',t);
 
 qpC(Nc+1:K)=-Omegauc*ones(Nc,1)*log(2)*C;
-qpC(K+1)=Yc'*onec(Nc,1)*log(2)*C;
+qpC(K+1)=Yc'*ones(Nc,1)*log(2)*C;
 grad(1)=d'*qpC;
 
 %%%%%%%%%%%%%%%%%%%%%%%%
@@ -83,32 +108,29 @@ grad(1)=d'*qpC;
 qpg=zeros(K+1,1);
 Omegaucpg=zeros(Nu,Nc);
 
+tic;
 for i=1:Nu
     for j=1:Nc
-        Omegaucpg=-Omegauc(i,j)*norm(SVsu(i,:)-SVsc(j,:))^2;
+        Omegaucpg(i,j)=-Omegauc(i,j)*norm(SVsu(i,:)-SVsc(j,:))^2;
     end
 end
+t=toc;
+fprintf('Omegaucpg calculated in %g seconds.\n',t);
 
-qpg(Nc+1,K)=-Omegaucpg*alphac*log(2)*2^log2g;
+qpg(Nc+1:K)=-Omegaucpg*alphac*log(2)*2^log2g;
 Ppg=zeros(K+1,K+1);
 Omegauupg=zeros(Nu,Nu);
 
+tic;
 for i=1:Nu
     for j=1:Nu
-        Omegauupg=-Omegauu(i,j)*norm(SVsu(i,:)-SVsu(j,:))^2;
+        Omegauupg(i,j)=-Omegauu(i,j)*norm(SVsu(i,:)-SVsu(j,:))^2;
     end
 end
+t=toc;
+fprintf('Omegauupg calculated in %g seconds.\n',t);
 Ppg(Nc+1:K,Nc+1:K)=Omegauupg*log(2)*2^log2g;
-
-M=zeros(K+1,1); %temp variable for full gradient calc
-for l=1:N
-    Psipg=zeros(K+1,1);
-    for k=1:K
-        Psipg(k)=Y(k)*exp(-norm(datav(l,:)-SVs(k,:))^2)*(-norm(datav(l,:)-SVs(k,:))^2)*log(2)*2^log2g;
-    end
-    M=M+delta(l)*Psipg;
-end
-grad(2)=d'*(qpg-Ppg*beta)+M'*beta;
+grad(2)=d'*(qpg-Ppg*beta)+M2'*beta;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %calc gradient of A and B
