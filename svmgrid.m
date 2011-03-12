@@ -1,47 +1,24 @@
-function [bestc,bestg,bestcv]=svmgrid(dataTrain,grpTrain,display,type,rangec,rangeg,mem)
+function [bestc,bestg,bestcv,cv]=svmgrid(dataTrain,grpTrain,type,rangec,rangeg)
 %parameter selection
 
-if nargin<4
-    type=2;
-end
-
-if nargin<5
-    rangec=-5:2:15;
-    rangeg=3:-2:-15;
-end
-
-searchnum=length(rangec)*length(rangeg);
-cgidx=zeros(searchnum,2);
-cvidx=zeros(searchnum,1);
-idx=0;%index of cgidx
-for i=rangec
-    for j=rangeg
-        idx=idx+1;
-        cgidx(idx,:)=[i j];
-    end
-end
+nc=length(rangec);
+ng=length(rangeg);
+cv=zeros(nc,ng);
         
-parfor i=1:searchnum
-    param=cgidx(i,:);
-    log2c=param(1);
-    log2g=param(2);
-    if type==0
-        cmd=['-v 5 -c ' num2str(2^log2c) ' -t 0 -m ' num2str(mem)];
-    else
-        cmd=['-v 5 -c ' num2str(2^log2c) ' -g ' num2str(2^log2g) ' -m ' num2str(mem)];
+for i=1:nc
+    cvrow=zeros(1,ng);
+    log2c=rangec(i);
+    parfor j=1:ng        
+        cmd=['-v 5 -c ' num2str(2^log2c) ' -g ' num2str(2^rangeg(j)) ' -t ' num2str(type)];        
+        cvrow(j)=svmtrain(grpTrain,dataTrain,cmd);               
     end
-    cv=svmtrain(grpTrain,dataTrain,cmd);    
-    cvidx(i)=cv;
-    if display>0
-        fprintf('%g %g %g\n',log2c,log2g,cv);
-    end
+    cv(i,:)=cvrow;
 end
 
-[bestcv,I]=max(cvidx);
-bestlog2c=cgidx(I,1);
-bestlog2g=cgidx(I,2);
+[bestcv,I]=max(cv(:));
+[indc,indg]=ind2sub(size(cv),I);
 
-bestc=2^bestlog2c;
-bestg=2^bestlog2g;
+bestc=2^rangec(indc);
+bestg=2^rangeg(indg);
 
 
