@@ -19,11 +19,7 @@ alpha2=abs(sv_coef(sv_coef<-C+eps));
 alpha3=sv_coef(sv_coef>0 & sv_coef<C-eps);
 alpha4=abs(sv_coef(sv_coef<0 & sv_coef>-C+eps));
 alphac=[alpha1;alpha2];
-disp('size of alphac');
-disp(size(alphac));
 alphau=[alpha3;alpha4];
-disp('size of alphau');
-disp(size(alphau));
 beta=[alphac;alphau;-model.rho];
 SVs=[SVs1;SVs2;SVs3;SVs4];%reorganized for easy calculation
 SVsu=[SVs3;SVs4]; %free support vectors
@@ -43,18 +39,18 @@ delta=zeros(N,1);%gradient of objective function with output
 delta(labelv==1)=-A*exp(A.*outputvp+B)./(1+exp(A.*outputvp+B));
 delta(labelv==0)=A*exp(-A.*outputvn-B)./(1+exp(-A*outputvn-B));
 
-Psi=ones(N,K+1);
-Psipg=zeros(N,K+1);
-
 tic;
 for l=1:N    
-    for k=1:K
-        Dnk=norm(datav(l,:)-SVs(k,:))^2;
-        Psi(l,k)=Y(k)*exp(-Dnk);
-        Psipg(l,k)=-Y(k)*exp(-Dnk)*Dnk*log(2)*2^log2g;
+    datavl=datav(l,:);
+    Psi=ones(K+1,1);
+    Psipg=zeros(K+1,1);
+    parfor k=1:K
+        Dnk=norm(datavl-SVs(k,:))^2;
+        Psi(k)=Y(k)*exp(-Dnk);
+        Psipg(k)=-Psi(k)*Dnk*log(2)*2^log2g;
     end
-    M1=M1+delta(l)*Psi(l,:)';
-    M2=M2+delta(l)*Psipg(l,:)';
+    M1=M1+delta(l)*Psi;
+    M2=M2+delta(l)*Psipg;
 end
 t=toc;
 fprintf('M1 and M2 for d and full grad calculated in %g seconds.\n',t);
@@ -66,11 +62,13 @@ P(1:Nc,1:Nc)=eye(Nc);
 Nu=size(SVs3,1)+size(SVs4,1);%number unbounded SVs
 fprintf('number of unbounded SV:%d\n',Nu);
 Omegauu=zeros(Nu,Nu);
+Duu=zeros(Nu,Nu);
 
 tic;
 for i=1:Nu
     for j=1:Nu
-        Omegauu(i,j)=Yu(i)*Yu(j)*exp(-norm(SVsu(i,:)-SVsu(j,:))^2);
+        Duu(i,j)=norm(SVsu(i,:)-SVsu(j,:))^2;
+        Omegauu(i,j)=Yu(i)*Yu(j)*exp(-Duu(i,j));
     end
 end
 t=toc;
@@ -87,11 +85,13 @@ fprintf('mldivide for d calculated in %g seconds.\n',t);
 qpC=zeros(K+1,1); %q gradient with C
 qpC(1:Nc)=ones(Nc,1)*log(2)*C;
 Omegauc=zeros(Nu,Nc);
+Duc=zeros(Nu,Nc);
 
 tic;
 for i=1:Nu
     for j=1:Nc
-        Omegauc(i,j)=Yu(i)*Yc(j)*exp(-norm(SVsu(i,:)-SVsc(j,:))^2);
+        Duc(i,j)=norm(SVsu(i,:)-SVsc(j,:))^2;
+        Omegauc(i,j)=Yu(i)*Yc(j)*exp(-Duc(i,j));
     end
 end
 t=toc;
@@ -111,25 +111,25 @@ Omegaucpg=zeros(Nu,Nc);
 tic;
 for i=1:Nu
     for j=1:Nc
-        Omegaucpg(i,j)=-Omegauc(i,j)*norm(SVsu(i,:)-SVsc(j,:))^2;
+        Omegaucpg(i,j)=-Omegauc(i,j)*Duc(i,j)*log(2)*2^log2g;
     end
 end
 t=toc;
 fprintf('Omegaucpg calculated in %g seconds.\n',t);
 
-qpg(Nc+1:K)=-Omegaucpg*alphac*log(2)*2^log2g;
+qpg(Nc+1:K)=-Omegaucpg*alphac;
 Ppg=zeros(K+1,K+1);
 Omegauupg=zeros(Nu,Nu);
 
 tic;
 for i=1:Nu
     for j=1:Nu
-        Omegauupg(i,j)=-Omegauu(i,j)*norm(SVsu(i,:)-SVsu(j,:))^2;
+        Omegauupg(i,j)=-Omegauu(i,j)*Duu(i,j)*log(2)*2^log2g;
     end
 end
 t=toc;
 fprintf('Omegauupg calculated in %g seconds.\n',t);
-Ppg(Nc+1:K,Nc+1:K)=Omegauupg*log(2)*2^log2g;
+Ppg(Nc+1:K,Nc+1:K)=Omegauupg;
 grad(2)=d'*(qpg-Ppg*beta)+M2'*beta;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
