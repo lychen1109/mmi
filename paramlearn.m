@@ -1,10 +1,9 @@
-function theta=paramlearn(labeltrain,datatrain)
+function theta=paramlearn(labeltrain,datatrain,theta)
 %paramlearn: learn the best parameter of standard gauss kernel and
 %probability params
 
 K=3; %fold number
 cvp=cvpartition(labeltrain,'Kfold',K);
-theta=[0 0 -1 0]; %initial value
 cmd=['-c ' num2str(2^theta(1)) ' -g ' num2str(2^theta(2))];
 step=0.01;
 
