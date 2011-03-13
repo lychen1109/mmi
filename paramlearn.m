@@ -1,10 +1,10 @@
-function [theta,history]=paramlearn(labeltrain,datatrain,theta)
+function [theta,history]=paramlearn(labeltrain,datatrain,theta,mysvmfun)
 %paramlearn: learn the best parameter of standard gauss kernel and
 %probability params
 
 K=3; %fold number
 cvp=cvpartition(labeltrain,'Kfold',K);
-cmd=['-c ' num2str(2^theta(1)) ' -g ' num2str(2^theta(2))];
+%cmd=['-c ' num2str(2^theta(1)) ' -g ' num2str(2^theta(2))];
 step=0.01;
 thetas=theta; %for record history
 ofuns=[];%record of objective fun
@@ -18,8 +18,9 @@ while deltaofun>Tol
     Like=zeros(K,1);
     for i=1:K
         fprintf('processing fold:%d\n',i);
-        model=svmtrain(labeltrain(cvp.training(i)),datatrain(cvp.training(i),:),cmd);
-        [~,accu,dvalues]=svmpredict(labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),model);
+        %model=svmtrain(labeltrain(cvp.training(i)),datatrain(cvp.training(i),:),cmd);
+        %[~,accu,dvalues]=svmpredict(labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),model);
+        [model,accu,dvalues]=mysvmfun(labeltrain(cvp.training(i)),datatrain(cvp.training(i),:),labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),theta);
         %fprintf('accuracy:%g\n',accu(1));
         accus(i)=accu(1);
         [grad(i,:),Like(i)]=paramgrad(labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),dvalues,model,theta);
