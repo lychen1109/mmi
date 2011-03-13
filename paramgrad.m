@@ -30,7 +30,9 @@ Yc=[ones(size(SVs1,1),1);-ones(size(SVs2,1),1)];%label of bounded SVs
 
 N=size(datav,1);%number of validation set
 K=size(SVs,1); %number of support vectors
-fprintf('number of support vectors:%d\n',K);
+Nc=size(SVs1,1)+size(SVs2,1); %number bounded SVs
+Nu=size(SVs3,1)+size(SVs4,1);%number unbounded SVs
+fprintf('number of SV:%d, bounded:%d, free:%d\n',K,Nc,Nu);
 M1=zeros(K+1,1);%temp variable used in d calc
 M2=zeros(K+1,1);%temp variable used in full gradient calc
 outputvp=outputv(labelv==1);
@@ -56,11 +58,7 @@ t=toc;
 fprintf('M1 and M2 for d and full grad calculated in %g seconds.\n',t);
 
 P=zeros(K+1,K+1);
-Nc=size(SVs1,1)+size(SVs2,1); %number bounded SVs
-fprintf('number of bounded SV:%d\n',Nc);
 P(1:Nc,1:Nc)=eye(Nc);
-Nu=size(SVs3,1)+size(SVs4,1);%number unbounded SVs
-fprintf('number of unbounded SV:%d\n',Nu);
 Omegauu=zeros(Nu,Nu);
 Duu=zeros(Nu,Nu);
 
@@ -77,10 +75,10 @@ fprintf('Omegauu calculated in %g seconds.\n',t);
 P(Nc+1:K,Nc+1:K)=Omegauu;
 P(Nc+1:K,K+1)=-Yu;
 P(K+1,Nc+1:K)=-Yu';
-tic;
+%tic;
 d=P'\M1;
-t=toc;
-fprintf('mldivide for d calculated in %g seconds.\n',t);
+%t=toc;
+%fprintf('mldivide for d calculated in %g seconds.\n',t);
 
 qpC=zeros(K+1,1); %q gradient with C
 qpC(1:Nc)=ones(Nc,1)*log(2)*C;

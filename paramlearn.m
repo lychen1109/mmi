@@ -16,7 +16,7 @@ for loop=1:10
         fprintf('processing fold:%d\n',i);
         model=svmtrain(labeltrain(cvp.training(i)),datatrain(cvp.training(i),:),cmd);
         [~,accu,dvalues]=svmpredict(labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),model);
-        fprintf('accuracy:%g\n',accu(1));
+        %fprintf('accuracy:%g\n',accu(1));
         accus(i)=accu(1);
         [grad(i,:),Like(i)]=paramgrad(labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),dvalues,model,theta);
         disp('grad is');
