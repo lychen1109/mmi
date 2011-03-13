@@ -48,7 +48,7 @@ for l=1:N
     Psipg=zeros(K+1,1);
     parfor k=1:K
         Dnk=norm(datavl-SVs(k,:))^2;
-        Psi(k)=Y(k)*exp(-Dnk);
+        Psi(k)=Y(k)*exp(-2^log2g*Dnk);
         Psipg(k)=-Psi(k)*Dnk*log(2)*2^log2g;
     end
     M1=M1+delta(l)*Psi;
@@ -70,7 +70,7 @@ for i=1:Nu
     Yui=Yu(i);
     parfor j=1:Nu
         Duurow(j)=norm(SVsui-SVsu(j,:))^2;
-        Omegauurow(j)=Yui*Yu(j)*exp(-Duurow(j));
+        Omegauurow(j)=Yui*Yu(j)*exp(-2^log2g*Duurow(j));
     end
     Duu(i,:)=Duurow;
     Omegauu(i,:)=Omegauurow;
@@ -95,7 +95,7 @@ tic;
 for i=1:Nu
     for j=1:Nc
         Duc(i,j)=norm(SVsu(i,:)-SVsc(j,:))^2;
-        Omegauc(i,j)=Yu(i)*Yc(j)*exp(-Duc(i,j));
+        Omegauc(i,j)=Yu(i)*Yc(j)*exp(-2^log2g*Duc(i,j));
     end
 end
 t=toc;
