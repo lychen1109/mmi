@@ -64,10 +64,16 @@ Duu=zeros(Nu,Nu);
 
 tic;
 for i=1:Nu
-    for j=1:Nu
-        Duu(i,j)=norm(SVsu(i,:)-SVsu(j,:))^2;
-        Omegauu(i,j)=Yu(i)*Yu(j)*exp(-Duu(i,j));
+    Duurow=zeros(1,Nu);
+    Omegauurow=zeros(1,Nu);
+    SVsui=SVsu(i,:);
+    Yui=Yu(i);
+    parfor j=1:Nu
+        Duurow(j)=norm(SVsui-SVsu(j,:))^2;
+        Omegauurow(j)=Yui*Yu(j)*exp(-Duurow(j));
     end
+    Duu(i,:)=Duurow;
+    Omegauu(i,:)=Omegauurow;
 end
 t=toc;
 fprintf('Omegauu calculated in %g seconds.\n',t);
