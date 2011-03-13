@@ -8,8 +8,11 @@ cmd=['-c ' num2str(2^theta(1)) ' -g ' num2str(2^theta(2))];
 step=0.01;
 thetas=theta; %for record history
 ofuns=[];%record of objective fun
+ofunold=-1e5;
+deltaofun=1e5;
+Tol=1e-3;
 
-for loop=1:10
+while deltaofun>Tol
     accus=zeros(K,1);
     grad=zeros(K,size(theta,2));
     Like=zeros(K,1);
@@ -31,8 +34,11 @@ for loop=1:10
     disp(fullgrad);
     ofun=sum(Like);
     fprintf('full objective fun is %g\n',ofun);
+    deltaofun=(ofun-ofunold)/abs(ofun);
+    fprintf('deltaofun:%g\n',deltaofun);
+    ofunold=ofun;
     disp('++++++++++++++++++++');
-    theta=theta+step*fullgrad;
+    theta=theta+step*fullgrad;    
     thetas=[thetas;theta];
     ofuns=[ofuns;ofun];
 end
