@@ -1,4 +1,4 @@
-function theta=paramlearn(labeltrain,datatrain,theta)
+function [theta,history]=paramlearn(labeltrain,datatrain,theta)
 %paramlearn: learn the best parameter of standard gauss kernel and
 %probability params
 
@@ -6,6 +6,8 @@ K=3; %fold number
 cvp=cvpartition(labeltrain,'Kfold',K);
 cmd=['-c ' num2str(2^theta(1)) ' -g ' num2str(2^theta(2))];
 step=0.01;
+thetas=theta; %for record history
+ofuns=[];%record of objective fun
 
 for loop=1:10
     accus=zeros(K,1);
@@ -27,7 +29,12 @@ for loop=1:10
     fullgrad=sum(grad);
     fprintf('full grad is\n');
     disp(fullgrad);
-    fprintf('full objective fun is %g\n',sum(Like));
+    ofun=sum(Like);
+    fprintf('full objective fun is %g\n',ofun);
     disp('++++++++++++++++++++');
     theta=theta+step*fullgrad;
+    thetas=[thetas;theta];
+    ofuns=[ofuns;ofun];
 end
+history.thetas=thetas;
+history.ofuns=ofuns;
