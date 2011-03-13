@@ -1,4 +1,4 @@
-function [bestc,bestg,bestcv,cv]=svmgrid(dataTrain,grpTrain,type,rangec,rangeg)
+function [bestc,bestg,bestcv]=svmgrid(dataTrain,grpTrain,type,rangec,rangeg)
 %parameter selection
 
 nc=length(rangec);
