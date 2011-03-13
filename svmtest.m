@@ -1,4 +1,4 @@
-function [m,s,mnSV]=svmtest(class,data,c,g,type,k,n_test,kernel)
+function svmtest(class,data,c,g,type,k,n_test,kernel)
 %test the svm accuracy with k outer loop
 
 ac=zeros(k,1);
@@ -23,8 +23,7 @@ for i=1:k
     ac(i)=accu(1);
     fprintf('accuracy %g with nSV %d\n',accu(1),model.totalSV);
 end
-m=mean(ac);
-s=std(ac);
-mnSV=mean(nSV);
+
+fprintf('mean accuracy:%g, std:%g, avg nSV:%g\n',mean(ac),std(ac),mean(nSV));
 
     
