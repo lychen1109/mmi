@@ -6,15 +6,21 @@ n_test=length(labeltest);
 Ktrain=zeros(n_train,n_train);
 Ktest=zeros(n_test,n_train);
 for i=1:n_train
-    for j=1:n_train
-        Ktrain(i,j)=exp(-rowrbfdist(datatrain(i,:),datatrain(j,:),theta));
+    datatraini=datatrain(i,:);
+    Ktrainrow=zeros(1,n_train);
+    parfor j=1:n_train
+        Ktrainrow(j)=exp(-rowrbfdist(datatraini,datatrain(j,:),theta));
     end
+    Ktrain(i,:)=Ktrainrow;
 end
 
 for i=1:n_test
-    for j=1:n_train
-        Ktest(i,j)=exp(-rowrbfdist(datatest(i,:),datatrain(j,:),theta));
+    datatesti=datatest(i,:);
+    Ktestrow=zeros(1,n_train);
+    parfor j=1:n_train
+        Ktestrow(j)=exp(-rowrbfdist(datatesti,datatrain(j,:),theta));
     end
+    Ktest(i,:)=Ktestrow;
 end
 
 cmd=['-c ' num2str(2^theta(1)) ' -t 4'];
