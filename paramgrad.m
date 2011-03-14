@@ -34,14 +34,19 @@ K=size(SVs,1); %number of support vectors
 Nc=length(Yc); %number bounded SVs
 Nu=length(Yu);%number unbounded SVs
 fprintf('number of SV:%d, bounded:%d, free:%d\n',K,Nc,Nu);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%gradient of output
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+delta=svmoutputgrad(labelv,outputv,A,B);
+
+%%%%%%%%%%%%%%%%
+% calc d
+%%%%%%%%%%%%%%%%
+
 M1=zeros(K+1,1);%temp variable used in d calc
 M2=zeros(K+1,1);%temp variable used in full gradient calc
-outputvp=outputv(labelv==1);
-outputvn=outputv(labelv==0);
-delta=zeros(N,1);%gradient of objective function with output
-delta(labelv==1)=-A*exp(A.*outputvp+B)./(1+exp(A.*outputvp+B));
-delta(labelv==0)=A*exp(-A.*outputvn-B)./(1+exp(-A*outputvn-B));
-
 tic;
 for l=1:N    
     datavl=datav(l,:);
@@ -87,6 +92,9 @@ d=P'\M1;
 %t=toc;
 %fprintf('mldivide for d calculated in %g seconds.\n',t);
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%gradient of C
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 qpC=zeros(K+1,1); %q gradient with C
 qpC(1:Nc)=ones(Nc,1)*log(2)*C;
 Omegauc=zeros(Nu,Nc);
