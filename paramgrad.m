@@ -140,14 +140,7 @@ grad(2)=d'*(qpg-Ppg*beta)+M2'*beta;
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %calc gradient of A and B
 %%%%%%%%%%%%%%%%%%%%%%%%%%
-
-LpA1=-outputvp.*exp(A*outputvp+B)./(1+exp(A*outputvp+B)); %gradient of L with A of positive samples
-LpA2=outputvn.*exp(-A*outputvn-B)./(1+exp(-A*outputvn-B)); %gradient of L with A of negative samples
-LpB1=-exp(A*outputvp+B)./(1+exp(A*outputvp+B));
-LpB2=exp(-A*outputvn-B)./(1+exp(-A*outputvn-B));
-grad(3)=sum(LpA1)+sum(LpA2);
-grad(4)=sum(LpB1)+sum(LpB2);
-
+[grad(3),grad(4)]=svmlogistgrad(labelv,outputv,A,B);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %calc objective function
