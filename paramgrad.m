@@ -152,9 +152,7 @@ grad(4)=sum(LpB1)+sum(LpB2);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %calc objective function
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Like1=log(1./(1+exp(A*outputvp+B)));
-Like2=log(1-1./(1+exp(A*outputvn+B)));
-Like=sum(Like1)+sum(Like2);
+Like=svmllhood(labelv,outputv,A,B);
 
 
 
