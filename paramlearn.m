@@ -1,4 +1,4 @@
-function [theta,history]=paramlearn(labeltrain,datatrain,theta,mysvmfun)
+function [theta,history]=paramlearn(labeltrain,datatrain,theta,mysvmfun,paramgrad)
 %paramlearn: learn the best parameter of standard gauss kernel and
 %probability params
 
