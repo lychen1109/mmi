@@ -1,4 +1,4 @@
-function [SVs,SVsu,SVsc,Y,Yu,Yc,beta]=modelparse(model,C)
+function [SVs,SVsu,SVsc,Y,Yu,Yc,alphac,alphau]=modelparse(model,C)
 %modelparse extract useful info from svm model
 
 SVs=model.SVs;
@@ -10,7 +10,6 @@ alphac=abs(sv_coef(idxc));
 alphau=abs(sv_coef(idxu));
 Yc=sign(sv_coef(idxc));
 Yu=sign(sv_coef(idxu));
-b=model.rho;
 SVsu=SVs(idxu,:);
 SVsc=SVs(idxc,:);
-beta=[alphac;alphau;b];
+

@@ -20,14 +20,14 @@ grad=zeros(4,1);
 % alpha4=abs(sv_coef(sv_coef<0 & sv_coef>-C+eps));
 % alphac=[alpha1;alpha2];
 % alphau=[alpha3;alpha4];
-%beta=[alphac;alphau;model.rho];
 % SVs=[SVs1;SVs2;SVs3;SVs4];%reorganized for easy calculation
 % SVsu=[SVs3;SVs4]; %free support vectors
 % SVsc=[SVs1;SVs2]; %bounded SVs
 % Y=[ones(size(SVs1,1),1);-ones(size(SVs2,1),1);ones(size(SVs3,1),1);-ones(size(SVs4,1),1)]; %label of SVs
 % Yu=[ones(size(SVs3,1),1);-ones(size(SVs4,1),1)];%label of free SVs
 % Yc=[ones(size(SVs1,1),1);-ones(size(SVs2,1),1)];%label of bounded SVs
-[SVs,SVsu,SVsc,Y,Yu,Yc,beta]=modelparse(model,C);
+[SVs,SVsu,SVsc,Y,Yu,Yc,alphac,alphau]=modelparse(model,C);
+beta=[alphac;alphau;model.rho];
 
 N=size(datav,1);%number of validation set
 K=size(SVs,1); %number of support vectors
