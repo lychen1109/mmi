@@ -30,8 +30,8 @@ Yc=[ones(size(SVs1,1),1);-ones(size(SVs2,1),1)];%label of bounded SVs
 
 N=size(datav,1);%number of validation set
 K=size(SVs,1); %number of support vectors
-Nc=size(SVs1,1)+size(SVs2,1); %number bounded SVs
-Nu=size(SVs3,1)+size(SVs4,1);%number unbounded SVs
+Nc=length(Yc); %number bounded SVs
+Nu=length(Yu);%number unbounded SVs
 fprintf('number of SV:%d, bounded:%d, free:%d\n',K,Nc,Nu);
 M1=zeros(K+1,1);%temp variable used in d calc
 M2=zeros(K+1,1);%temp variable used in full gradient calc
