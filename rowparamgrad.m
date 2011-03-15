@@ -88,7 +88,7 @@ Omegauc=zeros(Nu,Nc);
 tic;
 for i=1:Nu
     for j=1:Nc
-        Omegauc=Yu(i)*Yc(j)*exp(-rowrbfdist(SVsu(i,:),SVsc(j,:),theta));
+        Omegauc(i,j)=Yu(i)*Yc(j)*exp(-rowrbfdist(SVsu(i,:),SVsc(j,:),theta));
     end
 end
 t=toc;
