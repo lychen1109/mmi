@@ -2,6 +2,10 @@ function [theta,history]=paramlearn(labeltrain,datatrain,theta,mysvmfun,paramgra
 %paramlearn: learn the best parameter of standard gauss kernel and
 %probability params
 
+if size(theta,2)==1
+    theta=theta';
+end
+
 K=3; %fold number
 cvp=cvpartition(labeltrain,'Kfold',K);
 %cmd=['-c ' num2str(2^theta(1)) ' -g ' num2str(2^theta(2))];
