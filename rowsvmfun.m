@@ -5,6 +5,8 @@ n_train=length(labeltrain);
 n_test=length(labeltest);
 Ktrain=zeros(n_train,n_train);
 Ktest=zeros(n_test,n_train);
+
+tic;
 for i=1:n_train
     datatraini=datatrain(i,:);
     Ktrainrow=zeros(1,n_train);
@@ -13,7 +15,10 @@ for i=1:n_train
     end
     Ktrain(i,:)=Ktrainrow;
 end
+t=toc;
+fprintf('kernel of training calculated in %d sec\n',t);
 
+tic;
 for i=1:n_test
     datatesti=datatest(i,:);
     Ktestrow=zeros(1,n_train);
@@ -22,6 +27,8 @@ for i=1:n_test
     end
     Ktest(i,:)=Ktestrow;
 end
+t=toc;
+fprintf('kernel of test calculated in %d sec\n',t);
 
 cmd=['-c ' num2str(2^theta(1)) ' -t 4'];
 model=svmtrain(labeltrain,[(1:n_train)' Ktrain],cmd);
