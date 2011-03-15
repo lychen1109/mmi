@@ -14,7 +14,7 @@ Tol=1e-3;
 
 while deltaofun>Tol
     accus=zeros(K,1);
-    grad=zeros(K,size(theta,2));
+    grad=zeros(K,length(theta));
     Like=zeros(K,1);
     for i=1:K
         fprintf('processing fold:%d\n',i);
