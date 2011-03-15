@@ -23,19 +23,17 @@ cmd=['-c ' num2str(2^theta(1)) ' -t 4'];
 model=svmtrain(labeltrain,[(1:n_train)' Ktrain],cmd);
 
 SVs=full(model.SVs);
-svidx=zeros(1,n_train);
-svidx(SVs)=1;
+datasv=datatrain(SVs,:);
+nSV=model.totalSV;
 
 tic;
 for i=1:n_test
     datatesti=datatest(i,:);
-    Ktestrow=zeros(1,n_train);
-    parfor j=1:n_train
-        if svidx(j)==1
-            Ktestrow(j)=rowrbfdist(datatesti,datatrain(j,:),theta);
-        end
+    Ktestrow=zeros(1,nSV);
+    parfor j=1:nSV        
+        Ktestrow(j)=rowrbfdist(datatesti,datasv(j,:),theta);        
     end
-    Ktest(i,:)=Ktestrow;
+    Ktest(i,SVs)=Ktestrow;
 end
 Ktest=exp(-Ktest);
 t=toc;
