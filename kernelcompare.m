@@ -2,7 +2,7 @@ function kernelcompare(x,y)
 %compare distance and computing time of two kernels
 
 tic;
-dist1=exp(-2^0*norm(x-y)^2);
+dist1=norm(x-y)^2;
 t=toc;
 fprintf('gauss distance is %g, calculated in %d sec\n',dist1,t);
 
