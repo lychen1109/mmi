@@ -1,4 +1,4 @@
-function [theta,history]=paramlearn(labeltrain,datatrain,theta,mysvmfun,paramgrad)
+function [theta,history]=paramlearn(labeltrain,datatrain,theta,mysvmfun,paramgrad,modelparser)
 %paramlearn: learn the best parameter of standard gauss kernel and
 %probability params
 
@@ -23,7 +23,8 @@ while deltaofun>Tol
         [model,accu,dvalues]=mysvmfun(labeltrain(cvp.training(i)),datatrain(cvp.training(i),:),labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),theta);
         %fprintf('accuracy:%g\n',accu(1));
         accus(i)=accu(1);
-        [grad(i,:),Like(i)]=paramgrad(labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),dvalues,model,theta);
+        modelstruct=modelparser(model,datatrain(cvp.training(i),:),2^theta(1));
+        [grad(i,:),Like(i)]=paramgrad(labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),dvalues,modelstruct,theta);
         disp('grad is');
         disp(grad(i,:));
         fprintf('objective fun is %g\n',Like(i));

@@ -1,4 +1,4 @@
-function [grad,L]=rowparamgrad(labelv,datav,outputv,model,theta)
+function [grad,L]=rowparamgrad(labelv,datav,outputv,modelstruct,theta)
 %output grad for row gammas
 
 C=2^theta(1);
@@ -6,8 +6,17 @@ kparams=2.^theta(2:10);
 A=theta(end-1);
 B=theta(end);
 grad=zeros(size(theta));
-[SVs,SVsu,SVsc,Y,Yu,Yc,alphac,alphau]=modelparse(model,C);
-beta=[alphac;alphau;model.rho];
+%[SVs,SVsu,SVsc,Y,Yu,Yc,alphac,alphau]=modelparse(model,C);
+SVs=modelstruct.SVs;
+SVsu=modelstruct.SVsu;
+SVsc=modelstruct.SVsc;
+Y=modelstruct.Y;
+Yu=modelstruct.Yu;
+Yc=modelstruct.Yc;
+alphac=modelstruct.alphac;
+alphau=modelstruct.alphau;
+rho=modelstruct.rho;
+beta=[alphac;alphau;rho];
 
 N=size(datav,1);%number of validation set
 K=size(SVs,1); %number of support vectors
