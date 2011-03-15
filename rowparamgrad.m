@@ -114,7 +114,7 @@ for r=1:9
         for j=1:Nc
             SVsui=SVsu(i,:);
             SVscj=SVsc(j,:);            
-            Omegaucpg=-Omegauc(i,j)*norm(SVsui(ri)-SVscj(ri))^2*log(2)*kparams(r);
+            Omegaucpg(i,j)=-Omegauc(i,j)*norm(SVsui(ri)-SVscj(ri))^2*log(2)*kparams(r);
         end
     end
     qpg(Nc+1:K)=-Omegaucpg*alphac;
@@ -128,7 +128,7 @@ for r=1:9
         for j=1:Nu
             SVsui=SVsu(i,:);
             SVsuj=SVsu(j,:);
-            Omegauupg=-Omegauu(i,j)*norm(SVsui(ri)-SVsuj(ri))^2*log(2)*kparams(r);
+            Omegauupg(i,j)=-Omegauu(i,j)*norm(SVsui(ri)-SVsuj(ri))^2*log(2)*kparams(r);
         end
     end
     Ppg(Nc+1:K,Nc+1:K)=Omegauupg;
