@@ -21,8 +21,8 @@ for i=1:k
 %     end
     nSV(i)=model.totalSV;
     C=2^theta(1);
-    sv_coef=model.sv_coef;
-    nbSV=sum(sv_coef>C-eps | sv_coef<-C+eps);
+    sv_coef=abs(model.sv_coef);
+    nbSV=sum(sv_coef==C);
     ac(i)=accu(1);
     fprintf('accuracy %g with nSV %d,bSV %d\n',accu(1),model.totalSV,nbSV);
 end
