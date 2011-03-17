@@ -52,9 +52,9 @@ for l=1:N
             SVsk=SVs(k,:);
             ri=rowidx(r);
             Psipk(k,r)=-Psi(k)*norm(datavl(ri)-SVsk(ri))^2*log(2)*kparams(r);
-        end
-        Mk(:,r)=Mk(:,r)+delta(l)*Psipk(:,r);
+        end        
     end
+    Mk=Mk+delta(l)*Psipk;
 end
 t=toc;
 fprintf('Md and Mk calculated in %d seconds.\n',t);
