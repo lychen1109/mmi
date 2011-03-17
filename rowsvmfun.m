@@ -10,7 +10,7 @@ tic;
 for i=1:n_train
     datatraini=datatrain(i,:);
     Ktrainrow=zeros(1,n_train);
-    parfor j=1:n_train
+    for j=1:n_train
         Ktrainrow(j)=rowrbfdist(datatraini,datatrain(j,:),theta);
     end
     Ktrain(i,:)=Ktrainrow;
@@ -30,7 +30,7 @@ tic;
 for i=1:n_test
     datatesti=datatest(i,:);
     Ktestrow=zeros(1,nSV);
-    parfor j=1:nSV        
+    for j=1:nSV        
         Ktestrow(j)=rowrbfdist(datatesti,datasv(j,:),theta);        
     end
     Ktest(i,SVs)=Ktestrow;
