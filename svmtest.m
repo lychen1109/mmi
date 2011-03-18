@@ -3,6 +3,8 @@ function svmtest(class,data,theta,mysvmfun,k,n_test)
 
 ac=zeros(k,1);
 nSV=zeros(k,1);
+C=2^theta(1);
+fprintf('trained with C=%g\n',C);
 %svmstr=['-c ' num2str(c) ' -g ' num2str(g) ' -t ' num2str(type)];
 for i=1:k    
     CVP=cvpartition(class,'holdout',n_test);
@@ -19,12 +21,12 @@ for i=1:k
 %         model=svmtrain(grpTrain,dataTrain,svmstr);
 %         [~,accu,~]=svmpredict(grpTest,dataTest,model);
 %     end
-    nSV(i)=model.totalSV;
-    C=2^theta(1);
+    nSV(i)=model.totalSV;    
     sv_coef=abs(model.sv_coef);
-    nbSV=sum(sv_coef==C);
+    nbSV=sum(sv_coef>C-1e-4);
+    maxuSV=max(sv_coef(sv_coef<=C-1e-4));
     ac(i)=accu(1);
-    fprintf('accuracy %g with nSV %d,bSV %d\n',accu(1),model.totalSV,nbSV);
+    fprintf('accuracy %g with nSV %d,bSV %d, max unbounded SV=%g\n',accu(1),model.totalSV,nbSV,maxuSV);
 end
 
 fprintf('mean accuracy:%g, std:%g, avg nSV:%g\n',mean(ac),std(ac),mean(nSV));
