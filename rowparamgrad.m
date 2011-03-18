@@ -39,7 +39,7 @@ Mk=zeros(K+1,9); %sum(delta*(Psi grad with kernel param))
 
 tic;
 for l=1:N
-    Psi=ones(K+1,1);
+    Psi=-ones(K+1,1);
     Psipk=zeros(K+1,9);
     Dlk=zeros(1,K); %cache of distance of l validation sample to k SV
     for k=1:K
