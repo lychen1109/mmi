@@ -23,7 +23,7 @@ K=size(SVs,1); %number of support vectors
 Nc=length(Yc); %number bounded SVs
 Nu=length(Yu);%number unbounded SVs
 fprintf('number of SV:%d, bounded:%d, free:%d\n',K,Nc,Nu);
-fprintf('largest unbounded coef:%g (%g)\n',max(alphau),C);
+fprintf('largest unbounded coef:%g, model trained with C=%g\n',max(alphau),C);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %gradient of output
