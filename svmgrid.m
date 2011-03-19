@@ -1,24 +1,36 @@
-function [bestc,bestg,bestcv]=svmgrid(grpTrain,dataTrain,type,rangec,rangeg)
+function [bestc,bestg,bestcv]=svmgrid(grpTrain,dataTrain,rangec,rangeg)
 %parameter selection
 
 nc=length(rangec);
 ng=length(rangeg);
-cv=zeros(nc,ng);
-        
+NP=nc*ng;
+fprintf('evaluating %d sets of params\n',NP);
+cv=zeros(NP,1);
+params=zeros(NP,2);
+
 for i=1:nc
-    cvrow=zeros(1,ng);
-    c=rangec(i);
-    parfor j=1:ng        
-        cmd=['-v 5 -c ' num2str(c) ' -g ' num2str(rangeg(j)) ' -t ' num2str(type)];        
-        cvrow(j)=svmtrain(grpTrain,dataTrain,cmd);               
-    end
-    cv(i,:)=cvrow;
+    wr=(i-1)*ng+(1:ng);%working range
+    params(wr,1)=rangec(i);
+    params(wr,2)=rangeg;
+end
+        
+parfor i=1:NP    
+    [log2c,log2g]=paramsplit(params(i,:));    
+    cmd=['-v 5 -c ' num2str(2^log2c) ' -g ' num2str(2^log2g)];
+    cv(i)=svmtrain(grpTrain,dataTrain,cmd);
 end
 
-[bestcv,I]=max(cv(:));
-[indc,indg]=ind2sub(size(cv),I);
+[bestcv,I]=max(cv);
+[log2c,log2g]=paramsplit(params(I,:));
 
-bestc=rangec(indc);
-bestg=rangeg(indg);
+bestc=2^log2c;
+bestg=2^log2g;
+
+function [log2c,log2g]=paramsplit(prow)
+%split params
+
+log2c=prow(1);
+log2g=prow(2);
+
 
 
