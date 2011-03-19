@@ -13,12 +13,15 @@ for i=1:nc
     params(wr,1)=rangec(i);
     params(wr,2)=rangeg;
 end
-        
-parfor i=1:NP    
+
+tic;
+parfor i=1:NP
     [log2c,log2g]=paramsplit(params(i,:));    
     cmd=['-v 5 -c ' num2str(2^log2c) ' -g ' num2str(2^log2g)];
     cv(i)=svmtrain(grpTrain,dataTrain,cmd);
 end
+t=toc;
+fprintf('param search finished in %g sec\n',t);
 
 [bestcv,I]=max(cv);
 [log2c,log2g]=paramsplit(params(I,:));
