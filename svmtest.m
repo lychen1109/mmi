@@ -1,4 +1,4 @@
-function svmtest(class,data,theta,mysvmfun,k,n_test)
+function ac=svmtest(class,data,theta,mysvmfun,k,n_test)
 %test the svm accuracy with k outer loop
 
 ac=zeros(k,1);
