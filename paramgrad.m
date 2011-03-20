@@ -1,4 +1,4 @@
-function [grad,Like]=paramgrad(labelv,datav,outputv,model,theta)
+function [grad,Like]=paramgrad(labelv,datav,outputv,modelstruct,theta)
 %Paramlearn: calculate gradient of parameter
 
 log2C=theta(1);
@@ -6,7 +6,7 @@ C=2^log2C;
 log2g=theta(2);
 A=theta(3);
 B=theta(4);
-grad=zeros(4,1);
+grad=zeros(1,4);
 
 %sv_coef=model.sv_coef;
 %SVs=model.SVs;
@@ -26,14 +26,24 @@ grad=zeros(4,1);
 % Y=[ones(size(SVs1,1),1);-ones(size(SVs2,1),1);ones(size(SVs3,1),1);-ones(size(SVs4,1),1)]; %label of SVs
 % Yu=[ones(size(SVs3,1),1);-ones(size(SVs4,1),1)];%label of free SVs
 % Yc=[ones(size(SVs1,1),1);-ones(size(SVs2,1),1)];%label of bounded SVs
-[SVs,SVsu,SVsc,Y,Yu,Yc,alphac,alphau]=modelparse(model,C);
-beta=[alphac;alphau;model.rho];
+%[SVs,SVsu,SVsc,Y,Yu,Yc,alphac,alphau]=modelparse(model,C);
+SVs=modelstruct.SVs;
+SVsu=modelstruct.SVsu;
+SVsc=modelstruct.SVsc;
+Y=modelstruct.Y;
+Yu=modelstruct.Yu;
+Yc=modelstruct.Yc;
+alphac=modelstruct.alphac;
+alphau=modelstruct.alphau;
+rho=modelstruct.rho;
+beta=[alphac;alphau;rho];
 
 N=size(datav,1);%number of validation set
 K=size(SVs,1); %number of support vectors
 Nc=length(Yc); %number bounded SVs
 Nu=length(Yu);%number unbounded SVs
 fprintf('number of SV:%d, bounded:%d, free:%d\n',K,Nc,Nu);
+fprintf('largest unbounded coef:%g, model trained with C=%g\n',max(alphau),C);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %gradient of output
@@ -50,9 +60,9 @@ M2=zeros(K+1,1);%temp variable used in full gradient calc
 tic;
 for l=1:N    
     datavl=datav(l,:);
-    Psi=ones(K+1,1);
+    Psi=-ones(K+1,1);
     Psipg=zeros(K+1,1);
-    parfor k=1:K
+    for k=1:K
         Dnk=norm(datavl-SVs(k,:))^2;
         Psi(k)=Y(k)*exp(-2^log2g*Dnk);
         Psipg(k)=-Psi(k)*Dnk*log(2)*2^log2g;
@@ -74,7 +84,7 @@ for i=1:Nu
     Omegauurow=zeros(1,Nu);
     SVsui=SVsu(i,:);
     Yui=Yu(i);
-    parfor j=1:Nu
+    for j=1:Nu
         Duurow(j)=norm(SVsui-SVsu(j,:))^2;
         Omegauurow(j)=Yui*Yu(j)*exp(-2^log2g*Duurow(j));
     end
