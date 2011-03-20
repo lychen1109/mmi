@@ -54,5 +54,5 @@ while deltaofun>Tol && iter<30
         theta=thetas(iter-1,:);
     end
 end
-history.thetas=thetas;
-history.ofuns=ofuns;
+history.thetas=thetas(1:iter,:);
+history.ofuns=ofuns(1:iter);
