@@ -1,10 +1,11 @@
-function [model,accu,dvalues]=rowsvmfun(labeltrain,datatrain,labeltest,datatest,theta)
+function [modelstruct,accu,dvalues]=rowsvmfun(labeltrain,datatrain,labeltest,datatest,theta)
 %every row has its own gamma
 
 n_train=length(labeltrain);
 n_test=length(labeltest);
 Ktrain=zeros(n_train,n_train);
 Ktest=zeros(n_test,n_train);
+C=2^theta(1);
 
 tic;
 for i=1:n_train
@@ -19,11 +20,11 @@ Ktrain=exp(-Ktrain);
 t=toc;
 fprintf('kernel of training calculated in %d sec\n',t);
 
-cmd=['-c ' num2str(2^theta(1)) ' -t 4'];
+cmd=['-c ' num2str(C) ' -t 4'];
 model=svmtrain(labeltrain,[(1:n_train)' Ktrain],cmd);
+modelstruct=rowmodelparse(model,datatrain,C);
 
-SVs=full(model.SVs);
-datasv=datatrain(SVs,:);
+datasv=modelstruct.SVs;
 nSV=model.totalSV;
 
 tic;
