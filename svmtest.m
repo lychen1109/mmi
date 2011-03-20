@@ -12,7 +12,7 @@ for i=1:k
     grpTrain=class(CVP.training);
     dataTest=data(CVP.test,:);
     grpTest=class(CVP.test);
-    [model,accu,~]=mysvmfun(grpTrain,dataTrain,grpTest,dataTest,theta);
+    [modelstruct,accu,~]=mysvmfun(grpTrain,dataTrain,grpTest,dataTest,theta);
     
 %     if type==4
 %         model=svmtrain(grpTrain,[(1:n_train)' dataTrain*kernel*dataTrain'],svmstr);
@@ -21,12 +21,11 @@ for i=1:k
 %         model=svmtrain(grpTrain,dataTrain,svmstr);
 %         [~,accu,~]=svmpredict(grpTest,dataTest,model);
 %     end
-    nSV(i)=model.totalSV;    
-    sv_coef=abs(model.sv_coef);
-    nbSV=sum(sv_coef>C-1e-4);
-    maxuSV=max(sv_coef(sv_coef<=C-1e-4));
+    nSV(i)=size(modelstruct.SVs,1);    
+    Nc=length(modelstruct.Yc);
+    alphau=modelstruct.alphau;
     ac(i)=accu(1);
-    fprintf('accuracy %g with nSV %d,bSV %d, max unbounded SV=%g\n',accu(1),model.totalSV,nbSV,maxuSV);
+    fprintf('accuracy %g with nSV %d,bSV %d, max unbounded SV=%g\n',ac(i),nSV(i),Nc,max(alphau));
 end
 
 fprintf('mean accuracy:%g, std:%g, avg nSV:%g\n',mean(ac),std(ac),mean(nSV));
