@@ -6,7 +6,7 @@ if size(theta,2)==1
     theta=theta';
 end
 
-K=3; %fold number
+K=5; %fold number
 cvp=cvpartition(labeltrain,'Kfold',K);
 %cmd=['-c ' num2str(2^theta(1)) ' -g ' num2str(2^theta(2))];
 step=0.001;
