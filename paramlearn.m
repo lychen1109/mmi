@@ -10,13 +10,15 @@ K=3; %fold number
 cvp=cvpartition(labeltrain,'Kfold',K);
 %cmd=['-c ' num2str(2^theta(1)) ' -g ' num2str(2^theta(2))];
 step=0.001;
-thetas=theta; %for record history
-ofuns=[];%record of objective fun
+thetas=zeros(200,length(theta)); %for record history
+ofuns=zeros(200,1);%record of objective fun
 ofunold=-1e5;
 deltaofun=1e5;
 Tol=1e-3;
+iter=0;
 
-while deltaofun>Tol
+while deltaofun>Tol && iter<30
+    iter=iter+1;
     accus=zeros(K,1);
     grad=zeros(K,length(theta));
     Like=zeros(K,1);
@@ -43,10 +45,14 @@ while deltaofun>Tol
     deltaofun=(ofun-ofunold)/abs(ofun);
     fprintf('deltaofun:%g\n',deltaofun);
     ofunold=ofun;
-    disp('++++++++++++++++++++');
-    theta=theta+step*fullgrad;    
-    thetas=[thetas;theta];
-    ofuns=[ofuns;ofun];
+    disp('++++++++++++++++++++');        
+    thetas(iter,:)=theta;
+    ofuns(iter)=ofun;
+    if deltaofun>0
+        theta=theta+step*fullgrad;
+    else
+        theta=thetas(iter-1,:);
+    end
 end
 history.thetas=thetas;
 history.ofuns=ofuns;
