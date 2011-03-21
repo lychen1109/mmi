@@ -9,10 +9,8 @@ historyarray(1:N)=history;
 
 for i=1:N
     fprintf('learning %dth split\n',i);
-    cvp=cvpa(i);
-    tic;
+    cvp=cvpa(i);    
     [thetaarray(i,:),historyarray(i)]=paramlearn(label(cvp.training),data(cvp.training,:),theta,@mysvmfun,@paramgrad);
-    I=size(historyarray(i).ofuns,1);
-    t=toc;
-    fprintf('params of %dth split learned in %g sec, %d iters\n',i,t,I);
+    I=size(historyarray(i).ofuns,1);    
+    fprintf('params of %dth split learned in %d iters\n',i,I);
 end
