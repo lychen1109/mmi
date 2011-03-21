@@ -1,18 +1,19 @@
-function ac=svmtest(class,data,theta,mysvmfun,k,n_test)
+function ac=svmtest(class,data,cvpa,thetaa,mysvmfun)
 %test the svm accuracy with k outer loop
 
+k=length(cvpa);
 ac=zeros(k,1);
 nSV=zeros(k,1);
-C=2^theta(1);
-fprintf('trained with C=%g\n',C);
-%svmstr=['-c ' num2str(c) ' -g ' num2str(g) ' -t ' num2str(type)];
-for i=1:k    
-    CVP=cvpartition(class,'holdout',n_test);
+
+for i=1:k
+    C=2^thetaa(i,1);
+    fprintf('training with C=%g\n',C);
+    CVP=cvpa(i);
     dataTrain=data(CVP.training,:);    
     grpTrain=class(CVP.training);
     dataTest=data(CVP.test,:);
     grpTest=class(CVP.test);
-    [modelstruct,accu,~]=mysvmfun(grpTrain,dataTrain,grpTest,dataTest,theta);
+    [modelstruct,accu,~]=mysvmfun(grpTrain,dataTrain,grpTest,dataTest,thetaa(i,:));
     
 %     if type==4
 %         model=svmtrain(grpTrain,[(1:n_train)' dataTrain*kernel*dataTrain'],svmstr);
