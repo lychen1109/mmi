@@ -26,6 +26,7 @@ modelstruct=rowmodelparse(model,datatrain,C);
 
 datasv=modelstruct.SVs;
 nSV=model.totalSV;
+svidx=full(model.SVs);
 
 tic;
 for i=1:n_test
@@ -34,7 +35,7 @@ for i=1:n_test
     for j=1:nSV        
         Ktestrow(j)=rowrbfdist(datatesti,datasv(j,:),theta);        
     end
-    Ktest(i,SVs)=Ktestrow;
+    Ktest(i,svidx)=Ktestrow;
 end
 Ktest=exp(-Ktest);
 t=toc;
