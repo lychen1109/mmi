@@ -1,4 +1,4 @@
-function ac=svmtest(class,data,cvpa,thetaa,mysvmfun)
+function [ac,nSV]=svmtest(class,data,cvpa,thetaa,mysvmfun)
 %test the svm accuracy with k outer loop
 
 k=length(cvpa);
