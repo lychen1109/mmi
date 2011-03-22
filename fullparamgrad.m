@@ -45,7 +45,7 @@ for l=1:N
     for k=1:K
         Dlk(k)=fullrbfdist(datav(l,:),SVs(k,:),theta);
     end
-    Psi(1:K)=Y.*Dlk;
+    Psi(1:K)=Y.*Dlk';
     Md=Md+delta(l)*Psi;
     Psipk(1:K,:)=SVs-repmat(datav(l,:),K,1);
     Psipk(1:K,:)=-repmat(Psi(1:K),1,81).*Psipk(1:K,:).^2.*log(2).*repmat(kparams,K,1);
