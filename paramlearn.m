@@ -1,4 +1,4 @@
-function [theta,history]=paramlearn(labeltrain,datatrain,theta,mysvmfun,paramgrad)
+function [theta,history]=paramlearn(labeltrain,datatrain,theta,mysvmfun,paramgrad,step)
 %paramlearn: learn the best parameter of standard gauss kernel and
 %probability params
 
@@ -9,7 +9,6 @@ end
 K=5; %fold number
 cvp=cvpartition(labeltrain,'Kfold',K);
 %cmd=['-c ' num2str(2^theta(1)) ' -g ' num2str(2^theta(2))];
-step=0.001;
 thetas=zeros(200,length(theta)); %for record history
 ofuns=zeros(200,1);%record of objective fun
 ofunold=-1e5;
