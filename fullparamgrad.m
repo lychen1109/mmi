@@ -1,4 +1,4 @@
-function [grad,L]=fullparamgrad(labelv,datav,outputv,modelstruct,theta)
+function grad=fullparamgrad(labelv,datav,outputv,modelstruct,theta)
 %gradient calculation of full rbf kernel
 
 C=2^theta(1);
@@ -136,10 +136,7 @@ fprintf('grad of kernel params calculated in %d sec\n',t);
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 [grad(end-1),grad(end)]=svmlogistgrad(labelv,outputv,A,B);
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%calc objective function
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-L=svmllhood(labelv,outputv,A,B);
+
 
             
         
