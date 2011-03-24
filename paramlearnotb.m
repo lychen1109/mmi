@@ -3,9 +3,12 @@ function [theta,output]=paramlearnotb(labeltrain,datatrain,theta,mysvmfun,paramg
 
 K=5; %fold number
 cvp=cvpartition(labeltrain,'Kfold',K);
-opt=optimset('GradObj','on','LargeScale','off');
+nf=0; %number of ofun run
+ng=0; %number of grad run
+opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed');
 [theta,fval,exitflag,output]=fminunc(@myfun,theta,opt);
 fprintf('optimization finished with fval=%g, and exitflag %d\n',fval,exitflag);
+fprintf('function runed %d times, grad calculated %d times\n',nf,ng);
 
     function [L,grad]=myfun(theta)
         Like=zeros(K,1);
@@ -20,9 +23,11 @@ fprintf('optimization finished with fval=%g, and exitflag %d\n',fval,exitflag);
                 grad(i,:)=paramgrad(labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),dvalues,modelstruct,theta);
             end
         end
-        L=sum(Like);
+        L=-sum(Like);
+        nf=nf+1;
         if nargout>1
-            grad=sum(grad);
+            grad=-sum(grad);
+            ng=ng+1;
         end
     end
 end
