@@ -1,4 +1,4 @@
-function [bestc,bestg,bestcv]=svmgrid(grpTrain,dataTrain,rangec,rangeg)
+function [bestc,bestg,bestcv,cv]=svmgrid(grpTrain,dataTrain,rangec,rangeg)
 %parameter selection
 
 nc=length(rangec);
@@ -28,6 +28,8 @@ fprintf('param search finished in %g sec\n',t);
 
 bestc=2^log2c;
 bestg=2^log2g;
+
+cv=reshape(cv,ng,nc)';
 
 function [log2c,log2g]=paramsplit(prow)
 %split params
