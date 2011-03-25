@@ -1,4 +1,4 @@
-function [grad,Like]=paramgrad(labelv,datav,outputv,modelstruct,theta)
+function grad=paramgrad(labelv,datav,outputv,modelstruct,theta)
 %Paramlearn: calculate gradient of parameter
 
 log2C=theta(1);
@@ -160,10 +160,7 @@ grad(2)=d'*(qpg-Ppg*beta)+M2'*beta;
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 [grad(3),grad(4)]=svmlogistgrad(labelv,outputv,A,B);
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%calc objective function
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Like=svmllhood(labelv,outputv,A,B);
+
 
 
 
