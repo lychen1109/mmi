@@ -15,7 +15,7 @@ modelstruct.rho=[];
 n_data=size(datatrain,1);
 K=5; %fold number
 cvp=cvpartition(labeltrain,'Kfold',K);
-opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed','de','on','diffmi',1e-2);
+opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed');
 [theta,fval,exitflag,output]=fminunc(@myfun,theta,opt);
 fprintf('optimization finished with fval=%g, and exitflag %d\n',fval,exitflag);
 
