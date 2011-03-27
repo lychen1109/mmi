@@ -1,12 +1,10 @@
-function grad=paramgrad(labelv,datav,outputv,modelstruct,theta)
+function grad=paramgrad(labelv,datav,outputv,modelstruct,theta,A,B)
 %Paramlearn: calculate gradient of parameter
 
 log2C=theta(1);
 C=2^log2C;
 log2g=theta(2);
-A=theta(3);
-B=theta(4);
-grad=zeros(1,4);
+grad=zeros(1,length(theta));
 
 %sv_coef=model.sv_coef;
 %SVs=model.SVs;
@@ -131,7 +129,7 @@ grad(2)=d'*(qpg-Ppg*beta)+M2'*beta;
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %calc gradient of A and B
 %%%%%%%%%%%%%%%%%%%%%%%%%%
-[grad(3),grad(4)]=svmlogistgrad(labelv,outputv,A,B);
+%[grad(3),grad(4)]=svmlogistgrad(labelv,outputv,A,B);
 
 
 
