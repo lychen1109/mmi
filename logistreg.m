@@ -1,9 +1,9 @@
-function [A,B]=logistreg(labelv,dvalues)
+function [A,B,fval]=logistreg(labelv,dvalues)
 %calculate A and B for logistic regression of SVM output
 
 x0=[-2,0];
 opt=optimset('GradObj','on','LargeScale','off');
-x=fminunc(@myfun,x0,opt);
+[x,fval]=fminunc(@myfun,x0,opt);
 A=x(1);
 B=x(2);
 
