@@ -33,7 +33,7 @@ fprintf('optimization finished with fval=%g, and exitflag %d\n',fval,exitflag);
             grad=zeros(K,length(theta));
             for i=1:K
                 fprintf('processing fold:%d\n',i);
-                grad(i,:)=paramgrad(labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),dvalues,modelstruct,theta,A,B);
+                grad(i,:)=paramgrad(labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),dvalues(cvp.test(i)),modelstructs(i),theta,A,B);
             end
             grad=-sum(grad);
         end        
