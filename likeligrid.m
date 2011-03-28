@@ -8,7 +8,6 @@ fprintf('evaluating %d sets of params\n',NP);
 cv=zeros(NP,1);
 params=zeros(NP,2);
 cvp=cvpartition(grpTrain,'kfold',5);
-dvalues=zeros(size(grpTrain));
 
 for i=1:nc
     wr=(i-1)*ng+(1:ng);%working range
@@ -17,11 +16,9 @@ for i=1:nc
 end
 
 tic;
-for i=1:NP
+parfor i=1:NP
     [log2c,log2g]=paramsplit(params(i,:));    
-    for k=1:5
-        [~,~,dvalues(cvp.test(k))]=mysvmfun(grpTrain(cvp.training(k)),dataTrain(cvp.training(k),:),grpTrain(cvp.test(k)),dataTrain(cvp.test(k),:),[log2c,log2g]);
-    end
+    dvalues=getdvalues(grpTrain,dataTrain,cvp,[log2c,log2g]);
     [~,~,cv(i)]=logistreg(grpTrain,dvalues);
 end
 cv=-cv;
@@ -42,5 +39,12 @@ function [log2c,log2g]=paramsplit(prow)
 log2c=prow(1);
 log2g=prow(2);
 
+function dvalues=getdvalues(grpTrain,dataTrain,cvp,theta)
+
+K=cvp.NumTestSets;
+dvalues=zeros(size(grpTrain));
+for k=1:K
+    [~,~,dvalues(cvp.test(k))]=mysvmfun(grpTrain(cvp.training(k)),dataTrain(cvp.training(k),:),grpTrain(cvp.test(k)),dataTrain(cvp.test(k),:),theta);
+end
 
 
