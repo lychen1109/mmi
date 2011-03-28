@@ -11,8 +11,10 @@ modelstruct.Yu=[];
 modelstruct.alphau=[];
 modelstruct.alphac=[];
 modelstruct.rho=[];
+modelstructs(1:5)=modelstruct;
 
 n_data=size(datatrain,1);
+dvalues=zeros(n_data,1);
 K=5; %fold number
 cvp=cvpartition(labeltrain,'Kfold',K);
 opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed');
@@ -22,8 +24,6 @@ fprintf('optimization finished with fval=%g, and exitflag %d\n',fval,exitflag);
     function [L,grad]=myfun(theta)
         fprintf('evaluating myfun with theta\n');
         disp(theta);        
-        modelstructs(1:5)=modelstruct;
-        dvalues=zeros(n_data,1);
         for i=1:K
             [modelstructs(i),~,dvalues(cvp.test(i))]=mysvmfun(labeltrain(cvp.training(i)),datatrain(cvp.training(i),:),labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),theta);
         end
