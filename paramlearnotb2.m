@@ -1,5 +1,6 @@
 function [theta,output]=paramlearnotb2(labeltrain,datatrain,theta,mysvmfun,paramgrad)
 %paramlearn toolbox version using fminunc
+%move A and B out of theta
 
 %creat an empty struct
 modelstruct.SVs=[];
