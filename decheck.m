@@ -11,7 +11,7 @@ disp(grad);
 fprintf('calculating forward difference\n');
 for i=1:length(deltas)
     delta=deltas(i);
-    L1=obfun(labeltrain,datatrain,cvp,theta+delta,mysvumfun,paramgrad);
+    L1=obfun(labeltrain,datatrain,cvp,theta+delta,mysvmfun,paramgrad);
     fprintf('difference calculated with delta %g is %g\n',delta,(L1-L)/delta);
 end
 
