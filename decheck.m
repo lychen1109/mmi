@@ -11,16 +11,23 @@ disp(grad);
 fprintf('calculating forward difference\n');
 for i=1:length(deltas)
     delta=deltas(i);
-    L1=obfun(labeltrain,datatrain,cvp,theta+delta,mysvmfun,paramgrad);
-    fprintf('difference calculated with delta %g is %g\n',delta,(L1-L)/delta);
+    L1=obfun(labeltrain,datatrain,cvp,theta+[delta,0],mysvmfun,paramgrad);
+    L2=obfun(labeltrain,datatrain,cvp,theta+[0,delta],mysvmfun,paramgrad);
+    fprintf('difference calculated with delta %g is\n',delta);
+    gradf=[L1-L,L2-L]/delta;
+    disp(gradf);
 end
 
 fprintf('calculating central difference\n');
 for i=1:length(deltas)
     delta=deltas(i);
-    L1=obfun(labeltrain,datatrain,cvp,theta+delta/2,mysvmfun,paramgrad);
-    L2=obfun(labeltrain,datatrain,cvp,theta-delta/2,mysvmfun,paramgrad);
-    fprintf('difference calculated with delta %g is %g\n',delta,(L1-L2)/delta);    
+    L1=obfun(labeltrain,datatrain,cvp,theta+[delta/2,0],mysvmfun,paramgrad);
+    L2=obfun(labeltrain,datatrain,cvp,theta+[0,delta/2],mysvmfun,paramgrad);
+    L3=obfun(labeltrain,datatrain,cvp,theta-[delta/2,0],mysvmfun,paramgrad);
+    L4=obfun(labeltrain,datatrain,cvp,theta-[0,delta/2],mysvmfun,paramgrad);
+    fprintf('difference calculated with delta %g is\n',delta);
+    gradc=[L1-L3,L2-L4]/delta;
+    disp(gradc);
 end
 
 end
