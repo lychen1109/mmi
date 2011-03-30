@@ -2,18 +2,7 @@ function [theta,output]=paramlearnotb2(labeltrain,datatrain,theta,mysvmfun,param
 %paramlearn toolbox version using fminunc
 %move A and B out of theta
 
-%creat an empty struct
-modelstruct.SVs=[];
-modelstruct.SVsu=[];
-modelstruct.SVsc=[];
-modelstruct.Y=[];
-modelstruct.Yc=[];
-modelstruct.Yu=[];
-modelstruct.alphau=[];
-modelstruct.alphac=[];
-modelstruct.rho=[];
-modelstructs(1:5)=modelstruct;
-
+modelstructs(1:5)=emptymodelstruct;
 n_data=size(datatrain,1);
 dvalues=zeros(n_data,1);
 K=5; %fold number
