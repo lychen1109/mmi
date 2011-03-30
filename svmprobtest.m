@@ -5,7 +5,7 @@ for i=1:10
     cvp=cvpa(i);
     labeltrain=label(cvp.training);
     datatrain=feat(cvp.training,:);
-    model=svmtrain(labeltrain,datatrain,'-c 1 -g 1 -b');
+    model=svmtrain(labeltrain,datatrain,'-c 1 -g 1 -b 1');
     fprintf('calculated with -b option: A=%g, B=%g\n',model.ProbA,model.ProbB);
     
     cvp5fold=cvpartition(labeltrain,'kfold',5);
