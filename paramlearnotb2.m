@@ -1,4 +1,4 @@
-function [theta,output]=paramlearnotb2(labeltrain,datatrain,theta,mysvmfun,paramgrad,logistreg)
+function [theta,output]=paramlearnotb2(labeltrain,datatrain,theta,mysvmfun,paramgrad,logistreg,objfun)
 %paramlearn toolbox version using fminunc
 %move A and B out of theta
 
@@ -17,7 +17,8 @@ fprintf('optimization finished with fval=%g, and exitflag %d\n',fval,exitflag);
         for i=1:K
             [modelstructs(i),~,dvalues(cvp.test(i))]=mysvmfun(labeltrain(cvp.training(i)),datatrain(cvp.training(i),:),labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),theta);
         end
-        [A,B,L]=logistreg(labeltrain,dvalues);
+        [A,B]=logistreg(labeltrain,dvalues);
+        L=-objfun(labelv,dvalues,A,B);
         fprintf('logistic regression result: A=%g, B=%g, L=%g\n',A,B,L);
         
         if nargout>1
