@@ -18,7 +18,7 @@ fprintf('optimization finished with fval=%g, and exitflag %d\n',fval,exitflag);
             [modelstructs(i),~,dvalues(cvp.test(i))]=mysvmfun(labeltrain(cvp.training(i)),datatrain(cvp.training(i),:),labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),theta);
         end
         [A,B]=logistreg(labeltrain,dvalues);
-        L=-objfun(labeltrain,dvalues,A,B);
+        L=objfun(labeltrain,dvalues,A,B);
         fprintf('logistic regression result: A=%g, B=%g, L=%g\n',A,B,L);
         
         if nargout>1
@@ -27,7 +27,7 @@ fprintf('optimization finished with fval=%g, and exitflag %d\n',fval,exitflag);
                 fprintf('processing fold:%d\n',i);
                 grad(i,:)=paramgrad(labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),dvalues(cvp.test(i)),modelstructs(i),theta,A,B,svmoutputgrad);
             end
-            grad=-sum(grad);
+            grad=sum(grad);
         end        
     end
 end
