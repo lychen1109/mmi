@@ -75,10 +75,13 @@ P(1:Nc,1:Nc)=eye(Nc);
 Duu=zeros(Nu,Nu);
 
 tic;
-for i=1:Nu    
-    for j=1:Nu
-        Duu(i,j)=norm(SVsu(i,:)-SVsu(j,:))^2;        
-    end    
+if Nu>1
+    for i=1:Nu-1
+        for j=i+1:Nu
+            Duu(i,j)=norm(SVsu(i,:)-SVsu(j,:))^2;
+        end
+    end
+    Duu=Duu+Duu';
 end
 Omegauu=Yu*Yu'.*exp(-2^log2g*Duu);
 t=toc;
