@@ -1,4 +1,4 @@
-function [theta,output]=paramlearnotb2(labeltrain,datatrain,theta,mysvmfun,paramgrad,logistreg,objfun)
+function [theta,output]=paramlearnotb2(labeltrain,datatrain,theta,mysvmfun,paramgrad,logistreg,objfun,svmoutputgrad)
 %paramlearn toolbox version using fminunc
 %move A and B out of theta
 
@@ -25,7 +25,7 @@ fprintf('optimization finished with fval=%g, and exitflag %d\n',fval,exitflag);
             grad=zeros(K,length(theta));
             for i=1:K
                 fprintf('processing fold:%d\n',i);
-                grad(i,:)=paramgrad(labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),dvalues(cvp.test(i)),modelstructs(i),theta,A,B);
+                grad(i,:)=paramgrad(labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),dvalues(cvp.test(i)),modelstructs(i),theta,A,B,svmoutputgrad);
             end
             grad=-sum(grad);
         end        
