@@ -1,4 +1,4 @@
-function [theta,output]=paramlearnotb2(labeltrain,datatrain,theta,mysvmfun,paramgrad)
+function [theta,output]=paramlearnotb2(labeltrain,datatrain,theta,mysvmfun,paramgrad,logistreg)
 %paramlearn toolbox version using fminunc
 %move A and B out of theta
 
