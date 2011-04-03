@@ -1,4 +1,4 @@
-function [bestc,bestg,bestcv,cv]=likeligrid(grpTrain,dataTrain,rangec,rangeg)
+function [bestc,bestg,bestcv,cvgrid]=likeligrid(grpTrain,dataTrain,rangec,rangeg)
 %parameter selection
 
 nc=length(rangec);
@@ -32,6 +32,10 @@ bestc=2^log2c;
 bestg=2^log2g;
 
 cv=reshape(cv,ng,nc)';
+cvgrid=zeros(nc+1,ng+1);
+cvgrid(2:nc+1,2:ng+1)=cv;
+cvgrid(2:nc+1,1)=rangec;
+cvgrid(1,2:ng+1)=rangeg;
 
 function [log2c,log2g]=paramsplit(prow)
 %split params
