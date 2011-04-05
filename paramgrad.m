@@ -65,8 +65,8 @@ end
 Psi(:,1:K)=repmat(Y',N,1).*exp(-2^log2g*Dnk);
 Psi(:,K+1)=-ones(N,1);
 Psipg(:,1:K)=-Psi(:,1:K).*Dnk*log(2)*2^log2g;
-M1=sum(repmat(delta,1,K+1).*Psi)'; %temp variable used in d calc
-M2=sum(repmat(delta,1,K+1).*Psipg)'; %temp variable used in full gradient calc       
+M1=(delta'*Psi)'; %temp variable used in d calc
+M2=(delta'*Psipg)'; %temp variable used in full gradient calc       
 t=toc;
 fprintf('M1 and M2 for d and full grad calculated in %g seconds.\n',t);
 
