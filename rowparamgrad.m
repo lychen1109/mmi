@@ -148,6 +148,8 @@ end
 t=toc;
 fprintf('grad of kernel params calculated in %d sec\n',t);
 
+grad=-grad;
+
     
 
 function idx=rowidx(row)
