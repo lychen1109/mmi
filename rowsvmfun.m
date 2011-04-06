@@ -8,14 +8,12 @@ Ktest=zeros(n_test,n_train);
 C=2^theta(1);
 
 tic;
-for i=1:n_train
-    datatraini=datatrain(i,:);
-    Ktrainrow=zeros(1,n_train);
-    for j=1:n_train
-        Ktrainrow(j)=rowrbfdist(datatraini,datatrain(j,:),theta);
-    end
-    Ktrain(i,:)=Ktrainrow;
+for i=1:n_train-1    
+    for j=i+1:n_train
+        Ktrain(i,j)=rowrbfdist(datatrain(i,:),datatrain(j,:),theta);
+    end    
 end
+Ktrain=Ktrain+ktrain';
 Ktrain=exp(-Ktrain);
 t=toc;
 fprintf('kernel of training calculated in %d sec\n',t);
@@ -27,16 +25,15 @@ modelstruct=rowmodelparse(model,datatrain,C);
 datasv=modelstruct.SVs;
 nSV=model.totalSV;
 svidx=full(model.SVs);
+Ktestsub=zeros(n_test,nSV);
 
 tic;
-for i=1:n_test
-    datatesti=datatest(i,:);
-    Ktestrow=zeros(1,nSV);
+for i=1:n_test    
     for j=1:nSV        
-        Ktestrow(j)=rowrbfdist(datatesti,datasv(j,:),theta);        
-    end
-    Ktest(i,svidx)=Ktestrow;
+        Ktestsub(i,j)=rowrbfdist(datatest(i,:),datasv(j,:),theta);        
+    end    
 end
+Ktest(:,svidx)=Ktestsub;
 Ktest=exp(-Ktest);
 t=toc;
 fprintf('kernel of test calculated in %d sec\n',t);
