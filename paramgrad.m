@@ -133,6 +133,7 @@ grad(2)=d'*(qpg-Ppg*beta)+M2'*beta;
 %calc gradient of A and B
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %[grad(3),grad(4)]=svmlogistgrad(labelv,outputv,A,B);
+grad=-grad;
 
 
 
