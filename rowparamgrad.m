@@ -57,7 +57,7 @@ for r=1:9
             Dlksub(l,k)=norm(datavl(ri)-SVsk(ri))^2;            
         end
     end
-    Psipk(:,1:K)=-Psi.*Dlksub*log(2)*kparams(r);
+    Psipk(:,1:K)=-Psi(:,1:K).*Dlksub*log(2)*kparams(r);
     Mk(:,r)=(delta'*Psipk)';
 end    
 t=toc;
