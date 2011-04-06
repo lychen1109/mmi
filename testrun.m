@@ -3,4 +3,4 @@
 %error as objective fun
 %[theta,output]=paramlearnotb2(label(cvp.training),feat(cvp.training,:),[0 0],@mysvmfun,@paramgrad,@logistregdirect,@smootherror,@svmoutputgraderr);
 %decheck(label(cvp.training),feat(cvp.training,:),[0 0],@mysvmfun,@paramgrad,@logistregdirect,@smootherror,@svmoutputgraderr);
-[theta,output]=paramlearnotb2(label(cvp.test(1)),feat(cvp.test(1),:),[0.1 0.1],@mysvmfun,@paramgrad,@logistreg,@svmllhood,@svmoutputgrad);
+[theta,output]=paramlearnotb2(label(cvp.training),feat(cvp.training,:),[0 0],@mysvmfun,@paramgrad,@logistreg,@svmllhood,@svmoutputgrad);
