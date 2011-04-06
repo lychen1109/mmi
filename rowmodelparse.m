@@ -13,7 +13,7 @@ Yc=sign(sv_coef(idxc));
 Yu=sign(sv_coef(idxu));
 SVsu=SVs(idxu,:);
 SVsc=SVs(idxc,:);
-SVs=[SVsc,SVsu];
+SVs=[SVsc;SVsu];
 Y=[Yc;Yu];
 
 rho=model.rho;
