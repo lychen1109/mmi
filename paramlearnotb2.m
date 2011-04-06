@@ -7,7 +7,7 @@ n_data=size(datatrain,1);
 dvalues=zeros(n_data,1);
 K=5; %fold number
 cvp=cvpartition(labeltrain,'Kfold',K);
-opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed','DerivativeCheck','off','diffmi',1e-3);
+opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed','DerivativeCheck','on','diffmin',1e-2);
 [theta,fval,exitflag,output]=fminunc(@myfun,theta,opt);
 fprintf('optimization finished with fval=%g, and exitflag %d\n',fval,exitflag);
 
