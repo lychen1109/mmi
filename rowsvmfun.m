@@ -13,7 +13,7 @@ for i=1:n_train-1
         Ktrain(i,j)=rowrbfdist(datatrain(i,:),datatrain(j,:),theta);
     end    
 end
-Ktrain=Ktrain+ktrain';
+Ktrain=Ktrain+Ktrain';
 Ktrain=exp(-Ktrain);
 t=toc;
 fprintf('kernel of training calculated in %d sec\n',t);
