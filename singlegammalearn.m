@@ -1,16 +1,13 @@
-function [thetaarray,historyarray]=singlegammalearn(label,data,cvpa,theta)
+function [thetaarray,fvala,exitflaga]=singlegammalearn(label,data,cvpa,theta)
 %learn params for a set of spliters
 
 N=length(cvpa);
 thetaarray=zeros(N,length(theta));%every row is learned theta for one split
-history.thetas=[];
-history.ofuns=[];
-historyarray(1:N)=history;
+fvala=zeros(N,1);
+exitflaga=zeros(N,1);
 
 for i=1:N
     fprintf('learning %dth split\n',i);
     cvp=cvpa(i);    
-    [thetaarray(i,:),historyarray(i)]=paramlearn(label(cvp.training),data(cvp.training,:),theta,@mysvmfun,@paramgrad);
-    I=size(historyarray(i).ofuns,1);    
-    fprintf('params of %dth split learned in %d iters\n',i,I);
+    [thetaarray(i,:),fvala(i),exitflaga(i)]=paramlearnotb2(label(cvp.training),data(cvp.training,:),theta,@mysvmfun,@paramgrad,@logistreg,@svmllhood,@svmoutputgrad);    
 end
