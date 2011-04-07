@@ -22,9 +22,9 @@ cmd=['-c ' num2str(C) ' -t 4'];
 model=svmtrain(labeltrain,[(1:n_train)' Ktrain],cmd);
 modelstruct=rowmodelparse(model,datatrain,C);
 
-datasv=modelstruct.SVs;
 nSV=model.totalSV;
 svidx=full(model.SVs);
+datasv=datatrain(svidx,:);
 Ktestsub=zeros(n_test,nSV);
 
 tic;
