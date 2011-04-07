@@ -5,9 +5,7 @@ k=length(cvpa);
 ac=zeros(k,1);
 nSV=zeros(k,1);
 
-for i=1:k
-    C=2^thetaa(i,1);
-    fprintf('training with C=%g\n',C);
+for i=1:k    
     CVP=cvpa(i);
     dataTrain=data(CVP.training,:);    
     grpTrain=class(CVP.training);
@@ -29,6 +27,8 @@ for i=1:k
     fprintf('accuracy %g with nSV %d,bSV %d, max unbounded SV=%g\n',ac(i),nSV(i),Nc,max(alphau));
 end
 
-fprintf('mean accuracy:%g, std:%g, avg nSV:%g\n',mean(ac),std(ac),mean(nSV));
+fprintf('mean accuracy:%g, std:%g, avg nSV:%g (%g)\n',mean(ac),std(ac),mean(nSV),std(nSV));
+fprintf('median value of SVM parameters are:\n');
+disp(2.^median(thetaa));
 
     
