@@ -5,7 +5,7 @@ function [theta,fval,exitflag,output]=paramlearnotb2(labeltrain,datatrain,theta,
 n_data=size(datatrain,1);
 K=5; %fold number
 cvp=cvpartition(labeltrain,'Kfold',K);
-opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed','DerivativeCheck','on','diffmin',1e-2,'Tolfun',1e-3,'tolx',1e-3);
+opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed','DerivativeCheck','off','diffmin',1e-2,'Tolfun',1e-3,'tolx',1e-3);
 [theta,fval,exitflag,output]=fminunc(@myfun,theta,opt);
 
     function [L,grad]=myfun(theta)
