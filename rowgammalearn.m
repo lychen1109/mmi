@@ -1,21 +1,15 @@
-function [thetaa,historya]=rowgammalearn(label,data,cvpa,thetaa_single)
+function [thetaa,fvala,exitflaga,outputc]=rowgammalearn(label,data,cvpa,thetaa_init)
 %learn row rbf params based on single gamma result
 
 N=length(cvpa);
-thetaa=zeros(N,12);
-for i=1:N
-    thetaa(i,1)=thetaa_single(i,1);
-    thetaa(i,2:10)=thetaa_single(i,2);
-    thetaa(i,11:12)=thetaa_single(i,3:4);
-end
-history.thetas=[];
-history.ofuns=[];
-historya(1:N)=history;
+n_theta=size(thetaa_init,2);
+thetaa=zeros(N,n_theta);
+fvala=zeros(N,1);
+exitflaga=zeros(N,1);
+outputc=cell(N,1);
 
 for i=1:N
     fprintf('learning %dth split\n',i);
     cvp=cvpa(i);
-    [thetaa(i,:),historya(i)]=paramlearn(label(cvp.training),data(cvp.training,:),thetaa(i,:),@rowsvmfun,@rowparamgrad);
-    I=size(historya(i).ofuns,1);
-    fprintf('params of %dth split learned in %d iters\n',i,I);
+    [thetaa(i,:),fvala(i),exitflaga(i),outputc{i}]=paramlearnotb2(label(cvp.training),data(cvp.training,:),thetaa_init(i,:),@rowsvmfun,@rowparamgrad,@logistreg,@svmllhood,@svmoutputgrad);    
 end
