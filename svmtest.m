@@ -26,7 +26,7 @@ for i=1:k
     fprintf('accuracy %g with nSV %d,bSV %d\n',ac(i),nSV(i),Nc);
 end
 
-fprintf('mean accuracy:%g, std:%g, avg nSV:%g (%g)\n',mean(ac),std(ac),mean(nSV),std(nSV));
+fprintf('mean accuracy:%g (%g), avg nSV:%g (%g)\n',mean(ac),std(ac),mean(nSV),std(nSV));
 fprintf('median value of SVM parameters are:\n');
 disp(2.^median(thetaa));
 
