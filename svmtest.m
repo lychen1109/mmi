@@ -21,10 +21,9 @@ for i=1:k
 %         [~,accu,~]=svmpredict(grpTest,dataTest,model);
 %     end
     nSV(i)=size(modelstruct.SVs,1);    
-    Nc=length(modelstruct.Yc);
-    alphau=modelstruct.alphau;
+    Nc=length(modelstruct.Yc);    
     ac(i)=accu(1);
-    fprintf('accuracy %g with nSV %d,bSV %d, max unbounded SV=%g\n',ac(i),nSV(i),Nc,max(alphau));
+    fprintf('accuracy %g with nSV %d,bSV %d\n',ac(i),nSV(i),Nc);
 end
 
 fprintf('mean accuracy:%g, std:%g, avg nSV:%g (%g)\n',mean(ac),std(ac),mean(nSV),std(nSV));
