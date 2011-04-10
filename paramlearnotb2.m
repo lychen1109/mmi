@@ -1,11 +1,17 @@
-function [theta,fval,exitflag,output]=paramlearnotb2(labeltrain,datatrain,theta,mysvmfun,paramgrad,logistreg,objfun,svmoutputgrad)
+function [theta,fval,exitflag,output]=paramlearnotb2(labeltrain,datatrain,labeltest,datatest,theta,...
+                                                     mysvmfun,paramgrad,logistreg,objfun,svmoutputgrad)
 %paramlearn toolbox version using fminunc
 %move A and B out of theta
 
 n_data=size(datatrain,1);
 K=5; %fold number
 cvp=cvpartition(labeltrain,'Kfold',K);
-opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed','DerivativeCheck','off','diffmin',1e-2,'Tolfun',1e-3,'tolx',1e-3);
+history.thetas=[];
+history.fvals=[];
+history.accutests=[];
+
+opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed','DerivativeCheck','off','diffmin',1e-2,...
+            'Tolfun',1e-3,'tolx',1e-3,'outputfcn',@outfun);
 [theta,fval,exitflag,output]=fminunc(@myfun,theta,opt);
 
     function [L,grad]=myfun(theta)
@@ -31,5 +37,15 @@ opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed','Deriva
             end
             grad=sum(grad);
         end        
+    end
+
+    function stop=outfun(theta,optimValues,state)
+        stop=false;
+        if strcmp(state,'iter')
+            history.thetas=[history.thetas;theta];
+            history.fvals=[history.fvals;optimValues.fval];
+            [~,accu,~]=mysvmfun(labeltrain,datatrain,labeltest,datatest,theta);
+            history.accutests=[history.accutests;accu(1)];
+        end
     end
 end
