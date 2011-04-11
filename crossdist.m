@@ -1,18 +1,6 @@
-function [ distmat ] = crossdist( A,B,group,theta )
+function [ distmat ] = crossdist( A,B,gt )
 %distance calculation of pair instances in vector A and B
 %   Detailed explanation goes here
-
-if size(group,2)~=size(A,2)
-    error('group index does not have same elements as feature\n');
-end
-
-n_group=length(unique(group));
-if n_group~=size(theta,2)-1
-    error('number of group does not match number of params\n');
-end
-if n_group ~= max(group)
-    error('group id should start from 1 and continues\n');
-end
 
 NA=size(A,1);
 NB=size(B,1);
@@ -24,20 +12,15 @@ for i=1:NA
 end
 
 parfor i=1:NA*NB
-    distmat(i)=sampledist(idx(i,:,:),group,theta);
+    distmat(i)=sampledist(idx(i,:,:),gt);
 end
 
 distmat=reshape(distmat,NB,NA)';
 
-function dist=sampledist(samples,group,theta)
+function dist=sampledist(samples,gt)
 %calculate distance between two sample pairs
 s1=samples(1,:,1);
 s2=samples(1,:,2);
-n_group=max(group);
-dist=0;
-for i=1:n_group
-    g=group==i;
-    dist=dist+2^theta(i+1)*norm(s1(g)-s2(g))^2;
-end
+dist=norm(s1.*gt,s2.*gt)^2;
 
 
