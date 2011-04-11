@@ -12,3 +12,6 @@
 
 %batch learn of row gamma for cvpa
 [thetaa_row1,fvala,exitflaga,outputc1]=rowgammalearn(label,feat,cvpa,thetaa_init_zero);
+
+%command do derivative check (set de check in paramlearnotb2 first)
+paramlearnotb2(label(cvp5fold.test(1)),feat(cvp5fold.test(1),:),label(cvp5fold.test(2)),feat(cvp5fold.test(2),:),theta_out,@rowsvmfun,@rowparamgrad,@logistreg,@svmllhood,@svmoutputgrad);

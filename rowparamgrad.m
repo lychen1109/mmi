@@ -39,7 +39,7 @@ if Nu==0
             Dlk(l,k)=rowrbfdist(datav(l,:),SVs(k,:),theta);
         end
     end
-    Psi=repmat(Y',N,1)*exp(-Dlk);
+    Psi=repmat(Y',N,1).*exp(-Dlk);
     grad(1)=delta'*(Psi*ones(K,1))*log(2)*C;
     
     for r=1:9
