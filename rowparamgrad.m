@@ -29,6 +29,37 @@ fprintf('number of SV:%d, bounded:%d, free:%d\n',K,Nc,Nu);
 
 delta=svmoutputgrad(labelv,outputv,A,B);
 
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% if Nu==0, calculate grad directly
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+if Nu==0
+    Dlk=zeros(N,K);
+    for l=1:N
+        for k=1:K
+            Dlk(l,k)=rowrbfdist(datav(l,:),SVs(k,:),theta);
+        end
+    end
+    Psi=repmat(Y',N,1)*exp(-Dlk);
+    grad(1)=delta'*(Psi*ones(K,1))*log(2)*C;
+    
+    for r=1:9
+        ri=rowidx(r);        
+        Dlksub=zeros(N,K);
+        for l=1:N
+            for k=1:K
+                datavl=datav(l,:);
+                SVsk=SVs(k,:);
+                Dlksub(l,k)=norm(datavl(ri)-SVsk(ri))^2;
+            end
+        end
+        Psipk=-Psi.*Dlksub*log(2)*kparams(r);
+        grad(r+1)=delta'*(Psipk*C*ones(K,1));
+    end
+    grad=-grad;
+    return;
+end
+
+
 %%%%%%%%%%%%%
 %calc d
 %%%%%%%%%%%%%
@@ -49,11 +80,11 @@ Mk=zeros(K+1,9); %sum(delta*(Psi grad with kernel param))
 for r=1:9
     Psipk=zeros(N,K+1);
     Dlksub=zeros(N,K);
+    ri=rowidx(r);
     for l=1:N
         for k=1:K
             datavl=datav(l,:);
-            SVsk=SVs(k,:);
-            ri=rowidx(r);
+            SVsk=SVs(k,:);            
             Dlksub(l,k)=norm(datavl(ri)-SVsk(ri))^2;            
         end
     end
