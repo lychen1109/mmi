@@ -1,6 +1,7 @@
 function [ distmat ] = crossdist( A,B,gt )
 %distance calculation of pair instances in vector A and B
-%   Detailed explanation goes here
+%   when A==B, the function use symetric of matrix to save half of the
+%   computing time
 
 NA=size(A,1);
 NB=size(B,1);
@@ -11,11 +12,19 @@ for i=1:NA
     idx((i-1)*NB+(1:NB),:,2)=B;
 end
 
-parfor i=1:NA*NB
-    distmat(i)=sampledist(idx(i,:,:),gt);
+if ~ isequal(A,B)
+    parfor i=1:NA*NB
+        distmat(i)=sampledist(idx(i,:,:),gt);
+    end
+    distmat=reshape(distmat,NB,NA)';
+else
+    lidx=tril(true(NA),-1);
+    for i=find(lidx)
+        distmat(i)=sampledist(idx(i,:,:),gt);
+    end
+    distmat=reshape(distmat,NB,NA)';
+    distmat=distmat+distmat';
 end
-
-distmat=reshape(distmat,NB,NA)';
 
 function dist=sampledist(samples,gt)
 %calculate distance between two sample pairs
