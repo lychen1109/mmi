@@ -8,7 +8,7 @@ NB=size(B,1);
 distmat=zeros(NA*NB,1);
 idx=zeros(NA*NB,size(A,2),2);
 for i=1:NA
-    idx((i-1)*NB+(1:NB),:,1)=A(i,:);
+    idx((i-1)*NB+(1:NB),:,1)=repmat(A(i,:),NB,1);
     idx((i-1)*NB+(1:NB),:,2)=B;
 end
 
