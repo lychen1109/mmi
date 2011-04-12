@@ -32,6 +32,9 @@ end
 
 function dist=sampledist(samples,gt)
 %calculate distance between two sample pairs
+if size(gt,2)==1
+    gt=gt';
+end
 s1=samples(1,:,1);
 s2=samples(1,:,2);
 dist=norm(s1.*gt,s2.*gt)^2;
