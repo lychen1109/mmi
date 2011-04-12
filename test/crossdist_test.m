@@ -2,8 +2,8 @@ function crossdist_test
 %crossdist_test test function crossdist
 %   Detailed explanation goes here
 
-NA=200;
-NB=210;
+NA=1200;
+NB=600;
 A=rand(NA,81);
 B=rand(NB,81);
 group=fix(5*rand(81,1))+1; %randomly created 5 groups
