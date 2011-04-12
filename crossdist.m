@@ -19,9 +19,13 @@ if ~ isequal(A,B)
     distmat=reshape(distmat,NB,NA)';
 else
     lidx=tril(true(NA),-1);
-    for i=find(lidx)
-        distmat(i)=sampledist(idx(i,:,:),gt);
+    subidx=idx(lidx,:,:);
+    n_subidx=size(subidx,1);
+    subdistmat=zeros(n_subidx,1);
+    parfor i=1:n_subidx
+        subdistmat(i)=sampledist(subidx(i,:,:),gt);
     end
+    distmat(lidx)=subdistmat;
     distmat=reshape(distmat,NB,NA)';
     distmat=distmat+distmat';
 end
