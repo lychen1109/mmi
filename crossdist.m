@@ -17,8 +17,8 @@ A=repmat(gt,NA,1).*A;
 B=repmat(gt,NB,1).*B;
 
 %prepare sample index
-idxA=repmat(1:NA,NB,1);
-idxB=repmat((1:NB)',1,NA);
+idxA=repmat((1:NA)',1,NB);
+idxB=repmat(1:NB,NA,1);
 
 if ~ isequal(A,B)
     parfor i=1:NA*NB
