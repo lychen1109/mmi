@@ -31,7 +31,7 @@ else
     n_subidx=NA^2-NA/2;
     ldistmat=distmat(lidx);
     parfor i=1:n_subidx
-        ldistmat(i)=sampledist(lidxA(i),lidxB(i,A,B));
+        ldistmat(i)=sampledist(lidxA(i),lidxB(i),A,B);
     end
     distmat(lidx)=ldistmat;    
     distmat=distmat+distmat';
