@@ -28,7 +28,7 @@ else
     lidx=tril(true(NA),-1);
     lidxA=idxA(lidx);
     lidxB=idxB(lidx);    
-    n_subidx=NA^2-NA;
+    n_subidx=(NA^2-NA)/2;
     ldistmat=distmat(lidx);
     parfor i=1:n_subidx
         ldistmat(i)=sampledist(lidxA(i),lidxB(i),A,B);
