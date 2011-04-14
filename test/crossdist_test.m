@@ -37,12 +37,12 @@ end
 gt=sqrt(2.^gt);
 
 tic;
-distmatAA2=crossdist(A,A,gt);
+distmatAA2=crossdist2(A,A,gt);
 t=toc;
 fprintf('distmatAA2 calculated in %g sec\n',t);
 
 tic;
-distmatAB2=crossdist(A,B,gt);
+distmatAB2=crossdist2(A,B,gt);
 t=toc;
 fprintf('distmatAB2 calculated in %g sec\n',t);
 
