@@ -23,12 +23,16 @@ if ~ isequal(A,B)
     end
     distmat=distmat.^2;
 else
-    for i=1:NA-1
-        for j=i+1:NA
-            distmat(i,j)=norm(A(i,:)-B(j,:));
+    if NA>1
+        for i=1:NA-1
+            for j=i+1:NA
+                distmat(i,j)=norm(A(i,:)-B(j,:));
+            end
         end
+        distmat=(distmat+distmat').^2;
+    else
+        distmat=0;
     end
-    distmat=(distmat+distmat').^2;
 end
 
 
