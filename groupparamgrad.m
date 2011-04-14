@@ -42,6 +42,9 @@ Nc=length(Yc); %number bounded SVs
 Nu=length(Yu);%number unbounded SVs
 fprintf('number of SV:%d, bounded:%d\n',K,Nc);
 %fprintf('largest unbounded coef:%g, model trained with C=%g\n',max(alphau),C);
+if Nu==0
+    return;
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %gradient of output
@@ -52,21 +55,21 @@ delta=svmoutputgrad(labelv,outputv,A,B);
 %%%%%%%%%%%%%%%%%%%%%%%%%
 % if Nu==0, calculate grad directly
 %%%%%%%%%%%%%%%%%%%%%%%%%%
-if Nu==0
-    Dlk=crossdist(datav,SVs,gt);    
-    Psi=repmat(Y',N,1).*exp(-Dlk);
-    grad(1)=delta'*(Psi*ones(K,1))*log(2)*C;
-    
-    for r=1:n_group
-        gtr=zeros(size(group));
-        gtr(group==r)=1;        
-        Dlksub=crossdist(datav,SVs,gtr);        
-        Psipk=-Psi.*Dlksub*log(2)*kparams(r);
-        grad(r+1)=delta'*(Psipk*C*ones(K,1));
-    end
-    grad=-grad;
-    return;
-end
+% if Nu==0
+%     Dlk=crossdist(datav,SVs,gt);
+%     Psi=repmat(Y',N,1).*exp(-Dlk);
+%     grad(1)=delta'*(Psi*ones(K,1))*log(2)*C;
+%     
+%     for r=1:n_group
+%         gtr=zeros(size(group));
+%         gtr(group==r)=1;
+%         Dlksub=crossdist(datav,SVs,gtr);
+%         Psipk=-Psi.*Dlksub*log(2)*kparams(r);
+%         grad(r+1)=delta'*(Psipk*C*ones(K,1));
+%     end
+%     grad=-grad;
+%     return;
+% end
 
 
 %%%%%%%%%%%%%
