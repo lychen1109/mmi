@@ -41,6 +41,7 @@ if Nu==0
     Psipg=-Psi.*Dlk*log(2)*2^log2g;
     grad(2)=delta'*(Psipg*C*ones(K,1));
     grad=-grad;
+    return;
 end
 
 %%%%%%%%%%%%%%%%
