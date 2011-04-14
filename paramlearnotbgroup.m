@@ -10,7 +10,7 @@ history.fvals=[];
 history.accutests=[];
 history.accuvalis=[];
 
-opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed','DerivativeCheck','off','diffmin',1e-2,...
+opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed','DerivativeCheck','on','diffmin',1e-2,...
             'Tolfun',1e-3,'tolx',1e-3,'outputfcn',@outfun);
 [theta,fval,exitflag,output]=fminunc(@myfun,theta,opt);
 
@@ -34,7 +34,7 @@ opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed','Deriva
             grad=zeros(K,length(theta));
             for i=1:K
                 fprintf('processing fold:%d\n',i);
-                grad(i,:)=groupparamgrad(labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),dvalues(cvp.test(i)),modelstructs(i),theta,A,B,svmoutputgrad,group);
+                grad(i,:)=groupparamgrad(labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),dvalues(cvp.test(i)),modelstructs(i),theta,A,B,@svmoutputgrad,group);
             end
             grad=sum(grad);
         end        
