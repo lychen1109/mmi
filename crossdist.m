@@ -21,7 +21,7 @@ idxA=repmat((1:NA)',1,NB);
 idxB=repmat(1:NB,NA,1);
 
 if ~ isequal(A,B)
-    parfor i=1:NA*NB
+    for i=1:NA*NB
         distmat(i)=sampledist(idxA(i),idxB(i),A,B);
     end    
 else
@@ -30,7 +30,7 @@ else
     lidxB=idxB(lidx);    
     n_subidx=(NA^2-NA)/2;
     ldistmat=distmat(lidx);
-    parfor i=1:n_subidx
+    for i=1:n_subidx
         ldistmat(i)=sampledist(lidxA(i),lidxB(i),A,B);
     end
     distmat(lidx)=ldistmat;    
