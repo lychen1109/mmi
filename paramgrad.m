@@ -22,6 +22,9 @@ K=size(SVs,1); %number of support vectors
 Nc=length(Yc); %number bounded SVs
 Nu=length(Yu);%number unbounded SVs
 fprintf('number of SV:%d, bounded:%d\n',K,Nc);
+if Nu==0
+    return;
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %gradient of output
@@ -33,16 +36,17 @@ delta=svmoutputgrad(labelv,outputv,A,B);
 % when Nu==0
 %%%%%%%%%%%%%%%%%%%%%%%
 
-if Nu==0
-    Dlk=crossdist(datav,SVs);    
-    Psi=repmat(Y',N,1).*exp(-Dlk);
-    grad(1)=delta'*(Psi*ones(K,1))*log(2)*C;
-    
-    Psipg=-Psi.*Dlk*log(2)*2^log2g;
-    grad(2)=delta'*(Psipg*C*ones(K,1));
-    grad=-grad;
-    return;
-end
+% if Nu==0
+% %     Dlk=crossdist(datav,SVs);    
+% %     Psi=repmat(Y',N,1).*exp(-Dlk);
+% %     grad(1)=delta'*(Psi*ones(K,1))*log(2)*C;
+% %     
+% %     Psipg=-Psi.*Dlk*log(2)*2^log2g;
+% %     grad(2)=delta'*(Psipg*C*ones(K,1));
+% %     grad=-grad;
+%     grad=0;
+%     return;
+% end
 
 %%%%%%%%%%%%%%%%
 % calc d
