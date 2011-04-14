@@ -1,5 +1,5 @@
-function [ distmat ] = crossdist2( A,B,gt )
-%crossdist2 use two loop to fill distmat
+function [ distmat ] = crossdist( A,B,gt )
+%crossdist calculate cross distance between samples in A and B
 %   Detailed explanation goes here
 
 %make sure gt is row vector
