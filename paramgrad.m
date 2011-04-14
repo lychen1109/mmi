@@ -6,25 +6,6 @@ C=2^log2C;
 log2g=theta(2);
 grad=zeros(1,length(theta));
 
-%sv_coef=model.sv_coef;
-%SVs=model.SVs;
-% SVs1=SVs(sv_coef>C-eps,:); %positive bounded SVs
-% SVs2=SVs(sv_coef<-C+eps,:); %negative bounded SVs
-% SVs3=SVs(sv_coef>0 & sv_coef<C-eps,:); %positive free SVs
-% SVs4=SVs(sv_coef<0 & sv_coef>-C+eps,:); %negative free SVs
-% alpha1=sv_coef(sv_coef>C-eps);
-% alpha2=abs(sv_coef(sv_coef<-C+eps));
-% alpha3=sv_coef(sv_coef>0 & sv_coef<C-eps);
-% alpha4=abs(sv_coef(sv_coef<0 & sv_coef>-C+eps));
-% alphac=[alpha1;alpha2];
-% alphau=[alpha3;alpha4];
-% SVs=[SVs1;SVs2;SVs3;SVs4];%reorganized for easy calculation
-% SVsu=[SVs3;SVs4]; %free support vectors
-% SVsc=[SVs1;SVs2]; %bounded SVs
-% Y=[ones(size(SVs1,1),1);-ones(size(SVs2,1),1);ones(size(SVs3,1),1);-ones(size(SVs4,1),1)]; %label of SVs
-% Yu=[ones(size(SVs3,1),1);-ones(size(SVs4,1),1)];%label of free SVs
-% Yc=[ones(size(SVs1,1),1);-ones(size(SVs2,1),1)];%label of bounded SVs
-%[SVs,SVsu,SVsc,Y,Yu,Yc,alphac,alphau]=modelparse(model,C);
 SVs=modelstruct.SVs;
 SVsu=modelstruct.SVsu;
 SVsc=modelstruct.SVsc;
@@ -40,14 +21,24 @@ N=size(datav,1);%number of validation set
 K=size(SVs,1); %number of support vectors
 Nc=length(Yc); %number bounded SVs
 Nu=length(Yu);%number unbounded SVs
-fprintf('number of SV:%d, bounded:%d, free:%d\n',K,Nc,Nu);
-fprintf('largest unbounded coef:%g, model trained with C=%g\n',max(alphau),C);
+fprintf('number of SV:%d, bounded:%d\n',K,Nc);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %gradient of output
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 delta=svmoutputgrad(labelv,outputv,A,B);
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+% when Nu==0
+%%%%%%%%%%%%%%%%%%%%%%%
+
+if Nu==0
+    Dlk=crossdist(datav,SVs,gt);    
+    Psi=repmat(Y',N,1).*exp(-Dlk);
+    grad(1)=delta'*(Psi*ones(K,1))*log(2)*C;
+    
+end
 
 %%%%%%%%%%%%%%%%
 % calc d
