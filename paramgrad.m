@@ -34,10 +34,13 @@ delta=svmoutputgrad(labelv,outputv,A,B);
 %%%%%%%%%%%%%%%%%%%%%%%
 
 if Nu==0
-    Dlk=crossdist(datav,SVs,gt);    
+    Dlk=crossdist(datav,SVs);    
     Psi=repmat(Y',N,1).*exp(-Dlk);
     grad(1)=delta'*(Psi*ones(K,1))*log(2)*C;
     
+    Psipg=-Psi.*Dlk*log(2)*2^log2g;
+    grad(2)=delta'*(Psipg*C*ones(K,1));
+    grad=-grad;
 end
 
 %%%%%%%%%%%%%%%%
@@ -45,14 +48,9 @@ end
 %%%%%%%%%%%%%%%%
 
 tic;
-Dnk=zeros(N,K);
+Dnk=crossdist(datav,SVs);
 Psi=zeros(N,K+1);
 Psipg=zeros(N,K+1);
-for l=1:N
-    for k=1:K
-        Dnk(l,k)=norm(datav(l,:)-SVs(k,:))^2;
-    end
-end
 Psi(:,1:K)=repmat(Y',N,1).*exp(-2^log2g*Dnk);
 Psi(:,K+1)=-ones(N,1);
 Psipg(:,1:K)=-Psi(:,1:K).*Dnk*log(2)*2^log2g;
@@ -63,17 +61,9 @@ fprintf('M1 and M2 for d and full grad calculated in %g seconds.\n',t);
 
 P=zeros(K+1,K+1);
 P(1:Nc,1:Nc)=eye(Nc);
-Duu=zeros(Nu,Nu);
 
 tic;
-if Nu>1
-    for i=1:Nu-1
-        for j=i+1:Nu
-            Duu(i,j)=norm(SVsu(i,:)-SVsu(j,:))^2;
-        end
-    end
-    Duu=Duu+Duu';
-end
+Duu=crossdist(SVsu,SVsu);
 Omegauu=Yu*Yu'.*exp(-2^log2g*Duu);
 t=toc;
 fprintf('Omegauu calculated in %g seconds.\n',t);
