@@ -18,16 +18,17 @@ B=repmat(gt,NB,1).*B;
 if ~ isequal(A,B)
     for i=1:NA
         for j=1:NB
-            distmat(i,j)=norm(A(i,:)-B(j,:))^2;
+            distmat(i,j)=norm(A(i,:)-B(j,:));
         end
     end
+    distmat=distmat.^2;
 else
     for i=1:NA-1
         for j=i+1:NA
-            distmat(i,j)=norm(A(i,:)-B(j,:))^2;
+            distmat(i,j)=norm(A(i,:)-B(j,:));
         end
     end
-    distmat=distmat+distmat';
+    distmat=(distmat+distmat').^2;
 end
 
 
