@@ -11,14 +11,9 @@ function [pa,pb]=svmlogistgrad(labelv,outputv,A,B)
 % pa=-sum(LpA1)-sum(LpA2);
 % pb=-sum(LpB1)-sum(LpB2);
 
-t=zeros(size(labelv));
-s=svmlogist(labelv,outputv,A,B);
-
+[s,t]=svmlogist(labelv,outputv,A,B);
 labelv=2*labelv-1;
-np=sum(labelv==1);
-nn=sum(labelv==-1);
-t(labelv==1)=(np+1)/(np+2);
-t(labelv==-1)=(nn+1)/(nn+2);
+
 pa=-labelv.*outputv.*(t-s);
 pb=-labelv.*(t-s);
 pa=-sum(pa);
