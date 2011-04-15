@@ -12,7 +12,7 @@ history.accuvalis=[];
 history.nSV=[];
 history.bSV=[];
 
-opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed','DerivativeCheck','off','diffmin',1e-2,...
+opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed','DerivativeCheck','on','diffmin',1e-2,...
             'Tolfun',1e-3,'tolx',1e-3,'outputfcn',@outfun);
 [theta,fval,exitflag,output]=fminunc(@myfun,theta,opt);
 
