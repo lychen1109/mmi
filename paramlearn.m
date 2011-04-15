@@ -9,6 +9,8 @@ history.thetas=[];
 history.fvals=[];
 history.accutests=[];
 history.accuvalis=[];
+history.nSV=[];
+history.bSV=[];
 
 opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed','DerivativeCheck','off','diffmin',1e-2,...
             'Tolfun',1e-3,'tolx',1e-3,'outputfcn',@outfun);
@@ -45,8 +47,12 @@ opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed','Deriva
         if strcmp(state,'iter')
             history.thetas=[history.thetas;theta];
             history.fvals=[history.fvals;optimValues.fval];
-            [~,accu,~]=mysvmfun(labeltrain,datatrain,labeltest,datatest,theta);
+            [modelstruct,accu,~]=mysvmfun(labeltrain,datatrain,labeltest,datatest,theta);
             history.accutests=[history.accutests;accu(1)];
+            nSV=size(modelstruct.SVs,1);
+            bSV=size(modelstruct.SVsc,1);
+            history.nSV=[history.nSV;nSV];
+            history.bSV=[history.bSV;bSV];
             
             ac=zeros(K,1);
             for i=1:K
