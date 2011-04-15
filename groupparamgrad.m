@@ -1,4 +1,4 @@
-function grad=groupparamgrad(labelv,datav,outputv,modelstruct,theta,A,B,svmoutputgrad,group)
+function grad=groupparamgrad(labelv,datav,outputv,modelstruct,theta,A,B,group)
 %output grad for row gammas
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

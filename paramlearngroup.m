@@ -34,7 +34,7 @@ opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed','Deriva
             grad=zeros(K,length(theta));
             for i=1:K
                 fprintf('processing fold:%d\n',i);
-                grad(i,:)=groupparamgrad(labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),dvalues(cvp.test(i)),modelstructs(i),theta,A,B,@svmoutputgrad,group);
+                grad(i,:)=groupparamgrad(labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),dvalues(cvp.test(i)),modelstructs(i),theta,A,B,group);
             end
             grad=sum(grad);
         end        
