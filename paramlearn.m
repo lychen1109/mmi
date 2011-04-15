@@ -28,8 +28,8 @@ opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed','Deriva
             ac(i)=accu(1);
         end
         fprintf('average validation accuracy is %g (%g)\n',mean(ac),std(ac));
-        [A,B]=logistreg(labeltrain,dvalues);
-        L=svmllhood(labeltrain,dvalues,A,B);
+        [A,B,L]=logistreg(labeltrain,dvalues);
+        %L=svmllhood(labeltrain,dvalues,A,B);
         fprintf('logistic regression result: A=%g, B=%g, L=%g\n',A,B,L);
         
         if nargout>1
