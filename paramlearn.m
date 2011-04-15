@@ -1,5 +1,4 @@
-function [theta,fval,exitflag,output,history]=paramlearnotb2(labeltrain,datatrain,labeltest,datatest,theta,...
-                                                     mysvmfun,paramgrad,logistreg,objfun,svmoutputgrad)
+function [theta,fval,exitflag,output,history]=paramlearn(labeltrain,datatrain,labeltest,datatest,theta)
 %paramlearn toolbox version using fminunc
 %move A and B out of theta
 
@@ -11,7 +10,7 @@ history.fvals=[];
 history.accutests=[];
 history.accuvalis=[];
 
-opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed','DerivativeCheck','off','diffmin',1e-2,...
+opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed','DerivativeCheck','on','diffmin',1e-2,...
             'Tolfun',1e-3,'tolx',1e-3,'outputfcn',@outfun);
 [theta,fval,exitflag,output]=fminunc(@myfun,theta,opt);
 
@@ -28,14 +27,14 @@ opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed','Deriva
         end
         fprintf('average validation accuracy is %g (%g)\n',mean(ac),std(ac));
         [A,B]=logistreg(labeltrain,dvalues);
-        L=objfun(labeltrain,dvalues,A,B);
+        L=svmllhood(labeltrain,dvalues,A,B);
         fprintf('logistic regression result: A=%g, B=%g, L=%g\n',A,B,L);
         
         if nargout>1
             grad=zeros(K,length(theta));
             for i=1:K
                 fprintf('processing fold:%d\n',i);
-                grad(i,:)=paramgrad(labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),dvalues(cvp.test(i)),modelstructs(i),theta,A,B,svmoutputgrad);
+                grad(i,:)=paramgrad(labeltrain(cvp.test(i)),datatrain(cvp.test(i),:),dvalues(cvp.test(i)),modelstructs(i),theta,A,B);
             end
             grad=sum(grad);
         end        
