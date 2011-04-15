@@ -1,4 +1,4 @@
-function grad=paramgrad(labelv,datav,outputv,modelstruct,theta,A,B,svmoutputgrad)
+function grad=paramgrad(labelv,datav,outputv,modelstruct,theta,A,B)
 %Paramlearn: calculate gradient of parameter
 
 log2C=theta(1);
