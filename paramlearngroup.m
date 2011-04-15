@@ -1,4 +1,4 @@
-function [theta,fval,exitflag,output,history]=paramlearnotbgroup(labeltrain,datatrain,labeltest,datatest,theta,group)
+function [theta,fval,exitflag,output,history]=paramlearngroup(labeltrain,datatrain,labeltest,datatest,theta,group)
 %paramlearn toolbox version using fminunc
 %move A and B out of theta
 
