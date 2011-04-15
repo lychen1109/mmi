@@ -1,7 +1,7 @@
 function modelstruct=modelparse(model,C)
 %modelparse extract info from svm model into struct
 
-SVs=model.SVs;
+SVs=full(model.SVs);
 sv_coef=model.sv_coef;
 idxc=abs(sv_coef)>C-1e-4;
 idxu=abs(sv_coef)<=C-1e-4;
