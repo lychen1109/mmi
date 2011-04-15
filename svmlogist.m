@@ -1,4 +1,5 @@
-function p=svmlogist(f,A,B)
+function p=svmlogist(labelv,dvalues,A,B)
 %svm output regression
 
-p=1./(1+exp(A*f+B));
+labelv=2*labelv-1;
+p=1./(1+exp(labelv.*(A*dvalues+B)));
