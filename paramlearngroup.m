@@ -48,7 +48,7 @@ opt=optimset('GradObj','on','LargeScale','off','display','iter-detailed','Deriva
         if strcmp(state,'iter')
             history.thetas=[history.thetas;theta];
             history.fvals=[history.fvals;optimValues.fval];
-            [modelstruct,accu,~]=groupmysvmfun(labeltrain,datatrain,labeltest,datatest,group,theta);
+            [modelstruct,accu,~]=groupsvmfun(labeltrain,datatrain,labeltest,datatest,group,theta);
             history.accutests=[history.accutests;accu(1)];
             nSV=size(modelstruct.SVs,1);
             bSV=size(modelstruct.SVsc,1);
