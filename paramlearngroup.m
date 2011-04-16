@@ -2,6 +2,7 @@ function [theta,fval,exitflag,output,history]=paramlearngroup(labeltrain,datatra
 %paramlearn toolbox version using fminunc
 %move A and B out of theta
 
+group=group(:)';
 n_data=size(datatrain,1);
 K=5; %fold number
 cvp=cvpartition(labeltrain,'Kfold',K);
