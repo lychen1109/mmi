@@ -6,5 +6,6 @@ thetas=zeros(N,2);
 
 for i=1:N
     cvp=cvpa(i);
+    fprintf('processing %dth split\n',i);
     [thetas(i,1),thetas(i,2)]=svmgrid(label(cvp.training),feat(cvp.training,:),rangec,rangeg);
 end
