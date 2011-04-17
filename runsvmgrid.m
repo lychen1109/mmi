@@ -1,10 +1,8 @@
-function thetas=runsvmgrid(label,feat,cvpa)
+function thetas=runsvmgrid(label,feat,cvpa,rangec,rangeg)
 %a wrapper of grid search for a set of splits
 
 N=length(cvpa);
 thetas=zeros(N,2);
-rangec=8:-1:2;
-rangeg=-7:7;
 
 for i=1:N
     cvp=cvpa(i);
