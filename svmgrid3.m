@@ -1,4 +1,4 @@
-function [bestc,bestg1,bestg2,bestcv,cvmat]=svmgrid3(label,feat,group,rangec,rangeg1,rangeg2)
+function [bestc,bestg1,bestg2,bestcv,matg]=svmgrid3(label,feat,group,rangec,rangeg1,rangeg2)
 %svmgrid3 does grid search with three hyper-parameters
 
 %turn ranges into column vectors
