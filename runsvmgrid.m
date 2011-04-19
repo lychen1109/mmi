@@ -11,5 +11,5 @@ bsvmat=cell(N,1);
 for i=1:N
     cvp=cvpa(i);
     fprintf('processing %dth split\n',i);
-    [thetas{1},bestcv(i),cvmat{i},nsvmat{i},bsvmat{i}]=svmgrid(label(cvp.training),feat(cvp.training,:),rangec,rangeg);
+    [thetas{i},bestcv(i),cvmat{i},nsvmat{i},bsvmat{i}]=svmgrid(label(cvp.training),feat(cvp.training,:),rangec,rangeg);
 end
