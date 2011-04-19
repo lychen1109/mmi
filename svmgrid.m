@@ -13,7 +13,7 @@ log2g=repmat(rangeg',nc,1);
 theta=[log2c(:) log2g(:)];
 
 parfor i=1:nc*ng    
-    [cvmat(i) nsvmat(i) bsvmat(i)]=mysvmcv(grpTrain,dataTrain,theta);
+    [cvmat(i) nsvmat(i) bsvmat(i)]=mysvmcv(grpTrain,dataTrain,theta(i,:));
 end
 
 bestcv=max(cvmat(:));
