@@ -1,4 +1,4 @@
-function [ac,nSV]=svmtest(class,data,cvpa,thetaa)
+function [ac,nSV]=svmtest(class,data,cvpa,group,thetaa)
 %test the svm accuracy with k split
 
 k=length(cvpa);
@@ -11,7 +11,7 @@ for i=1:k
     grpTrain=class(CVP.training);
     dataTest=data(CVP.test,:);
     grpTest=class(CVP.test);
-    [modelstruct,accu,~]=mysvmfun(grpTrain,dataTrain,grpTest,dataTest,thetaa(i,:));
+    [modelstruct,accu,~]=groupsvmfun(grpTrain,dataTrain,grpTest,dataTest,group,thetaa(i,:));
     nSV(i)=size(modelstruct.SVs,1);    
     Nc=length(modelstruct.Yc);    
     ac(i)=accu(1);
