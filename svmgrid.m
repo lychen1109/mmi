@@ -1,4 +1,4 @@
-function [theta,bestcv,cvmat,nsvmat,bsvmat]=svmgrid(grpTrain,dataTrain,rangec,rangeg)
+function [theta,bestcv]=svmgrid(grpTrain,dataTrain,rangec,rangeg)
 %parameter selection
 
 nc=length(rangec);
@@ -17,7 +17,30 @@ parfor i=1:nc*ng
 end
 
 bestcv=max(cvmat(:));
-theta=theta(cvmat==bestcv,:);
+selection=find(cvmat==bestcv);
+if length(selection)>1
+    fprintf('multiple CVs found, choosing the least number of SV\n');
+    n_svs=nsvmat(selection);
+    b_svs=bsvmat(selection);
+    min_n_sv=min(n_svs);
+    selection_nsv=find(n_svs==min_n_sv);
+    if length(selection_nsv)>1
+        fprintf('multiple nSVs found, choosing the least number of bounded SV\n');
+        b_svs=b_svs(selection_nsv);
+        min_b_sv=min(b_svs);
+        selection_bsv=find(b_svs==min_b_sv);
+        if length(selection_bsv)>1
+            error('can not decide the best cv\n');
+        else
+            theta=theta(selection(selection_nsv(selection_bsv)),:);
+        end
+    else
+        theta=theta(selection(selection_nsv),:);
+    end    
+else
+    theta=theta(selection,:);
+end
+
 
 
 
