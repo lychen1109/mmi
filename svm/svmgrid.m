@@ -41,6 +41,8 @@ else
     theta=theta(selection,:);
 end
 
+fprintf('Best cv found at (%d,%d) with accu %g\n',theta(1),theta(2),bestcv);
+
 
 
 
