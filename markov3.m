@@ -1,10 +1,9 @@
-function h=markov3(img)
+function h=markov3(img,T)
 %equivalent filter for 3rd degree markov transition
 
-x1=img(:,1:end-3);
-x2=img(:,2:end-2);
-x3=img(:,3:end-1);
-x4=img(:,4:end);
-y=x1-x2-x3+x4;
-h=hist(y(:),-16:16);
-h=h/(128*125);
+y=img(:,1:end-1)-img(:,2:end);
+y(y>T)=T;
+y(y<-T)=-T;
+y=y(:,1:end-2)-y(:,3:end);
+h=hist(y(:),-8:8);
+h=h/(128*126);
