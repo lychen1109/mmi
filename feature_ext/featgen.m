@@ -1,12 +1,12 @@
-function feat=dhgen(imgs,T)
-%difference histogram feature generation
+function feat=featgen(imgs,T,D)
+%feature generation for all images
 
 N=size(imgs,1);
-feat=zeros(N,(2*T+1)^3);
+feat=zeros(N,D);
 
 for i=1:N
     img=imgs(i,:);
     img=reshape(img,128,128);
-    dhist=tpm3d(img,T);
+    dhist=featpca1(img,T);
     feat(i,:)=dhist(:)';
 end
