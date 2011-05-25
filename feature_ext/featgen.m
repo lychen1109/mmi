@@ -7,6 +7,6 @@ feat=zeros(N,D);
 for i=1:N
     img=imgs(i,:);
     img=reshape(img,128,128);
-    dhist=featpca1(img,T);
+    dhist=featpca2(img,T);
     feat(i,:)=dhist(:)';
 end
