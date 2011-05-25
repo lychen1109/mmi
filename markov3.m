@@ -1,5 +1,5 @@
 function h=markov3(img,T)
-%equivalent filter for 3rd degree markov transition
+%2nd pca filter for 2nd degree markov transition
 
 y=img(:,1:end-1)-img(:,2:end);
 y(y>T)=T;
