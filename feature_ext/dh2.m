@@ -1,10 +1,10 @@
 function dhist=dh2(img,T)
-%difference histogram of jpg_imgs
+%unthreshold version of difference histogram
 
-[N,M]=size(img);
-diffimg=img(:,1:M-2)-img(:,3:M);
-diffimg(diffimg>T)=T;
-diffimg(diffimg<-T)=-T;
+x1=img(:,1:end-2);
+x2=img(:,2:end-1);
+x3=img(:,3:end);
+z=0.71*(x1-2*x2+x3);
 X=-T:T;
-dhist=hist(diffimg(:),X);
-dhist=dhist/(N*(M-2));
+dhist=hist(z(:),X);
+dhist=dhist/(length(z(:)));
