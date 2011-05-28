@@ -5,8 +5,8 @@ function dhist=dh(img,T)
 diffimg=img(:,1:M-1)-img(:,2:M);
 diffimg(diffimg>T)=T;
 diffimg(diffimg<-T)=-T;
-diffimg2=diffimg(:,1:M-2)-diffimg(:,2:M-1);
+diffimg2=0.71*(diffimg(:,1:M-2)-diffimg(:,2:M-1));
 clear diffimg;
-X=-2*T:2*T;
-dhist=hist(diffimg2(:),X);
+B=floor(0.71*2*T);
+dhist=hist(diffimg2(:),-B:B);
 dhist=dhist/(N*(M-2));
