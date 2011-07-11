@@ -16,4 +16,6 @@ for i=1:N
     IQs(i)=quart(2)-quart(1);
     fprintf('IQ=%g\n',IQs(i));
 end
-fprintf('Median of IQ is %g\n',median(IQs));
+miq=median(IQs);
+fprintf('Median of IQ is %g\n',miq);
+fprintf('width of bin is %g\n',2*miq*(127*128)^(-1/3));
