@@ -2,7 +2,7 @@ function feat=featgen(bdctimgs)
 %feature generation for all images
 
 N=size(bdctimgs,1);
-feat=zeros(N,11);
+feat=zeros(N,91);
 
 for i=1:N
     bdctimg=bdctimgs(i,:);
