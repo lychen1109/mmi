@@ -9,4 +9,5 @@ for i=1:N
     bdctimg=reshape(bdctimg,128,128);
     h=featmoment(bdctimg);
     feat(i,:)=h;
+    fprintf('%dth image done.\n',i);
 end
