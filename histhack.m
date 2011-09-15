@@ -7,7 +7,7 @@ simg=simages(idx2,:);
 simg=reshape(simg,128,128);
 aimg=aimages(idx1,:);
 aimg=reshape(aimg,128,128);
-NMOD=10; %maximum allowed number of modified coeff
+NMOD=500; %maximum allowed number of modified coeff
 tm1=tpm1d(aimg,4,0,0);
 tm2=tpm1d(simg,4,0,0);
 bdctimg=blkproc(simg,[8 8],@dct2);
@@ -63,7 +63,7 @@ while n_mod<NMOD
                        diff4=threshold(diff4,4);
                        if diff4==diff2
                            if i==2, continue; end                       
-                       elseif tmx(diff1,diff2)<0 ||tmx(diff3,diff4)>0
+                       elseif tmx(diff1+5,diff2+5)<0 ||tmx(diff3+5,diff4+5)>0
                            continue;
                        end                       
                     end
@@ -79,7 +79,7 @@ while n_mod<NMOD
                         diff4=threshold(diff4,4);
                         if diff1==diff3 && diff2==diff4
                             if i==1,continue; end
-                        elseif tmx(diff1,diff2)<0 ||tmx(diff3,diff4)>0
+                        elseif tmx(diff1+5,diff2+5)<0 ||tmx(diff3+5,diff4+5)>0
                             continue;
                         end                        
                     end
@@ -95,7 +95,7 @@ while n_mod<NMOD
                         diff4=threshold(diff4,4);
                         if diff1==diff3
                             if i==0,continue; end
-                        elseif tmx(diff1,diff2)<0 || tmx(diff3,diff4)>0
+                        elseif tmx(diff1+5,diff2+5)<0 || tmx(diff3+5,diff4+5)>0
                             continue;
                         end
                     end
@@ -117,7 +117,7 @@ while n_mod<NMOD
                        diff4=threshold(diff4,4);
                        if diff4==diff2
                            if i==2, continue; end                       
-                       elseif tmx(diff1,diff2)<0 ||tmx(diff3,diff4)>0
+                       elseif tmx(diff1+5,diff2+5)<0 ||tmx(diff3+5,diff4+5)>0
                            continue;
                        end                       
                     end
@@ -133,7 +133,7 @@ while n_mod<NMOD
                         diff4=threshold(diff4,4);
                         if diff1==diff3 && diff2==diff4
                             if i==1,continue; end
-                        elseif tmx(diff1,diff2)<0 ||tmx(diff3,diff4)>0
+                        elseif tmx(diff1+5,diff2+5)<0 ||tmx(diff3+5,diff4+5)>0
                             continue;
                         end                        
                     end
@@ -149,7 +149,7 @@ while n_mod<NMOD
                         diff4=threshold(diff4,4);
                         if diff1==diff3
                             if i==0,continue; end
-                        elseif tmx(diff1,diff2)<0 || tmx(diff3,diff4)>0
+                        elseif tmx(diff1+5,diff2+5)<0 || tmx(diff3+5,diff4+5)>0
                             continue;
                         end
                     end
@@ -160,9 +160,11 @@ while n_mod<NMOD
                     break;
                 end                
             end
-            if modflag, break; end            
+            if modflag, break; end
+            loc_idx=loc_idx+1;
         end
         if modflag,break;end
+        t_bin=t_bin+1;
     end
     if modflag==false, break;end
 end
