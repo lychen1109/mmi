@@ -22,7 +22,7 @@ function varargout = imagepairmng(varargin)
 
 % Edit the above text to modify the response to help imagepairmng
 
-% Last Modified by GUIDE v2.5 16-Sep-2011 14:23:15
+% Last Modified by GUIDE v2.5 19-Sep-2011 12:47:15
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,8 +54,8 @@ function imagepairmng_OpeningFcn(hObject, eventdata, handles, varargin)
 
 handles.imagepairs=varargin{1};
 handles.imageidx=1;
-updatefig(handles.axes1,handles.imagepairs{handles.imageidx,1});
-updatefig(handles.axes2,handles.imagepairs{handles.imageidx,2});
+handles.MAX=size(handles.imagepairs,1);
+redrawfig(handles);
 
 % Choose default command line output for imagepairmng
 handles.output = hObject;
@@ -84,6 +84,12 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+if handles.imageidx>1
+    handles.imageidx=handles.imageidx-1;
+    redrawfig(handles);
+    guidata(hObject, handles);
+end
+
 
 % --- Executes on button press in pushbutton2.
 function pushbutton2_Callback(hObject, eventdata, handles)
@@ -91,6 +97,11 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+if handles.imageidx<handles.MAX
+    handles.imageidx=handles.imageidx+1;
+    redrawfig(handles);
+    guidata(hObject, handles);
+end
 
 
 function edit1_Callback(hObject, eventdata, handles)
@@ -121,6 +132,10 @@ function pushbutton3_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+file2=get(handles.edit1,'String');
+handles.imagepairs{handles.imageidx,2}=file2;
+guidata(hObject, handles);
+redrawfig(handles);
 
 
 function updatefig(fig,filename)
@@ -135,3 +150,12 @@ img=double(img);
 imagesc(img,'parent',fig);
 colormap gray;
 
+function redrawfig(handles)
+%redraw the whole UI according to current imageidx
+set(handles.text1,'String',[num2str(handles.imageidx) 'th pair of images']);
+file1=handles.imagepairs{handles.imageidx,1};
+set(handles.text2,'String',file1);
+updatefig(handles.axes1,file1);
+file2=handles.imagepairs{handles.imageidx,2};
+set(handles.edit1,'String',file2);
+updatefig(handles.axes2,file2);
