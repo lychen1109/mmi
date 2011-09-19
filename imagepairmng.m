@@ -52,6 +52,11 @@ function imagepairmng_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to imagepairmng (see VARARGIN)
 
+handles.imagepairs=varargin{1};
+handles.imageidx=1;
+updatefig(handles.axes1,handles.imagepairs{handles.imageidx,1});
+updatefig(handles.axes2,handles.imagepairs{handles.imageidx,2});
+
 % Choose default command line output for imagepairmng
 handles.output = hObject;
 
@@ -115,3 +120,18 @@ function pushbutton3_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+
+function updatefig(fig,filename)
+%helper function to pudate axes
+
+if isequal(filename,'')
+    img=imread('C:\data\ImSpliceDataset\notfound.bmp');
+else
+    img=imread(name2path(filename));    
+end
+img=double(img);
+imagesc(img,'parent',fig);
+colormap gray;
+
