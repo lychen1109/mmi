@@ -22,7 +22,7 @@ function varargout = imagepairmng(varargin)
 
 % Edit the above text to modify the response to help imagepairmng
 
-% Last Modified by GUIDE v2.5 19-Sep-2011 12:47:15
+% Last Modified by GUIDE v2.5 19-Sep-2011 14:37:50
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -64,7 +64,7 @@ handles.output = hObject;
 guidata(hObject, handles);
 
 % UIWAIT makes imagepairmng wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
@@ -75,7 +75,9 @@ function varargout = imagepairmng_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
-varargout{1} = handles.output;
+varargout{1} = handles.imagepairs;
+
+delete(hObject);
 
 
 % --- Executes on button press in pushbutton1.
@@ -159,3 +161,15 @@ updatefig(handles.axes1,file1);
 file2=handles.imagepairs{handles.imageidx,2};
 set(handles.edit1,'String',file2);
 updatefig(handles.axes2,file2);
+
+
+% --- Executes when user attempts to close figure1.
+function figure1_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+uiresume(hObject);
+
+% Hint: delete(hObject) closes the figure
+% delete(hObject);
