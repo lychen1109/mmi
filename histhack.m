@@ -159,13 +159,13 @@ while n_mod<NMOD
                     modflag=true;
                     break;
                 end                
-            end
+            end %end of trying three adjacent pixels
             if modflag, break; end
             loc_idx=loc_idx+1;
-        end
+        end %end of trying all candidate coeff
         if modflag,break;end
         t_bin=t_bin+1;
-    end
+    end %end of trying all positive delta bins
     if modflag==false, break;end
 end
 
