@@ -22,7 +22,7 @@ function varargout = imagepairmng(varargin)
 
 % Edit the above text to modify the response to help imagepairmng
 
-% Last Modified by GUIDE v2.5 19-Sep-2011 14:37:50
+% Last Modified by GUIDE v2.5 19-Sep-2011 15:56:33
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -173,3 +173,53 @@ uiresume(hObject);
 
 % Hint: delete(hObject) closes the figure
 % delete(hObject);
+
+
+
+function edit2_Callback(hObject, eventdata, handles)
+% hObject    handle to edit2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit2 as text
+%        str2double(get(hObject,'String')) returns contents of edit2 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in pushbutton4.
+function pushbutton4_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+filename=get(handles.edit2,'String');
+images=handles.imagepairs(:,1);
+N=size(images,1);
+idx=1;
+idx2=0;
+while idx<N+1
+    if isequal(lower(filename),lower(images{idx}))
+        idx2=idx;
+        break;
+    end
+    idx=idx+1;
+end
+
+if idx2~=0
+    handles.imageidx=idx2;
+    guidata(hObject, handles);
+    redrawfig(handles);
+end
+    
