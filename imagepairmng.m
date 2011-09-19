@@ -22,7 +22,7 @@ function varargout = imagepairmng(varargin)
 
 % Edit the above text to modify the response to help imagepairmng
 
-% Last Modified by GUIDE v2.5 19-Sep-2011 15:56:33
+% Last Modified by GUIDE v2.5 19-Sep-2011 16:30:12
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -223,3 +223,12 @@ if idx2~=0
     redrawfig(handles);
 end
     
+
+
+% --- Executes on button press in pushbutton5.
+function pushbutton5_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+set(handles.edit1,'String','');
