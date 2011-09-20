@@ -15,11 +15,15 @@ bdctimg=round(abs(bdctimg));
 modified=false(size(bdctimg));%record if a coef has been modified
 
 NMOD=500; %maximum allowed number of modified coeff
+mdrec=zeros(1,NMOD); %record mahsdist
+recidx=0;
 n_mod=0; %number of modified coef
 
 while n_mod<NMOD
     tm3=tpm1(bdctimg,4);
     mahsdistpre=mahsdistcalc(tm1,tm3,sigma);
+    recidx=recidx+1;
+    mdrec(recidx)=mahsdistpre;
     tmx=tm3-tm1;
     [~,I]=sort(tmx(:),1,'descend');
     t_bin=1; %index of target bin
@@ -41,8 +45,8 @@ while n_mod<NMOD
         while loc_idx<=num
             loc=locations(randidx(loc_idx));
             [sj,sk]=ind2sub(size(bdctimg),loc);
-            bdctimgc=zeros(9,9,7);
-            mahsdist=-ones(1,7);
+            bdctimgc=zeros(128,128,7);
+            mahsdist=10*ones(1,7);
             if bdctimg(sj,sk)>=2 && ~modified(sj,sk)
                 bdctimgc(:,:,1)=bdctmod(bdctimg,sj,sk,[1 0 0]);
                 tmc=tpm1(bdctimgc(:,:,1),4);
@@ -154,19 +158,21 @@ ximg=blkproc(bdctimg,[8 8],@idct2);
 m=max(max([tm1 tm2 tm3]));
 m=ceil(m*10)/10;
 
-subplot(2,3,1);
+subplot(2,4,1);
 imagesc(aimg),colormap gray
-subplot(2,3,2);
+subplot(2,4,2);
 imagesc(simg),colormap gray
-subplot(2,3,3);
+subplot(2,4,3);
 imagesc(ximg),colormap gray
-subplot(2,3,4);
+subplot(2,4,4);
+plot(mdrec);
+subplot(2,4,5);
 mesh(tm1);
 axis([0 10 0 10 0 m]);
-subplot(2,3,5);
+subplot(2,4,6);
 mesh(tm2);
 axis([0 10 0 10 0 m]);
-subplot(2,3,6);
+subplot(2,4,7);
 mesh(tm3);
 axis([0 10 0 10 0 m]);
 
