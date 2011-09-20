@@ -24,7 +24,7 @@ while n_mod<NMOD
     [~,I]=sort(tmx(:),1,'descend');
     t_bin=1; %index of target bin
     modflag=false;
-    while tmx(I(t_bin))>0
+    while t_bin<=81 && tmx(I(t_bin))>0
         %find candidate dct coeff
         bdctimgx=dcnan(bdctimg);
         diffimg=bdctimgx(:,1:end-1)-bdctimgx(:,2:end);
@@ -43,43 +43,43 @@ while n_mod<NMOD
             [sj,sk]=ind2sub(size(bdctimg),loc);
             bdctimgc=zeros(9,9,7);
             mahsdist=-ones(1,7);
-            if bdctimg(sj,sk)>2 && ~modified(sj,sk)
+            if bdctimg(sj,sk)>=2 && ~modified(sj,sk)
                 bdctimgc(:,:,1)=bdctmod(bdctimg,sj,sk,[1 0 0]);
                 tmc=tpm1(bdctimgc(:,:,1),4);
                 mahsdist(1)=mahsdistcalc(tm1,tmc,sigma);
             end
             
-            if bdctimg(sj,sk+1)>2 && ~modified(sj,sk+1)
+            if bdctimg(sj,sk+1)>=2 && ~modified(sj,sk+1)
                 bdctimgc(:,:,2)=bdctmod(bdctimg,sj,sk,[0 1 0]);
                 tmc=tpm1(bdctimgc(:,:,2),4);
                 mahsdist(2)=mahsdistcalc(tm1,tmc,sigma);
             end
             
-            if bdctimg(sj,sk+2)>2 && ~modified(sj,sk+2)
+            if bdctimg(sj,sk+2)>=2 && ~modified(sj,sk+2)
                 bdctimgc(:,:,3)=bdctmod(bdctimg,sj,sk,[0 0 1]);
                 tmc=tpm1(bdctimgc(:,:,3),4);
                 mahsdist(3)=mahsdistcalc(tm1,tmc,sigma);
             end
             
-            if bdctimg(sj,sk)>2 && bdctimg(sj,sk+1)>2 && ~modified(sj,sk) && ~modified(sj,sk+1)
+            if bdctimg(sj,sk)>=2 && bdctimg(sj,sk+1)>=2 && ~modified(sj,sk) && ~modified(sj,sk+1)
                 bdctimgc(:,:,4)=bdctmod(bdctimg,sj,sk,[1 1 0]);
                 tmc=tpm1(bdctimgc(:,:,4),4);
                 mahsdist(4)=mahsdistcalc(tm1,tmc,sigma);
             end
             
-            if bdctimg(sj,sk+1)>2 && bdctimg(sj,sk+2)>2 && ~modified(sj,sk+1) && ~modified(sj,sk+2)
+            if bdctimg(sj,sk+1)>=2 && bdctimg(sj,sk+2)>=2 && ~modified(sj,sk+1) && ~modified(sj,sk+2)
                 bdctimgc(:,:,5)=bdctmod(bdctimg,sj,sk,[0 1 1]);
                 tmc=tpm1(bdctimgc(:,:,5),4);
                 mahsdist(5)=mahsdistcalc(tm1,tmc,sigma);
             end
             
-            if bdctimg(sj,sk)>2 && bdctimg(sj,sk+2)>2 && ~modified(sj,sk) && ~modified(sj,sk+2)
+            if bdctimg(sj,sk)>=2 && bdctimg(sj,sk+2)>=2 && ~modified(sj,sk) && ~modified(sj,sk+2)
                 bdctimgc(:,:,6)=bdctmod(bdctimg,sj,sk,[1 0 1]);
                 tmc=tpm1(bdctimgc(:,:,6),4);
                 mahsdist(6)=mahsdistcalc(tm1,tmc,sigma);
             end
             
-            if bdctimg(sj,sk)>2 && bdctimg(sj,sk+1)>2 && bdctimg(sj,sk+2)>2 && ...
+            if bdctimg(sj,sk)>=2 && bdctimg(sj,sk+1)>=2 && bdctimg(sj,sk+2)>=2 && ...
                     ~modified(sj,sk) && ~modified(sj,sk+1) && ~modified(sj,sk+2)
                 bdctimgc(:,:,7)=bdctmod(bdctimg,sj,sk,[1 1 1]);
                 tmc=tpm1(bdctimgc(:,:,7),4);
@@ -89,6 +89,7 @@ while n_mod<NMOD
             [mahsdist_sorted,I]=sort(mahsdist);
             if mahsdist_sorted(1)<mahsdistpre
                 %adopt the modification
+                fprintf('delta mahs dist is %g\n',mahsdistpre-mahsdist_sorted(1));
                 switch I(1)
                     case 1
                         bdctimg=bdctimgc(:,:,1);
@@ -168,6 +169,19 @@ axis([0 10 0 10 0 m]);
 subplot(2,3,6);
 mesh(tm3);
 axis([0 10 0 10 0 m]);
+
+function bdctimg=bdctmod(bdctimg,sj,sk,flag)
+%modify bdctcoeff
+
+for i=1:3
+    if flag(i)==1
+        if mod(bdctimg(sj,sk+i-1),2)==0
+            bdctimg(sj,sk+i-1)=bdctimg(sj,sk+i-1)+1;
+        else
+            bdctimg(sj,sk+i-1)=bdctimg(sj,sk+i-1)-1;
+        end
+    end
+end
 
 
 
