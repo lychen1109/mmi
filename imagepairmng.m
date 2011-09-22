@@ -22,7 +22,7 @@ function varargout = imagepairmng(varargin)
 
 % Edit the above text to modify the response to help imagepairmng
 
-% Last Modified by GUIDE v2.5 22-Sep-2011 17:22:52
+% Last Modified by GUIDE v2.5 22-Sep-2011 22:42:55
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -53,25 +53,19 @@ function imagepairmng_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to imagepairmng (see VARARGIN)
 
 handles.imagepairs=varargin{1};
+handles.sigma=varargin{2};
 handles.imageidx=1;
 handles.MAX=size(handles.imagepairs,1);
 redrawfig(handles);
 
 %show images on the right
-root='C:\data\ImSpliceDataset\';
 namelist=get(handles.popupmenu1,'String');
 selected=get(handles.popupmenu1,'Value');
 dirname=namelist{selected};
-files=dir([root dirname filesep '*.bmp']);
-n_img=size(files,1);
-images=zeros(n_img,128^2);
-for i=1:n_img
-    img=imread([root dirname filesep files(i).name]);
-    img=double(img);
-    images(i,:)=img(:)';
-end
+images=loadimg(dirname);
 handles.images=images;
 handles.showidx=1;
+handles.dists=distcalc(handles);
 updaterightpan(handles);
 
 % Choose default command line output for imagepairmng
@@ -342,26 +336,36 @@ for i=1:8
     switch i
         case 1
             h=handles.axes3;
+            h2=handles.text4;
         case 2
             h=handles.axes4;
+            h2=handles.text5;
         case 3
             h=handles.axes5;
+            h2=handles.text6;
         case 4
             h=handles.axes6;
+            h2=handles.text7;
         case 5
             h=handles.axes7;
+            h2=handles.text8;
         case 6
             h=handles.axes8;
+            h2=handles.text9;
         case 7
             h=handles.axes9;
+            h2=handles.text10;
         case 8
             h=handles.axes10;
+            h2=handles.text11;
     end
     showidx=handles.showidx+i-1;
     if showidx<=n_img
         updatefig2(h,reshape(handles.images(showidx,:),128,128));
+        set(h2,'String',num2str(handles.dists(showidx)));
     else
         updatefig(h,'');
+        set(h2,'String','');
     end
 end
 set(handles.text3,'String',[num2str(handles.showidx) ' - ' num2str(handles.showidx+7) ' of ' num2str(n_img)]);
@@ -390,4 +394,52 @@ if handles.showidx+8<=n_img
     handles.showidx=handles.showidx+8;
     guidata(hObject, handles);
     updaterightpan(handles);
+end
+
+
+% --- Executes on button press in pushbutton16.
+function pushbutton16_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton16 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+namelist=get(handles.popupmenu1,'String');
+selected=get(handles.popupmenu1,'Value');
+dirname=namelist{selected};
+images=loadimg(dirname);
+handles.images=images;
+handles.showidx=1;
+handles.dists=distcalc(handles);
+updaterightpan(handles);
+guidata(hObject, handles);
+
+
+function images=loadimg(dirname)
+%helper function for loading images in the given dirname
+
+root='C:\data\ImSpliceDataset\';
+files=dir([root dirname filesep '*.bmp']);
+n_img=size(files,1);
+images=zeros(n_img,128^2);
+for i=1:n_img
+    img=imread([root dirname filesep files(i).name]);
+    img=double(img);
+    images(i,:)=img(:)';
+end
+
+function dists=distcalc(handles)
+%calculate distance between images and target image
+
+filename=handles.imagepairs{handles.imageidx,1};
+simg=imread(name2path(filename));
+simg=double(simg);
+tm1=tpm1d(simg,4,0,0);
+
+n_img=size(handles.images,1);
+dists=zeros(n_img,1);
+for i=1:n_img
+    img=handles.images(i,:);
+    img=reshape(img,128,128);
+    tm2=tpm1d(img,4,0,0);
+    dists(i)=mahsdistcalc(tm1,tm2,handles.sigma);
 end
