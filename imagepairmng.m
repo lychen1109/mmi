@@ -22,7 +22,7 @@ function varargout = imagepairmng(varargin)
 
 % Edit the above text to modify the response to help imagepairmng
 
-% Last Modified by GUIDE v2.5 22-Sep-2011 22:42:55
+% Last Modified by GUIDE v2.5 22-Sep-2011 23:17:40
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -66,6 +66,10 @@ images=loadimg(dirname);
 handles.images=images;
 handles.showidx=1;
 handles.dists=distcalc(handles);
+[~,handles.sortidx]=sort(handles.dists);
+sortlist=get(handles.popupmenu2,'String');
+sortvalue=get(handles.popupmenu2,'Value');
+handles.by=sortlist{sortvalue};
 updaterightpan(handles);
 
 % Choose default command line output for imagepairmng
@@ -331,6 +335,15 @@ function pushbutton13_Callback(hObject, eventdata, handles)
 
 function updaterightpan(handles)
 %update right panel
+switch handles.by
+    case 'by name'
+        images=handles.images;
+        dists=handles.dists;
+    case 'by distance'
+        images=handles.images(handles.sortidx,:);
+        dists=handles.dists(handles.sortidx);
+end
+
 n_img=size(handles.images,1);
 for i=1:8
     switch i
@@ -361,8 +374,8 @@ for i=1:8
     end
     showidx=handles.showidx+i-1;
     if showidx<=n_img
-        updatefig2(h,reshape(handles.images(showidx,:),128,128));
-        set(h2,'String',num2str(handles.dists(showidx)));
+        updatefig2(h,reshape(images(showidx,:),128,128));
+        set(h2,'String',num2str(dists(showidx)));
     else
         updatefig(h,'');
         set(h2,'String','');
@@ -410,6 +423,12 @@ images=loadimg(dirname);
 handles.images=images;
 handles.showidx=1;
 handles.dists=distcalc(handles);
+
+[~,handles.sortidx]=sort(handles.dists);
+sortlist=get(handles.popupmenu2,'String');
+sortvalue=get(handles.popupmenu2,'Value');
+handles.by=sortlist{sortvalue};
+
 updaterightpan(handles);
 guidata(hObject, handles);
 
@@ -443,3 +462,42 @@ for i=1:n_img
     tm2=tpm1d(img,4,0,0);
     dists(i)=mahsdistcalc(tm1,tm2,handles.sigma);
 end
+
+
+% --- Executes on selection change in popupmenu2.
+function popupmenu2_Callback(hObject, eventdata, handles)
+% hObject    handle to popupmenu2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu2 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupmenu2
+
+
+% --- Executes during object creation, after setting all properties.
+function popupmenu2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popupmenu2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in pushbutton17.
+function pushbutton17_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton17 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+handles.showidx=1;
+sortlist=get(handles.popupmenu2,'String');
+sortvalue=get(handles.popupmenu2,'Value');
+handles.by=sortlist{sortvalue};
+updaterightpan(handles);
+guidata(hObject, handles);
+
+
