@@ -16,14 +16,17 @@ modified=false(size(bdctimg));%record if a coef has been modified
 
 NMOD=500; %maximum allowed number of modified coeff
 mdrec=zeros(1,NMOD); %record mahsdist
+psnrrec=zeros(1,NMOD); %record of PSNR
 recidx=0;
 n_mod=0; %number of modified coef
 
 while n_mod<NMOD
+    ximg=bdctdec(bdctimg.*sign(bdctimg_ori));
     tm3=tpm1(bdctimg,4);
     mahsdistpre=mahsdistcalc(tm1,tm3,sigma);
     recidx=recidx+1;
     mdrec(recidx)=mahsdistpre;
+    psnrrec(recidx)=PSNR(simg,ximg);
     tmx=tm3-tm1;
     [~,I]=sort(tmx(:),1,'descend');
     t_bin=1; %index of target bin
@@ -148,8 +151,7 @@ end
 
 fprintf('%d coeff modified\n',n_mod);
 tm3=tpm1(bdctimg,4);
-bdctimg=bdctimg.*sign(bdctimg_ori);
-ximg=blkproc(bdctimg,[8 8],@idct2);
+ximg=bdctdec(bdctimg.*sign(bdctimg_ori));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % plot the result
@@ -159,11 +161,11 @@ m=max(max([tm1 tm2 tm3]));
 m=ceil(m*10)/10;
 
 subplot(2,4,1);
-imagesc(aimg),colormap gray
+imagesc(aimg,[0 255]),colormap gray
 subplot(2,4,2);
-imagesc(simg),colormap gray
+imagesc(simg,[0 255]),colormap gray
 subplot(2,4,3);
-imagesc(ximg),colormap gray
+imagesc(ximg,[0 255]),colormap gray
 subplot(2,4,4);
 plot(mdrec);
 subplot(2,4,5);
@@ -175,6 +177,8 @@ axis([0 10 0 10 0 m]);
 subplot(2,4,7);
 mesh(tm3);
 axis([0 10 0 10 0 m]);
+subplot(2,4,8);
+plot(psnrrec);
 
 function bdctimg=bdctmod(bdctimg,sj,sk,flag)
 %modify bdctcoeff
