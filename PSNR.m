@@ -79,7 +79,9 @@ function decibels=PSNR(A,B)
 % disp(sprintf('PSNR = +%5.2f dB',decibels))
 
 if A == B
-   error('Images are identical: PSNR has infinite value')
+   %error('Images are identical: PSNR has infinite value')
+   decibels=inf;
+   return;
 end
 
 max2_A = max(max(A));
