@@ -22,7 +22,7 @@ function varargout = imagepairmng(varargin)
 
 % Edit the above text to modify the response to help imagepairmng
 
-% Last Modified by GUIDE v2.5 22-Sep-2011 14:59:29
+% Last Modified by GUIDE v2.5 22-Sep-2011 17:22:52
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -56,6 +56,23 @@ handles.imagepairs=varargin{1};
 handles.imageidx=1;
 handles.MAX=size(handles.imagepairs,1);
 redrawfig(handles);
+
+%show images on the right
+root='C:\data\ImSpliceDataset\';
+namelist=get(handles.popupmenu1,'String');
+selected=get(handles.popupmenu1,'Value');
+dirname=namelist{selected};
+files=dir([root dirname filesep '*.bmp']);
+n_img=size(files,1);
+images=zeros(n_img,128^2);
+for i=1:n_img
+    img=imread([root dirname filesep files(i).name]);
+    img=double(img);
+    images(i,:)=img(:)';
+end
+handles.images=images;
+handles.showidx=1;
+updaterightpan(handles);
 
 % Choose default command line output for imagepairmng
 handles.output = hObject;
@@ -149,9 +166,14 @@ else
     img=imread(name2path(filename));    
 end
 img=double(img);
+updatefig2(fig,img);
+
+function updatefig2(fig,img)
+%helper function to show img in fig handle
 imagesc(img,'parent',fig,[0 255]);
 colormap gray;
 axis(fig,'image','off');
+
 
 function redrawfig(handles)
 %redraw the whole UI according to current imageidx
@@ -255,4 +277,117 @@ function popupmenu1_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in pushbutton6.
+function pushbutton6_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in pushbutton7.
+function pushbutton7_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton7 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in pushbutton8.
+function pushbutton8_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton8 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in pushbutton9.
+function pushbutton9_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton9 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in pushbutton10.
+function pushbutton10_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton10 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in pushbutton11.
+function pushbutton11_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton11 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in pushbutton12.
+function pushbutton12_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton12 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in pushbutton13.
+function pushbutton13_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton13 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+function updaterightpan(handles)
+%update right panel
+n_img=size(handles.images,1);
+for i=1:8
+    switch i
+        case 1
+            h=handles.axes3;
+        case 2
+            h=handles.axes4;
+        case 3
+            h=handles.axes5;
+        case 4
+            h=handles.axes6;
+        case 5
+            h=handles.axes7;
+        case 6
+            h=handles.axes8;
+        case 7
+            h=handles.axes9;
+        case 8
+            h=handles.axes10;
+    end
+    showidx=handles.showidx+i-1;
+    if showidx<=n_img
+        updatefig2(h,reshape(handles.images(showidx,:),128,128));
+    else
+        updatefig(h,'');
+    end
+end
+set(handles.text3,'String',[num2str(handles.showidx) ' - ' num2str(handles.showidx+7) ' of ' num2str(n_img)]);
+
+
+% --- Executes on button press in pushbutton14.
+function pushbutton14_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton14 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+if handles.showidx-8>0
+    handles.showidx=handles.showidx-8;
+    guidata(hObject, handles);
+    updaterightpan(handles);
+end
+
+
+% --- Executes on button press in pushbutton15.
+function pushbutton15_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton15 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+n_img=size(handles.images,1);
+if handles.showidx+8<=n_img
+    handles.showidx=handles.showidx+8;
+    guidata(hObject, handles);
+    updaterightpan(handles);
 end
