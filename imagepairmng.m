@@ -341,9 +341,11 @@ switch handles.by
     case 'by name'
         images=handles.images;
         dists=handles.dists;
+        filenames=handles.filenames;
     case 'by distance'
         images=handles.images(handles.sortidx,:);
         dists=handles.dists(handles.sortidx);
+        filenames=handles.filenames(handles.sortidx);
 end
 
 n_img=size(handles.images,1);
@@ -352,35 +354,45 @@ for i=1:8
         case 1
             h=handles.axes3;
             h2=handles.text4;
+            h3=handles.text12;
         case 2
             h=handles.axes4;
             h2=handles.text5;
+            h3=handles.text13;
         case 3
             h=handles.axes5;
             h2=handles.text6;
+            h3=handles.text14;
         case 4
             h=handles.axes6;
             h2=handles.text7;
+            h3=handles.text15;
         case 5
             h=handles.axes7;
             h2=handles.text8;
+            h3=handles.text16;
         case 6
             h=handles.axes8;
             h2=handles.text9;
+            h3=handles.text17;
         case 7
             h=handles.axes9;
             h2=handles.text10;
+            h3=handles.text18;
         case 8
             h=handles.axes10;
             h2=handles.text11;
+            h3=handles.text19;
     end
     showidx=handles.showidx+i-1;
     if showidx<=n_img
         updatefig2(h,reshape(images(showidx,:),128,128));
         set(h2,'String',num2str(dists(showidx)));
+        set(h3,'String',filenames{showidx});
     else
         updatefig(h,'');
         set(h2,'String','');
+        set(h3,'String','');
     end
 end
 set(handles.text3,'String',[num2str(handles.showidx) ' - ' num2str(handles.showidx+7) ' of ' num2str(n_img)]);
