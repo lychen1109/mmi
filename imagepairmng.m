@@ -286,12 +286,20 @@ function pushbutton6_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+handles.imagepairs{handles.imageidx,2}=get(handles.text12,'String');
+guidata(hObject, handles);
+redrawfig(handles);
+
 
 % --- Executes on button press in pushbutton7.
 function pushbutton7_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton7 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+handles.imagepairs{handles.imageidx,2}=get(handles.text13,'String');
+guidata(hObject, handles);
+redrawfig(handles);
 
 
 % --- Executes on button press in pushbutton8.
@@ -300,12 +308,20 @@ function pushbutton8_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+handles.imagepairs{handles.imageidx,2}=get(handles.text14,'String');
+guidata(hObject, handles);
+redrawfig(handles);
+
 
 % --- Executes on button press in pushbutton9.
 function pushbutton9_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton9 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+handles.imagepairs{handles.imageidx,2}=get(handles.text15,'String');
+guidata(hObject, handles);
+redrawfig(handles);
 
 
 % --- Executes on button press in pushbutton10.
@@ -314,12 +330,20 @@ function pushbutton10_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+handles.imagepairs{handles.imageidx,2}=get(handles.text16,'String');
+guidata(hObject, handles);
+redrawfig(handles);
+
 
 % --- Executes on button press in pushbutton11.
 function pushbutton11_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton11 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+handles.imagepairs{handles.imageidx,2}=get(handles.text17,'String');
+guidata(hObject, handles);
+redrawfig(handles);
 
 
 % --- Executes on button press in pushbutton12.
@@ -328,12 +352,20 @@ function pushbutton12_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+handles.imagepairs{handles.imageidx,2}=get(handles.text18,'String');
+guidata(hObject, handles);
+redrawfig(handles);
+
 
 % --- Executes on button press in pushbutton13.
 function pushbutton13_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton13 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+handles.imagepairs{handles.imageidx,2}=get(handles.text19,'String');
+guidata(hObject, handles);
+redrawfig(handles);
 
 function updaterightpan(handles)
 %update right panel
