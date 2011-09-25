@@ -54,6 +54,7 @@ function imagepairmng_OpeningFcn(hObject, eventdata, handles, varargin)
 
 handles.imagepairs=varargin{1};
 handles.sigma=varargin{2};
+handles.audb=varargin{3};
 handles.imageidx=1;
 handles.MAX=size(handles.imagepairs,1);
 redrawfig(handles);
@@ -509,7 +510,7 @@ function pushbutton16_Callback(hObject, eventdata, handles)
 namelist=get(handles.popupmenu1,'String');
 selected=get(handles.popupmenu1,'Value');
 dirname=namelist{selected};
-[handles.images,handles.filenames]=loadimg(dirname);
+[handles.images,handles.filenames,handles.tpms]=loadimg(dirname,handles);
 handles.showidx=1;
 handles.dists=distcalc(handles);
 
@@ -522,20 +523,37 @@ updaterightpan(handles);
 guidata(hObject, handles);
 
 
-function [images,filenames]=loadimg(dirname)
+function [images,filenames,tpms]=loadimg(dirname,handles)
 %helper function for loading images in the given dirname
 
-root='C:\data\ImSpliceDataset\';
-files=dir([root dirname filesep '*.bmp']);
-n_img=size(files,1);
-images=zeros(n_img,128^2);
-filenames=cell(n_img,1);
-for i=1:n_img
-    img=imread([root dirname filesep files(i).name]);
-    img=double(img);
-    images(i,:)=img(:)';
-    filenames{i}=files(i).name;
+% root='C:\data\ImSpliceDataset\';
+% files=dir([root dirname filesep '*.bmp']);
+% n_img=size(files,1);
+% images=zeros(n_img,128^2);
+% filenames=cell(n_img,1);
+% for i=1:n_img
+%     img=imread([root dirname filesep files(i).name]);
+%     img=double(img);
+%     images(i,:)=img(:)';
+%     filenames{i}=files(i).name;
+% end
+
+allimages=handles.audb.images;
+allfilenames=handles.audb.filenames;
+alldirs=handles.audb.dirs;
+alltpms=handles.audb.tpms;
+N=size(allimages,1);
+select=false(N,1);
+for i=1:N
+    if isequal(alldirs{i},dirname)
+        select(i)=true;
+    end
 end
+
+images=allimages(select,:);
+filenames=allfilenames(select);
+tpms=alltpms(:,:,select);
+
 
 function dists=distcalc(handles)
 %calculate distance between images and target image
@@ -547,10 +565,8 @@ tm1=tpm1d(simg,4,0,0);
 
 n_img=size(handles.images,1);
 dists=zeros(n_img,1);
-for i=1:n_img
-    img=handles.images(i,:);
-    img=reshape(img,128,128);
-    tm2=tpm1d(img,4,0,0);
+for i=1:n_img    
+    tm2=handles.tpms(:,:,i);
     dists(i)=mahsdistcalc(tm1,tm2,handles.sigma);
 end
 
