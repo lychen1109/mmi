@@ -59,18 +59,20 @@ handles.MAX=size(handles.imagepairs,1);
 redrawfig(handles);
 
 %show images on the right
-namelist=get(handles.popupmenu1,'String');
-selected=get(handles.popupmenu1,'Value');
-dirname=namelist{selected};
-images=loadimg(dirname);
-handles.images=images;
-handles.showidx=1;
-handles.dists=distcalc(handles);
-[~,handles.sortidx]=sort(handles.dists);
-sortlist=get(handles.popupmenu2,'String');
-sortvalue=get(handles.popupmenu2,'Value');
-handles.by=sortlist{sortvalue};
-updaterightpan(handles);
+% namelist=get(handles.popupmenu1,'String');
+% selected=get(handles.popupmenu1,'Value');
+% dirname=namelist{selected};
+% images=loadimg(dirname);
+% handles.images=images;
+% handles.showidx=1;
+% handles.dists=distcalc(handles);
+% [~,handles.sortidx]=sort(handles.dists);
+% sortlist=get(handles.popupmenu2,'String');
+% sortvalue=get(handles.popupmenu2,'Value');
+% handles.by=sortlist{sortvalue};
+% updaterightpan(handles);
+clearrightpan(handles);
+
 
 % Choose default command line output for imagepairmng
 handles.output = hObject;
@@ -382,6 +384,41 @@ for i=1:8
     end
 end
 set(handles.text3,'String',[num2str(handles.showidx) ' - ' num2str(handles.showidx+7) ' of ' num2str(n_img)]);
+
+
+function clearrightpan(handles)
+%show blank right panel when first load GUI
+for i=1:8
+    switch i
+        case 1
+            h=handles.axes3;
+            h2=handles.text4;
+        case 2
+            h=handles.axes4;
+            h2=handles.text5;
+        case 3
+            h=handles.axes5;
+            h2=handles.text6;
+        case 4
+            h=handles.axes6;
+            h2=handles.text7;
+        case 5
+            h=handles.axes7;
+            h2=handles.text8;
+        case 6
+            h=handles.axes8;
+            h2=handles.text9;
+        case 7
+            h=handles.axes9;
+            h2=handles.text10;
+        case 8
+            h=handles.axes10;
+            h2=handles.text11;
+    end    
+    updatefig(h,'');
+    set(h2,'String','');    
+end
+set(handles.text3,'String','');
 
 
 % --- Executes on button press in pushbutton14.
