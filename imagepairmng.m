@@ -456,8 +456,7 @@ function pushbutton16_Callback(hObject, eventdata, handles)
 namelist=get(handles.popupmenu1,'String');
 selected=get(handles.popupmenu1,'Value');
 dirname=namelist{selected};
-images=loadimg(dirname);
-handles.images=images;
+[handles.images,handles.filenames]=loadimg(dirname);
 handles.showidx=1;
 handles.dists=distcalc(handles);
 
