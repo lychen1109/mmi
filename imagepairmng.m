@@ -543,13 +543,17 @@ allfilenames=handles.audb.filenames;
 alldirs=handles.audb.dirs;
 alltpms=handles.audb.tpms;
 N=size(allimages,1);
-select=false(N,1);
-for i=1:N
-    if isequal(alldirs{i},dirname)
-        select(i)=true;
+
+if isequal(dirname,'all')
+    select=true(N,1);
+else
+    select=false(N,1);
+    for i=1:N
+        if isequal(alldirs{i},dirname)
+            select(i)=true;
+        end
     end
 end
-
 images=allimages(select,:);
 filenames=allfilenames(select);
 tpms=alltpms(:,:,select);
