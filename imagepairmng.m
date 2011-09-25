@@ -22,7 +22,7 @@ function varargout = imagepairmng(varargin)
 
 % Edit the above text to modify the response to help imagepairmng
 
-% Last Modified by GUIDE v2.5 22-Sep-2011 23:17:40
+% Last Modified by GUIDE v2.5 25-Sep-2011 10:55:25
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -393,30 +393,39 @@ for i=1:8
         case 1
             h=handles.axes3;
             h2=handles.text4;
+            h3=handles.text12;
         case 2
             h=handles.axes4;
             h2=handles.text5;
+            h3=handles.text13;
         case 3
             h=handles.axes5;
             h2=handles.text6;
+            h3=handles.text14;
         case 4
             h=handles.axes6;
             h2=handles.text7;
+            h3=handles.text15;
         case 5
             h=handles.axes7;
             h2=handles.text8;
+            h3=handles.text16;
         case 6
             h=handles.axes8;
             h2=handles.text9;
+            h3=handles.text17;
         case 7
             h=handles.axes9;
             h2=handles.text10;
+            h3=handles.text18;
         case 8
             h=handles.axes10;
             h2=handles.text11;
+            h3=handles.text19;
     end    
     updatefig(h,'');
-    set(h2,'String','');    
+    set(h2,'String','');
+    set(h3,'String','');
 end
 set(handles.text3,'String','');
 
@@ -537,5 +546,3 @@ sortvalue=get(handles.popupmenu2,'Value');
 handles.by=sortlist{sortvalue};
 updaterightpan(handles);
 guidata(hObject, handles);
-
-
