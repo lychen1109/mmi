@@ -1,4 +1,4 @@
-function p=name2path(filename)
+function [p,prefix]=name2path(filename)
 %filename to path transform
 
 root='C:\data\ImSpliceDataset\';
