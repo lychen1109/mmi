@@ -470,17 +470,19 @@ updaterightpan(handles);
 guidata(hObject, handles);
 
 
-function images=loadimg(dirname)
+function [images,filenames]=loadimg(dirname)
 %helper function for loading images in the given dirname
 
 root='C:\data\ImSpliceDataset\';
 files=dir([root dirname filesep '*.bmp']);
 n_img=size(files,1);
 images=zeros(n_img,128^2);
+filenames=cell(n_img,1);
 for i=1:n_img
     img=imread([root dirname filesep files(i).name]);
     img=double(img);
     images(i,:)=img(:)';
+    filenames{i}=files(i).name;
 end
 
 function dists=distcalc(handles)
