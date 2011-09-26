@@ -1,6 +1,15 @@
-function histhack2(au,sp,sigma)
+function ximg=histhack2(au,sp,sigma,varargin)
 %reshape histogram by modifying LSB
 %this version introduced PSNR and Mahalanobis distance
+
+DEBUG=false;
+nvar=length(varargin);
+for i=1:nvar/2
+    switch varargin{i*2-1}
+        case 'debug'
+            DEBUG=varargin{i*2};
+    end
+end
 
 aimg=imread(name2path(au));
 simg=imread(name2path(sp));
@@ -15,18 +24,22 @@ bdctimg=round(abs(bdctimg));
 modified=false(size(bdctimg));%record if a coef has been modified
 
 NMOD=500; %maximum allowed number of modified coeff
-mdrec=zeros(1,NMOD); %record mahsdist
-psnrrec=zeros(1,NMOD); %record of PSNR
-recidx=0;
+if DEBUG
+    mdrec=zeros(1,NMOD); %record mahsdist
+    psnrrec=zeros(1,NMOD); %record of PSNR
+    recidx=0;
+end
 n_mod=0; %number of modified coef
 
 while n_mod<NMOD
-    ximg=bdctdec(bdctimg.*sign(bdctimg_ori));
-    tm3=tpm1(bdctimg,4);
+    tm3=tpm1(bdctimg,4);       
     mahsdistpre=mahsdistcalc(tm1,tm3,sigma);
-    recidx=recidx+1;
-    mdrec(recidx)=mahsdistpre;
-    psnrrec(recidx)=PSNR(simg,ximg);
+    if DEBUG
+        recidx=recidx+1;
+        ximg=bdctdec(bdctimg.*sign(bdctimg_ori));
+        mdrec(recidx)=mahsdistpre;
+        psnrrec(recidx)=PSNR(simg,ximg);
+    end
     tmx=tm3-tm1;
     [~,I]=sort(tmx(:),1,'descend');
     t_bin=1; %index of target bin
@@ -40,7 +53,9 @@ while n_mod<NMOD
         diffimg2=(diffimg(:,2:end)==(k-5));
         location=diffimg1&diffimg2;
         num=sum(sum(location));
-        fprintf('There are %d number of coef to be modified\n',num);
+        if DEBUG
+            fprintf('There are %d number of coef to be modified\n',num);
+        end
         
         locations=find(location);
         randidx=randperm(num);
@@ -96,7 +111,9 @@ while n_mod<NMOD
             [mahsdist_sorted,I]=sort(mahsdist);
             if mahsdist_sorted(1)<mahsdistpre
                 %adopt the modification
-                fprintf('delta mahs dist is %g\n',mahsdistpre-mahsdist_sorted(1));
+                if DEBUG
+                    fprintf('delta mahs dist is %g\n',mahsdistpre-mahsdist_sorted(1));
+                end
                 switch I(1)
                     case 1
                         bdctimg=bdctimgc(:,:,1);
@@ -157,28 +174,37 @@ ximg=bdctdec(bdctimg.*sign(bdctimg_ori));
 % plot the result
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-m=max(max([tm1 tm2 tm3]));
-m=ceil(m*10)/10;
-
-subplot(2,4,1);
-imagesc(aimg,[0 255]),colormap gray
-subplot(2,4,2);
-imagesc(simg,[0 255]),colormap gray
-subplot(2,4,3);
-imagesc(ximg,[0 255]),colormap gray
-subplot(2,4,4);
-plot(mdrec);
-subplot(2,4,5);
-mesh(tm1);
-axis([0 10 0 10 0 m]);
-subplot(2,4,6);
-mesh(tm2);
-axis([0 10 0 10 0 m]);
-subplot(2,4,7);
-mesh(tm3);
-axis([0 10 0 10 0 m]);
-subplot(2,4,8);
-plot(psnrrec);
+if DEBUG
+    m=max(max([tm1 tm2 tm3]));
+    m=ceil(m*10)/10;
+    mdrec=mdrec(1:recidx);
+    psnrrec=psnrrec(1:recidx);
+    
+    subplot(2,4,1);
+    imagesc(aimg,[0 255]),colormap gray
+    axis image off
+    subplot(2,4,2);
+    imagesc(simg,[0 255]),colormap gray
+    axis image off
+    subplot(2,4,3);
+    imagesc(ximg,[0 255]),colormap gray
+    axis image off
+    subplot(2,4,4);
+    plot(mdrec);
+    title('Mahs Distance');
+    subplot(2,4,5);
+    mesh(tm1);
+    axis([0 10 0 10 0 m]);
+    subplot(2,4,6);
+    mesh(tm2);
+    axis([0 10 0 10 0 m]);
+    subplot(2,4,7);
+    mesh(tm3);
+    axis([0 10 0 10 0 m]);
+    subplot(2,4,8);
+    plot(psnrrec);
+    title('PSNR');
+end
 
 function bdctimg=bdctmod(bdctimg,sj,sk,flag)
 %modify bdctcoeff
