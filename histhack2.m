@@ -108,13 +108,13 @@ while n_mod<NMOD
                 mahsdist(7)=mahsdistcalc(tm1,tmc,sigma);
             end
             
-            [mahsdist_sorted,I]=sort(mahsdist);
+            [mahsdist_sorted,I2]=sort(mahsdist);
             if mahsdist_sorted(1)<mahsdistpre
                 %adopt the modification
                 if DEBUG
                     fprintf('delta mahs dist is %g\n',mahsdistpre-mahsdist_sorted(1));
                 end
-                switch I(1)
+                switch I2(1)
                     case 1
                         bdctimg=bdctimgc(:,:,1);
                         modified(sj,sk)=true;
@@ -162,6 +162,11 @@ while n_mod<NMOD
         end %end of trying all candidate coeff
         if modflag,break;end
         t_bin=t_bin+1;
+%         if DEBUG
+%             fprintf('t_bin=%d\n',t_bin);
+%             fprintf('I(t_bin)=%d\n',I(t_bin));
+%             fprintf('tmx(I(t_bin))=%g\n',tmx(I(t_bin)));
+%         end
     end %end of trying all positive delta bins
     if modflag==false, break;end
 end
