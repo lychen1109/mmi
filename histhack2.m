@@ -1,4 +1,4 @@
-function ximg=histhack2(au,sp,sigma,varargin)
+function [ximg,n_mod]=histhack2(au,sp,sigma,varargin)
 %reshape histogram by modifying LSB
 %this version introduced PSNR and Mahalanobis distance
 
