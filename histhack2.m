@@ -3,16 +3,19 @@ function [ximg,n_mod]=histhack2(au,sp,sigma,varargin)
 %this version introduced PSNR and Mahalanobis distance
 
 DEBUG=false;
+root='C:\data\ImSpliceDataset\';
 nvar=length(varargin);
 for i=1:nvar/2
     switch varargin{i*2-1}
         case 'debug'
             DEBUG=varargin{i*2};
+        case 'root'
+            root=varargin{i*2};
     end
 end
 
-aimg=imread(name2path(au));
-simg=imread(name2path(sp));
+aimg=imread(name2path(au,'root',root));
+simg=imread(name2path(sp,'root',root));
 aimg=double(aimg);
 simg=double(simg);
 
