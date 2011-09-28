@@ -1,4 +1,4 @@
-function [ximages,n_mods]=histhackrun(imagepairs,sigma,varargin)
+function [ximages,n_mods,modratios,psnrfinals]=histhackrun(imagepairs,sigma,varargin)
 %batch run of histhack2
 
 root='C:\data\ImSpliceDataset\';
@@ -13,8 +13,10 @@ end
 N=size(imagepairs,1);
 ximages=zeros(N,128^2);
 n_mods=zeros(N,1);
+modratios=zeros(N,1);
+psnrfinals=zeros(N,1);
 for i=1:N
     fprintf('processing image %d\n',i);
-    [ximg,n_mods(i)]=histhack2(imagepairs{i,2},imagepairs{i,1},sigma,'root',root);
+    [ximg,n_mods(i),modratios(i),psnrfinals(i)]=histhack2(imagepairs{i,2},imagepairs{i,1},sigma,'root',root);
     ximages(i,:)=ximg(:)';
 end
