@@ -1,4 +1,4 @@
-function [ximg,n_mod,modratio]=histhack2(au,sp,sigma,varargin)
+function [ximg,n_mod,modratio,psnrfinal]=histhack2(au,sp,sigma,varargin)
 %reshape histogram by modifying LSB
 %this version introduced PSNR and Mahalanobis distance
 
@@ -187,6 +187,7 @@ end
 fprintf('%d coeff modified\n',n_mod);
 ximg=bdctdec(bdctimg.*sign(bdctimg_ori));
 modratio=mahsdistpre/mahsdistori;
+psnrfinal=PSNR(simg,ximg);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % plot the result
