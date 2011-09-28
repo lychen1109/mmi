@@ -1,4 +1,4 @@
-function [ximg,n_mod]=histhack2(au,sp,sigma,varargin)
+function [ximg,n_mod,modratio]=histhack2(au,sp,sigma,varargin)
 %reshape histogram by modifying LSB
 %this version introduced PSNR and Mahalanobis distance
 
@@ -35,8 +35,10 @@ if DEBUG
 end
 n_mod=0; %number of modified coef
 
-while n_mod<NMOD        
-    mahsdistpre=mahsdistcalc(tm1,tm3,sigma);
+mahsdistori=mahsdistcalc(tm1,tm3,sigma);
+mahsdistpre=mahsdistori;
+
+while n_mod<NMOD    
     if DEBUG
         recidx=recidx+1;
         ximg=bdctdec(bdctimg.*sign(bdctimg_ori));
@@ -113,6 +115,7 @@ while n_mod<NMOD
             
             [mahsdist_sorted,I2]=sort(mahsdist);
             if mahsdist_sorted(1)<mahsdistpre
+                mahsdistpre=mahsdist_sorted(1);
                 %adopt the modification
                 if DEBUG
                     fprintf('delta mahs dist is %g\n',mahsdistpre-mahsdist_sorted(1));
@@ -178,11 +181,12 @@ while n_mod<NMOD
 %             fprintf('tmx(I(t_bin))=%g\n',tmx(I(t_bin)));
 %         end
     end %end of trying all positive delta bins
-    if modflag==false, break;end
+    if modflag==false, break;end    
 end
 
 fprintf('%d coeff modified\n',n_mod);
 ximg=bdctdec(bdctimg.*sign(bdctimg_ori));
+modratio=mahsdistpre/mahsdistori;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % plot the result
