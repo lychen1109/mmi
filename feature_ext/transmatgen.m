@@ -11,6 +11,9 @@ fm=zeros(m_size,m_size,N);
 for i=1:N
    img=imgs(i,:);
    img=reshape(img,128,128);
-   D=f(img,T);   
+   img=double(img);
+   bdct=blkproc(img,[8 8],@dct2);
+   bdct=abs(round(bdct));
+   D=f(bdct,T);   
    fm(:,:,i)=D;
 end
