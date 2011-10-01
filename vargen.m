@@ -1,6 +1,7 @@
 function Z=vargen(img,T)
 %adjacent variable generation from bdctimg
 
+img=img-mean(img(:));
 img=blkproc(img,[8 8],@dct2);
 %img=abs(round(img));
 img=abs(img);
