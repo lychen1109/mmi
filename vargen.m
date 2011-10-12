@@ -1,10 +1,9 @@
-function Z=vargen(img,T)
+function Z=vargen(img)
 %adjacent variable generation from bdctimg
 
 img=img-mean(img(:));
 img=blkproc(img,[8 8],@dct2);
-%img=abs(round(img));
-img=abs(img);
+img=abs(round(img));
 Y=img(:,1:end-1)-img(:,2:end);
 %Y(Y>T)=T;
 %Y(Y<-T)=-T;
