@@ -15,15 +15,12 @@ evar=0;%explained variance
 for i=1:K
     evar=evar+cs(i)*norm(C(i,:)-m)^2;
 end
-evar=evar/(K-1);
+%evar=evar/(K-1);
 
-uevar=0;%unexplained variance
-for i=1:K
-    fi=feat(idx==i,:);
-    for j=1:cs(i)
-        uevar=uevar+norm(fi(j,:)-C(i,:))^2;
-    end
+m1=feat-repmat(m,N,1);
+var=0;%total variance
+for i=1:N
+    var=var+norm(m1(i,:))^2;
 end
-uevar=uevar/(N-K);
-
-r=evar/uevar;
+%var=var/(N-1);
+r=evar/var;
