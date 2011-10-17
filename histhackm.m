@@ -43,7 +43,7 @@ while n_mod<NMOD
         logpdfrec(recidx)=logpdfpre;
         psnrrec(recidx)=PSNR(simg,ximg);
     end
-    de=gmmderi(gm,tm3(1:end-1)');    
+    de=gmmderi(gm,tm3(1:end-1));    
     [~,I]=sort(de(:),1,'ascend');
     t_bin=1; %index of target bin
     modflag=false;
