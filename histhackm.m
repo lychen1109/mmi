@@ -240,7 +240,7 @@ end
 function tm=tmmod(bdctimg,tm,sj,sk,flag)
 %modify transmition probability directly
 
-T=4;
+T=3;
 S=1/(128*126);
 for i=1:3
     if flag(i)==1
