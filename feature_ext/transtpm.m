@@ -1,4 +1,4 @@
-function tmat=transtpm(img,T)
+function [tmat,sumimg,diffimg2]=transtpm(img,T)
 %transformed transition probability matrix of bdct difference array
 
 img=img-mean(img(:));
