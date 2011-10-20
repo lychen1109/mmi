@@ -9,11 +9,11 @@ sumimg=diffimg(:,1:end-1)+diffimg(:,2:end);
 diffimg2=diffimg(:,1:end-1)-diffimg(:,2:end);
 sumimg(sumimg>T)=T;
 sumimg(sumimg<-T)=-T;
-diffimg2(diffimg2>T)=2*T;
-diffimg2(diffimg2<-T)=-2*T;
+diffimg2(diffimg2>T)=T;
+diffimg2(diffimg2<-T)=-T;
 sumimg=sumimg+T+1;
-diffimg2=diffimg2+2*T+1;
-tmat=zeros(2*T+1,4*T+1);
+diffimg2=diffimg2+T+1;
+tmat=zeros(2*T+1,2*T+1);
 
 [N,M]=size(img);
 for i=1:N
