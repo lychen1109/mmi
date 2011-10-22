@@ -6,9 +6,11 @@ Sigma=gm.Sigma;
 de=zeros(size(X));
 S=gm.PComponents;
 K=length(X);
+N=length(S);
 
 for i=1:K
-    de(i)=-S(1)*gausspdf(mu(1,:),Sigma(:,:,1),X)*(X(i)-mu(1,i))/Sigma(1,i,1)...
-        -S(2)*gausspdf(mu(2,:),Sigma(:,:,2),X)*(X(i)-mu(2,i))/Sigma(1,i,2);
+    for j=1:N
+        de(i)=de(i)-S(j)*gausspdf(mu(j,:),Sigma(:,:,j),X)*(X(i)-mu(j,i))/Sigma(1,i,j);
+    end   
 end
 de=de/pdf(gm,X);
