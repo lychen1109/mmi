@@ -13,12 +13,19 @@ bar3(-T:T,D',0.5,'detached');
 [~,sumimg,diffimg]=transtpm(img,T);
 sumimg=sumimg-T-1;
 diffimg=diffimg-T-1;
+
 h1=hist(sumimg(:),-T:T)/length(sumimg(:));
 subplot(2,2,3);
 bar(-T:T,h1);
 title('sum histogram');
+xlim=get(gca,'xlim');
+ylim=get(gca,'ylim');
 
 h2=hist(diffimg(:),-T:T)/length(diffimg(:));
 subplot(2,2,4);
 bar(-T:T,h2);
 title('difference histogram');
+set(gca,'xlim',xlim);
+set(gca,'ylim',ylim);
+
+
