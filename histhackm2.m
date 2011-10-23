@@ -233,9 +233,6 @@ while n_mod<NMOD
 end
 
 modratio=n_mod/avaicoeff;
-if DEBUG
-    fprintf('%d in %d (%g) coeffs modified\n',n_mod,avaicoeff,modratio);
-end
 ximg=bdctdec(bdctimg.*sign(bdctimg_ori));
 modlogpdf1=logpdfpre1-logpdfori1;
 modlogpdf2=logpdfpre2-logpdfori2;
