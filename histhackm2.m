@@ -150,7 +150,8 @@ while n_mod<NMOD
                 logpdf2(7)=log(pdf(gm2,tmnew(1:end-1)));
             end
             
-            goodmodidx=(logpdf1>logpdfpre1) & (logpdf2<logpdfpre2);
+            %goodmodidx=(logpdf1>logpdfpre1) & (logpdf2<logpdfpre2);
+            goodmodidx=(logpdf1-logpdf2)>(logpdfpre1-logpdfpre2);
             %[maxlogpdf,I2]=max(logpdf);
             if any(goodmodidx)                
                 %adopt the modification
@@ -256,10 +257,16 @@ if DEBUG
     title('log pdf splicing model');
     subplot(2,4,5);
     mesh(tm2);
-    zlim=get(gca,'zlim');
+    a1=gca;
+    zlim1=get(a1,'zlim');
     subplot(2,4,6);
     mesh(tm3);
-    set(gca,'zlim',zlim);
+    a2=gca;
+    zlim2=get(a2,'zlim');
+    
+    zmax=max([zlim1(2) zlim2(2)]);
+    set(a1,'zlim',[0 zmax]);
+    set(a2,'zlim',[0 zmax]);
     subplot(2,4,7);
     plot(psnrrec);
     title('PSNR');
