@@ -5,7 +5,7 @@ function [ximg,n_mod,modlogpdf1,modlogpdf2,psnrfinal]=histhackm2(sp,gm1,gm2,vara
 
 DEBUG=false;
 T=3;
-maxmodratio=0.04;
+maxmodratio=0.05;
 root='C:\data\ImSpliceDataset\';
 nvar=length(varargin);
 for i=1:nvar/2
@@ -65,7 +65,7 @@ while n_mod<NMOD
 %             candibins(i)=true;
 %         end
 %     end
-    candibins=(de1-de2)<0;    
+    candibins=(de1<0) | (de1<de2);    
     candibins=find(candibins);
     candibinweights=de1(candibins)-de2(candibins);
     [~,I]=sort(candibinweights(:),1,'ascend');
@@ -151,7 +151,7 @@ while n_mod<NMOD
             end
             
             %goodmodidx=(logpdf1>logpdfpre1) & (logpdf2<logpdfpre2);
-            goodmodidx=(logpdf1-logpdf2)>(logpdfpre1-logpdfpre2);
+            goodmodidx=( logpdf1 > logpdfpre1 ) & ((logpdf1-logpdf2)>(logpdfpre1-logpdfpre2));
             %[maxlogpdf,I2]=max(logpdf);
             if any(goodmodidx)                
                 %adopt the modification
@@ -228,7 +228,7 @@ while n_mod<NMOD
     if modflag==false, break;end    
 end
 
-fprintf('%d coeff modified\n',n_mod);
+fprintf('%d in %d (%g)coeffs modified\n',n_mod,avaicoeff,n_mod/avaicoeff);
 ximg=bdctdec(bdctimg.*sign(bdctimg_ori));
 modlogpdf1=logpdfpre1-logpdfori1;
 modlogpdf2=logpdfpre2-logpdfori2;
