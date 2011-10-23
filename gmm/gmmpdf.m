@@ -1,12 +1,15 @@
-function gmmpdf(gm,X)
-%test gmm pdf calc
-
-fprintf('calculate with pdf function: %g\n',pdf(gm,X));
+function p=gmmpdf(gm,X)
+%gmm pdf calc
 
 mu=gm.mu;
 Sigma=gm.Sigma;
 S=gm.PComponents;
-p=S(1)*gausspdf(mu(1,:),Sigma(:,:,1),X)+S(2)*gausspdf(mu(2,:),Sigma(:,:,2),X);
-fprintf('manully calculated pdf: %g\n',p);
+K=length(S);
+p=0;
+for i=1:K
+    p=p+S(i)*gausspdf(mu(i,:),Sigma(:,:,i),X);
+end
+
+
 
 
