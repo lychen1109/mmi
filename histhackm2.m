@@ -35,6 +35,7 @@ if DEBUG
     logpdfrec2=zeros(1,NMOD);
     psnrrec=zeros(1,NMOD); %record of PSNR
     recidx=0;
+    binmiss=0;
 end
 n_mod=0; %number of modified coef
 
@@ -223,6 +224,9 @@ while n_mod<NMOD
         end %end of trying all candidate coeff
         if modflag,break;end
         t_bin=t_bin+1;
+        if DEBUG
+            binmiss=binmiss+1;
+        end
 %         if DEBUG
 %             fprintf('t_bin=%d\n',t_bin);
 %             fprintf('I(t_bin)=%d\n',I(t_bin));
@@ -237,6 +241,11 @@ ximg=bdctdec(bdctimg.*sign(bdctimg_ori));
 modlogpdf1=logpdfpre1-logpdfori1;
 modlogpdf2=logpdfpre2-logpdfori2;
 psnrfinal=PSNR(simg,ximg);
+
+if DEBUG
+    fprintf('binmiss=%d\n',binmiss);
+end
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % plot the result
