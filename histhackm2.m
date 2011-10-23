@@ -53,7 +53,20 @@ while n_mod<NMOD
     end
     de1=gmmderi(gm1,tm3(1:end-1));
     de2=gmmderi(gm2,tm3(1:end-1));
-    candibins=find((de1<0) & (de2>0));
+    candibins=false(size(de1));
+    for i=1:length(de1)
+        if de1(i)<0 && de2(i)>0
+            candibins(i)=true;
+        end
+        if de1(i)<0 && de2(i)<0 && abs(de1(i))>abs(de2(i))
+            candibins(i)=true;
+        end
+        if de1(i)>0 && de2(i)>0 && abs(de1(i))<abs(de2(i))
+            candibins(i)=true;
+        end
+    end
+        
+    candibins=find(candibins);
     candibinweights=de1(candibins)-de2(candibins);
     [~,I]=sort(candibinweights(:),1,'ascend');
     t_bin=1; %index of target bin
