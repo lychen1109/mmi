@@ -2,11 +2,13 @@ function [ximg,output]=histhackm2(sp,gm1,gm2,varargin)
 %reshape histogram by modifying LSB
 %This is based on histhack2 and using GMM model
 %this is based on histhackm and use 2 GMM models
+%sorttype: 'diff' or 'ratio', default is 'ratio'
 
 DEBUG=false;
 T=3;
 maxmodratio=0.05;
 root='C:\data\ImSpliceDataset\';
+sorttype='ratio';
 nvar=length(varargin);
 for i=1:nvar/2
     switch varargin{i*2-1}
@@ -14,6 +16,8 @@ for i=1:nvar/2
             DEBUG=varargin{i*2};
         case 'root'
             root=varargin{i*2};
+        case 'sorttype'
+            sorttype=varargin{i*2};
     end
 end
 
@@ -69,9 +73,14 @@ while n_mod<NMOD
 %     end
     candibins=(de1<0);    
     candibins=find(candibins);
-    %candibinweights=de1(candibins)-de2(candibins);
-    candibinweights=abs(de1(candibins)./de2(candibins));
-    [~,I]=sort(candibinweights(:),1,'descend');
+    if isequal(sorttype,'diff')
+        candibinweights=de1(candibins)-de2(candibins);
+        sortstr='ascend';
+    else
+        candibinweights=abs(de1(candibins)./de2(candibins));
+        sortstr='descend';
+    end
+    [~,I]=sort(candibinweights(:),1,sortstr);
     t_bin=1; %index of target bin
     modflag=false;
     while t_bin<=length(candibins)
