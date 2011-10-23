@@ -52,7 +52,9 @@ while n_mod<NMOD
         psnrrec(recidx)=PSNR(simg,ximg);
     end
     de1=gmmderi(gm1,tm3(1:end-1));
-    %de2=gmmderi(gm2,tm3(1:end-1));
+    if DEBUG
+        de2=gmmderi(gm2,tm3(1:end-1));
+    end
 %     candibins=false(size(de1));
 %     for i=1:length(de1)
 %         if de1(i)<0 && de2(i)>0
@@ -81,7 +83,7 @@ while n_mod<NMOD
         location=diffimg1&diffimg2;
         num=sum(sum(location));
         if DEBUG
-            fprintf('[%d,%d] %g : %d coef to be modified\n',j-T-1,k-T-1,tm3(j,k),num);
+            fprintf('[%d,%d] %g (%g,%g): %d coef to be modified\n',j-T-1,k-T-1,tm3(j,k),de1(candibins(I(t_bin))),de2(candibins(I(t_bin))),num);
         end
         
         locations=find(location);
