@@ -1,4 +1,4 @@
-function [ximg,n_mod,modlogpdf1,modlogpdf2,psnrfinal]=histhackm2(sp,gm1,gm2,varargin)
+function [ximg,modratio,modlogpdf1,modlogpdf2,psnrfinal]=histhackm2(sp,gm1,gm2,varargin)
 %reshape histogram by modifying LSB
 %This is based on histhack2 and using GMM model
 %this is based on histhackm and use 2 GMM models
@@ -52,7 +52,7 @@ while n_mod<NMOD
         psnrrec(recidx)=PSNR(simg,ximg);
     end
     de1=gmmderi(gm1,tm3(1:end-1));
-    de2=gmmderi(gm2,tm3(1:end-1));
+    %de2=gmmderi(gm2,tm3(1:end-1));
 %     candibins=false(size(de1));
 %     for i=1:length(de1)
 %         if de1(i)<0 && de2(i)>0
@@ -65,9 +65,9 @@ while n_mod<NMOD
 %             candibins(i)=true;
 %         end
 %     end
-    candibins=(de1<0) | (de1<de2);    
+    candibins=(de1<0);    
     candibins=find(candibins);
-    candibinweights=de1(candibins)-de2(candibins);
+    candibinweights=de1(candibins);
     [~,I]=sort(candibinweights(:),1,'ascend');
     t_bin=1; %index of target bin
     modflag=false;
@@ -81,7 +81,7 @@ while n_mod<NMOD
         location=diffimg1&diffimg2;
         num=sum(sum(location));
         if DEBUG
-            fprintf('There are %d number of coef to be modified\n',num);
+            fprintf('[%d,%d] %g : %d coef to be modified\n',j-T-1,k-T-1,tm3(j,k),num);
         end
         
         locations=find(location);
@@ -213,6 +213,9 @@ while n_mod<NMOD
                         n_mod=n_mod+3;
                         modflag=true;
                 end
+                if DEBUG
+                    fprintf('%d in %d (%g) coeffs modified\n',n_mod,avaicoeff,n_mod/avaicoeff);
+                end                
             end
             if modflag, break; end
             loc_idx=loc_idx+1;
@@ -228,7 +231,10 @@ while n_mod<NMOD
     if modflag==false, break;end    
 end
 
-fprintf('%d in %d (%g)coeffs modified\n',n_mod,avaicoeff,n_mod/avaicoeff);
+modratio=n_mod/avaicoeff;
+if DEBUG
+    fprintf('%d in %d (%g) coeffs modified\n',n_mod,avaicoeff,modratio);
+end
 ximg=bdctdec(bdctimg.*sign(bdctimg_ori));
 modlogpdf1=logpdfpre1-logpdfori1;
 modlogpdf2=logpdfpre2-logpdfori2;
