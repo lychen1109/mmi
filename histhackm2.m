@@ -51,10 +51,9 @@ while n_mod<NMOD
         logpdfrec2(recidx)=logpdfpre2;
         psnrrec(recidx)=PSNR(simg,ximg);
     end
-    de1=gmmderi(gm1,tm3(1:end-1));
-    if DEBUG
-        de2=gmmderi(gm2,tm3(1:end-1));
-    end
+    de1=gmmderi(gm1,tm3(1:end-1));    
+    de2=gmmderi(gm2,tm3(1:end-1));
+    
 %     candibins=false(size(de1));
 %     for i=1:length(de1)
 %         if de1(i)<0 && de2(i)>0
@@ -69,7 +68,7 @@ while n_mod<NMOD
 %     end
     candibins=(de1<0);    
     candibins=find(candibins);
-    candibinweights=de1(candibins);
+    candibinweights=de1(candibins)-de2(candibins);
     [~,I]=sort(candibinweights(:),1,'ascend');
     t_bin=1; %index of target bin
     modflag=false;
