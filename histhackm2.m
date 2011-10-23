@@ -53,19 +53,19 @@ while n_mod<NMOD
     end
     de1=gmmderi(gm1,tm3(1:end-1));
     de2=gmmderi(gm2,tm3(1:end-1));
-    candibins=false(size(de1));
-    for i=1:length(de1)
-        if de1(i)<0 && de2(i)>0
-            candibins(i)=true;
-        end
-        if de1(i)<0 && de2(i)<0 && abs(de1(i))>abs(de2(i))
-            candibins(i)=true;
-        end
-        if de1(i)>0 && de2(i)>0 && abs(de1(i))<abs(de2(i))
-            candibins(i)=true;
-        end
-    end
-        
+%     candibins=false(size(de1));
+%     for i=1:length(de1)
+%         if de1(i)<0 && de2(i)>0
+%             candibins(i)=true;
+%         end
+%         if de1(i)<0 && de2(i)<0 && abs(de1(i))>abs(de2(i))
+%             candibins(i)=true;
+%         end
+%         if de1(i)>0 && de2(i)>0 && abs(de1(i))<abs(de2(i))
+%             candibins(i)=true;
+%         end
+%     end
+    candibins=(de1-de2)<0;    
     candibins=find(candibins);
     candibinweights=de1(candibins)-de2(candibins);
     [~,I]=sort(candibinweights(:),1,'ascend');
