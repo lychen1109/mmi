@@ -1,4 +1,4 @@
-function [ximg,modratio,modlogpdf1,modlogpdf2,psnrfinal]=histhackm2(sp,gm1,gm2,varargin)
+function [ximg,output]=histhackm2(sp,gm1,gm2,varargin)
 %reshape histogram by modifying LSB
 %This is based on histhack2 and using GMM model
 %this is based on histhackm and use 2 GMM models
@@ -69,8 +69,9 @@ while n_mod<NMOD
 %     end
     candibins=(de1<0);    
     candibins=find(candibins);
-    candibinweights=de1(candibins)-de2(candibins);
-    [~,I]=sort(candibinweights(:),1,'ascend');
+    %candibinweights=de1(candibins)-de2(candibins);
+    candibinweights=abs(de1(candibins)/de2(candibins));
+    [~,I]=sort(candibinweights(:),1,'descend');
     t_bin=1; %index of target bin
     modflag=false;
     while t_bin<=length(candibins)
@@ -241,6 +242,14 @@ ximg=bdctdec(bdctimg.*sign(bdctimg_ori));
 modlogpdf1=logpdfpre1-logpdfori1;
 modlogpdf2=logpdfpre2-logpdfori2;
 psnrfinal=PSNR(simg,ximg);
+
+output.logpdfori1=logpdfori1;
+output.logpdfori2=logpdfori2;
+output.modlogpdf1=modlogpdf1;
+output.modlogpdf2=modlogpdf2;
+output.psnrfinal=psnrfinal;
+output.modratio=modratio;
+
 
 if DEBUG
     fprintf('binmiss=%d\n',binmiss);
