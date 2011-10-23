@@ -151,13 +151,13 @@ while n_mod<NMOD
             end
             
             %goodmodidx=(logpdf1>logpdfpre1) & (logpdf2<logpdfpre2);
-            goodmodidx=( logpdf1 > logpdfpre1 ) & ((logpdf1-logpdf2)>(logpdfpre1-logpdfpre2));
+            goodmodidx=( logpdf1 > logpdfpre1 ) & ((logpdf1-logpdf2)>=(logpdfpre1-logpdfpre2));
             %[maxlogpdf,I2]=max(logpdf);
             if any(goodmodidx)                
                 %adopt the modification
                 goodmodidx=find(goodmodidx);
-                twomodeldist=logpdf1(goodmodidx)-logpdf2(goodmodidx);
-                [~,I2]=max(twomodeldist);
+                modweight=logpdf1(goodmodidx);
+                [~,I2]=max(modweight);
                 if DEBUG
                     fprintf('delta logpdf1 is %g\n',logpdf1(goodmodidx(I2))-logpdfpre1);
                     fprintf('delta logpdf2 is %g\n',logpdf2(goodmodidx(I2))-logpdfpre2);
