@@ -70,7 +70,7 @@ while n_mod<NMOD
     candibins=(de1<0);    
     candibins=find(candibins);
     %candibinweights=de1(candibins)-de2(candibins);
-    candibinweights=abs(de1(candibins)/de2(candibins));
+    candibinweights=abs(de1(candibins)./de2(candibins));
     [~,I]=sort(candibinweights(:),1,'descend');
     t_bin=1; %index of target bin
     modflag=false;
