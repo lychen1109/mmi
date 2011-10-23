@@ -28,7 +28,7 @@ tm3=tm2;
 modified=false(size(bdctimg));%record if a coef has been modified
 
 avaicoeff=sum(sum(bdctimg>1))-16^2;
-NMOD=avaicoeff*maxmodratio; %maximum allowed number of modified coeff
+NMOD=ceil(avaicoeff*maxmodratio); %maximum allowed number of modified coeff
 
 if DEBUG
     logpdfrec1=zeros(1,NMOD); %record logpdf
