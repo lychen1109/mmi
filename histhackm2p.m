@@ -109,7 +109,7 @@ while n_mod<NMOD
             logpdf2=zeros(1,7);
             flagavailable=false(1,7);
             tmc=zeros(2*T+1,2*T+1,7);
-            for f=1:7
+            parfor f=1:7
                 flag=flagstr(f,:);
                 flagavailable(f)=canmodify(bdctimg,sj,sk,modified,flag);
                 if ~flagavailable(f)
