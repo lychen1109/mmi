@@ -63,8 +63,8 @@ while n_mod<NMOD
         logpdfrec2(recidx)=logpdfpre2;
         psnrrec(recidx)=PSNR(simg,ximg);
     end
-    de1=gmmderi(gm1,tm3(1:end-1));    
-    de2=gmmderi(gm2,tm3(1:end-1));
+    de1=gmmderi(mu1,Sigma1,S1,tm3(1:end-1));    
+    de2=gmmderi(mu2,Sigma2,S2,tm3(1:end-1));
     
 %     candibins=false(size(de1));
 %     for i=1:length(de1)
