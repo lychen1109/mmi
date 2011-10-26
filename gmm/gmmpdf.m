@@ -1,9 +1,6 @@
-function p=gmmpdf(gm,X)
+function p=gmmpdf(mu,Sigma,S,X)
 %gmm pdf calc
 
-mu=gm.mu;
-Sigma=gm.Sigma;
-S=gm.PComponents;
 K=length(S);
 p=0;
 for i=1:K
