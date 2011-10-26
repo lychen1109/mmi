@@ -1,18 +1,14 @@
 function gmmpdftest(gm,feat)
 %test performance of gmm pdf calc
 tic;
-pdf(gm,feat);
+p1=pdf(gm,feat);
 toc;
-tic;
+disp(p1);
 mu=gm.mu;
 Sigma=gm.Sigma;
 S=gm.PComponents;
-K=length(S);
-p=0;
-toc;
 tic;
-for i=1:K
-    p=p+S(i)*gausspdf(mu(i,:),Sigma(:,:,i),feat);
-end
+p2=gmmpdf(mu,Sigma,S,feat);
 toc;
+disp(p2);
 
