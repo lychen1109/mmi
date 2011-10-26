@@ -43,9 +43,16 @@ if DEBUG
 end
 n_mod=0; %number of modified coef
 
-logpdfori1=log(pdf(gm1,tm3(1:end-1)));
+mu1=gm1.mu;
+Sigma1=gm1.Sigma;
+S1=gm1.PComponents;
+mu2=gm2.mu;
+Sigma2=gm2.Sigma;
+S2=gm2.PComponents;
+
+logpdfori1=log(gmmpdf(mu1,Sigma1,S1,tm3(1:end-1)));
 logpdfpre1=logpdfori1;
-logpdfori2=log(pdf(gm2,tm3(1:end-1)));
+logpdfori2=log(gmmpdf(mu2,Sigma2,S2,tm3(1:end-1)));
 logpdfpre2=logpdfori2;
 
 while n_mod<NMOD    
@@ -109,48 +116,48 @@ while n_mod<NMOD
                 %bdctimgc(:,:,1)=bdctmod(bdctimg,sj,sk,[1 0 0]);
                 tmnew=tmmod(bdctimg,tm3,sj,sk,[1 0 0]);
                 tmc(:,:,1)=tmnew;
-                logpdf1(1)=log(pdf(gm1,tmnew(1:end-1)));
-                logpdf2(1)=log(pdf(gm2,tmnew(1:end-1)));
+                logpdf1(1)=log(gmmpdf(mu1,Sigma1,S1,tmnew(1:end-1)));
+                logpdf2(1)=log(gmmpdf(mu2,Sigma2,S2,tmnew(1:end-1)));
             end
             
             if bdctimg(sj,sk+1)>=2 && ~modified(sj,sk+1)
                 %bdctimgc(:,:,2)=bdctmod(bdctimg,sj,sk,[0 1 0]);
                 tmnew=tmmod(bdctimg,tm3,sj,sk,[0 1 0]);
                 tmc(:,:,2)=tmnew;
-                logpdf1(2)=log(pdf(gm1,tmnew(1:end-1)));
-                logpdf2(2)=log(pdf(gm2,tmnew(1:end-1)));
+                logpdf1(2)=log(gmmpdf(mu1,Sigma1,S1,tmnew(1:end-1)));
+                logpdf2(2)=log(gmmpdf(mu2,Sigma2,S2,tmnew(1:end-1)));
             end
             
             if bdctimg(sj,sk+2)>=2 && ~modified(sj,sk+2)
                 %bdctimgc(:,:,3)=bdctmod(bdctimg,sj,sk,[0 0 1]);
                 tmnew=tmmod(bdctimg,tm3,sj,sk,[0 0 1]);
                 tmc(:,:,3)=tmnew;
-                logpdf1(3)=log(pdf(gm1,tmnew(1:end-1)));
-                logpdf2(3)=log(pdf(gm2,tmnew(1:end-1)));
+                logpdf1(3)=log(gmmpdf(mu1,Sigma1,S1,tmnew(1:end-1)));
+                logpdf2(3)=log(gmmpdf(mu2,Sigma2,S2,tmnew(1:end-1)));
             end
             
             if bdctimg(sj,sk)>=2 && bdctimg(sj,sk+1)>=2 && ~modified(sj,sk) && ~modified(sj,sk+1)
                 %bdctimgc(:,:,4)=bdctmod(bdctimg,sj,sk,[1 1 0]);
                 tmnew=tmmod(bdctimg,tm3,sj,sk,[1 1 0]);
                 tmc(:,:,4)=tmnew;
-                logpdf1(4)=log(pdf(gm1,tmnew(1:end-1)));
-                logpdf2(4)=log(pdf(gm2,tmnew(1:end-1)));
+                logpdf1(4)=log(gmmpdf(mu1,Sigma1,S1,tmnew(1:end-1)));
+                logpdf2(4)=log(gmmpdf(mu2,Sigma2,S2,tmnew(1:end-1)));
             end
             
             if bdctimg(sj,sk+1)>=2 && bdctimg(sj,sk+2)>=2 && ~modified(sj,sk+1) && ~modified(sj,sk+2)
                 %bdctimgc(:,:,5)=bdctmod(bdctimg,sj,sk,[0 1 1]);
                 tmnew=tmmod(bdctimg,tm3,sj,sk,[0 1 1]);
                 tmc(:,:,5)=tmnew;
-                logpdf1(5)=log(pdf(gm1,tmnew(1:end-1)));
-                logpdf2(5)=log(pdf(gm2,tmnew(1:end-1)));
+                logpdf1(5)=log(gmmpdf(mu1,Sigma1,S1,tmnew(1:end-1)));
+                logpdf2(5)=log(gmmpdf(mu2,Sigma2,S2,tmnew(1:end-1)));
             end
             
             if bdctimg(sj,sk)>=2 && bdctimg(sj,sk+2)>=2 && ~modified(sj,sk) && ~modified(sj,sk+2)
                 %bdctimgc(:,:,6)=bdctmod(bdctimg,sj,sk,[1 0 1]);
                 tmnew=tmmod(bdctimg,tm3,sj,sk,[1 0 1]);
                 tmc(:,:,6)=tmnew;
-                logpdf1(6)=log(pdf(gm1,tmnew(1:end-1)));
-                logpdf2(6)=log(pdf(gm2,tmnew(1:end-1)));
+                logpdf1(6)=log(gmmpdf(mu1,Sigma1,S1,tmnew(1:end-1)));
+                logpdf2(6)=log(gmmpdf(mu2,Sigma2,S2,tmnew(1:end-1)));
             end
             
             if bdctimg(sj,sk)>=2 && bdctimg(sj,sk+1)>=2 && bdctimg(sj,sk+2)>=2 && ...
@@ -158,8 +165,8 @@ while n_mod<NMOD
                 %bdctimgc(:,:,7)=bdctmod(bdctimg,sj,sk,[1 1 1]);
                 tmnew=tmmod(bdctimg,tm3,sj,sk,[1 1 1]);
                 tmc(:,:,7)=tmnew;
-                logpdf1(7)=log(pdf(gm1,tmnew(1:end-1)));
-                logpdf2(7)=log(pdf(gm2,tmnew(1:end-1)));
+                logpdf1(7)=log(gmmpdf(mu1,Sigma1,S1,tmnew(1:end-1)));
+                logpdf2(7)=log(gmmpdf(mu2,Sigma2,S2,tmnew(1:end-1)));
             end
             
             %goodmodidx=(logpdf1>logpdfpre1) & (logpdf2<logpdfpre2);
