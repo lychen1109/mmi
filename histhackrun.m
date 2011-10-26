@@ -1,4 +1,4 @@
-function [ximages,n_mods,modlogpdfs,psnrfinals]=histhackrun(spfilenames,gm,varargin)
+function [ximages,outputs]=histhackrun(spfilenames,gm1,gm2,nworker,varargin)
 %batch run of histhackm
 
 root='C:\data\ImSpliceDataset\';
@@ -12,11 +12,21 @@ end
 
 N=size(spfilenames,1);
 ximages=zeros(N,128^2);
-n_mods=zeros(N,1);
-modlogpdfs=zeros(N,1);
-psnrfinals=zeros(N,1);
-for i=1:N
-    fprintf('processing image %d\n',i);
-    [ximg,n_mods(i),modlogpdfs(i),psnrfinals(i)]=histhackm(spfilenames{i},gm,'root',root);
-    ximages(i,:)=ximg(:)';
+imgidx=0;
+while imgidx<N
+    if imgidx+nworker<=N
+        nparallel=nworker;
+    else
+        nparallel=N-imgidx;
+    end
+    fprintf('processing image %d-%d\n',imgidx+1,imgidx+nparallel);
+    spmd (nparallel)
+        [ximg,output]=histhackm2(spfilenames{imgidx+labindex},gm1,gm2,'root',root);
+    end
+    for i=1:nparallel
+        ximglocal=ximg{i};        
+        ximages(imgidx+i,:)=ximglocal(:)';
+        outputs(imgidx+i)=output{i};
+    end
+    imgidx=imgidx+nparallel;
 end
