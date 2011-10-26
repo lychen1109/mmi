@@ -1,4 +1,4 @@
-function [ximg,output]=histhackm2p(sp,gm1,gm2,varargin)
+function [ximg,output]=histhackm2p(sp,gm1,gm2,nworker,varargin)
 %reshape histogram by modifying LSB
 %This is based on histhack2 and using GMM model
 %this is based on histhackm and use 2 GMM models
@@ -102,141 +102,103 @@ while n_mod<NMOD
         randidx=randperm(num);
         loc_idx=1; %start from the first location
         while loc_idx<=num
-            loc=locations(randidx(loc_idx));
-            [sj,sk]=ind2sub(size(bdctimg),loc);
-            %bdctimgc=zeros(128,128,7);
-            logpdf1=zeros(1,7);
-            logpdf2=zeros(1,7);
-            flagavailable=false(1,7);
-            tmc=zeros(2*T+1,2*T+1,7);
-            for f=1:7
-                flag=flagstr(f,:);
-                flagavailable(f)=canmodify(bdctimg,sj,sk,modified,flag);
-                if ~flagavailable(f)
-                    continue;
+            spmd (nworker)           
+                if loc_idx+labindex-1<=num
+                    loc=locations(randidx(loc_idx+labindex-1));
+                    [sj,sk]=ind2sub(size(bdctimg),loc);                    
+                    logpdf1=zeros(1,7);
+                    logpdf2=zeros(1,7);
+                    flagavailable=false(1,7);
+                    tmc=zeros(2*T+1,2*T+1,7);
+                    for f=1:7
+                        flag=flagstr(f,:);
+                        flagavailable(f)=canmodify(bdctimg,sj,sk,modified,flag);
+                        if ~flagavailable(f)
+                            continue;
+                        end
+                        tmnew=tmmod(bdctimg,tm3,sj,sk,flag,T);
+                        tmc(:,:,f)=tmnew;
+                        logpdf1(f)=log(pdf(gm1,tmnew(1:end-1)));
+                        logpdf2(f)=log(pdf(gm2,tmnew(1:end-1)));
+                    end
                 end
-                tmnew=tmmod(bdctimg,tm3,sj,sk,flag);
-                tmc(:,:,f)=tmnew;
-                logpdf1(f)=log(pdf(gm1,tmnew(1:end-1)));
-                logpdf2(f)=log(pdf(gm2,tmnew(1:end-1)));
             end
-%             if bdctimg(sj,sk)>=2 && ~modified(sj,sk)
-%                 %bdctimgc(:,:,1)=bdctmod(bdctimg,sj,sk,[1 0 0]);
-%                 tmnew=tmmod(bdctimg,tm3,sj,sk,[1 0 0]);
-%                 tmc(:,:,1)=tmnew;
-%                 logpdf1(1)=log(pdf(gm1,tmnew(1:end-1)));
-%                 logpdf2(1)=log(pdf(gm2,tmnew(1:end-1)));
-%             end
-%             
-%             if bdctimg(sj,sk+1)>=2 && ~modified(sj,sk+1)
-%                 %bdctimgc(:,:,2)=bdctmod(bdctimg,sj,sk,[0 1 0]);
-%                 tmnew=tmmod(bdctimg,tm3,sj,sk,[0 1 0]);
-%                 tmc(:,:,2)=tmnew;
-%                 logpdf1(2)=log(pdf(gm1,tmnew(1:end-1)));
-%                 logpdf2(2)=log(pdf(gm2,tmnew(1:end-1)));
-%             end
-%             
-%             if bdctimg(sj,sk+2)>=2 && ~modified(sj,sk+2)
-%                 %bdctimgc(:,:,3)=bdctmod(bdctimg,sj,sk,[0 0 1]);
-%                 tmnew=tmmod(bdctimg,tm3,sj,sk,[0 0 1]);
-%                 tmc(:,:,3)=tmnew;
-%                 logpdf1(3)=log(pdf(gm1,tmnew(1:end-1)));
-%                 logpdf2(3)=log(pdf(gm2,tmnew(1:end-1)));
-%             end
-%             
-%             if bdctimg(sj,sk)>=2 && bdctimg(sj,sk+1)>=2 && ~modified(sj,sk) && ~modified(sj,sk+1)
-%                 %bdctimgc(:,:,4)=bdctmod(bdctimg,sj,sk,[1 1 0]);
-%                 tmnew=tmmod(bdctimg,tm3,sj,sk,[1 1 0]);
-%                 tmc(:,:,4)=tmnew;
-%                 logpdf1(4)=log(pdf(gm1,tmnew(1:end-1)));
-%                 logpdf2(4)=log(pdf(gm2,tmnew(1:end-1)));
-%             end
-%             
-%             if bdctimg(sj,sk+1)>=2 && bdctimg(sj,sk+2)>=2 && ~modified(sj,sk+1) && ~modified(sj,sk+2)
-%                 %bdctimgc(:,:,5)=bdctmod(bdctimg,sj,sk,[0 1 1]);
-%                 tmnew=tmmod(bdctimg,tm3,sj,sk,[0 1 1]);
-%                 tmc(:,:,5)=tmnew;
-%                 logpdf1(5)=log(pdf(gm1,tmnew(1:end-1)));
-%                 logpdf2(5)=log(pdf(gm2,tmnew(1:end-1)));
-%             end
-%             
-%             if bdctimg(sj,sk)>=2 && bdctimg(sj,sk+2)>=2 && ~modified(sj,sk) && ~modified(sj,sk+2)
-%                 %bdctimgc(:,:,6)=bdctmod(bdctimg,sj,sk,[1 0 1]);
-%                 tmnew=tmmod(bdctimg,tm3,sj,sk,[1 0 1]);
-%                 tmc(:,:,6)=tmnew;
-%                 logpdf1(6)=log(pdf(gm1,tmnew(1:end-1)));
-%                 logpdf2(6)=log(pdf(gm2,tmnew(1:end-1)));
-%             end
-%             
-%             if bdctimg(sj,sk)>=2 && bdctimg(sj,sk+1)>=2 && bdctimg(sj,sk+2)>=2 && ...
-%                     ~modified(sj,sk) && ~modified(sj,sk+1) && ~modified(sj,sk+2)
-%                 %bdctimgc(:,:,7)=bdctmod(bdctimg,sj,sk,[1 1 1]);
-%                 tmnew=tmmod(bdctimg,tm3,sj,sk,[1 1 1]);
-%                 tmc(:,:,7)=tmnew;
-%                 logpdf1(7)=log(pdf(gm1,tmnew(1:end-1)));
-%                 logpdf2(7)=log(pdf(gm2,tmnew(1:end-1)));
-%             end
-            
-            %goodmodidx=(logpdf1>logpdfpre1) & (logpdf2<logpdfpre2);
-            goodmodidx=flagavailable & ( logpdf1 > logpdfpre1 ) & ((logpdf1-logpdf2)>=(logpdfpre1-logpdfpre2));
+            if loc_idx+nworker-1<=num
+                nparallel=nworker;
+            else
+                nparallel=num-loc_idx+1;
+            end
+            goodmodidx=false(nparallel,7);
+            for i=1:nparallel                
+                goodmodidx(i,:)=flagavailable{i} & ( logpdf1{i} > logpdfpre1 ) & ((logpdf1{i}-logpdf2{i})>=(logpdfpre1-logpdfpre2));
+            end
             %[maxlogpdf,I2]=max(logpdf);
             if any(goodmodidx)                
                 %adopt the modification
-                goodmodidx=find(goodmodidx);
-                modweight=logpdf1(goodmodidx);
-                [~,I2]=max(modweight);
-                if DEBUG
-                    fprintf('delta logpdf1 is %g\n',logpdf1(goodmodidx(I2))-logpdfpre1);
-                    fprintf('delta logpdf2 is %g\n',logpdf2(goodmodidx(I2))-logpdfpre2);
+                logpdf1array=zeros(nparallel,7);
+                for i=1:nparallel
+                    logpdf1array(i,:)=logpdf1{i};
                 end
-                logpdfpre1=logpdf1(goodmodidx(I2));
-                logpdfpre2=logpdf2(goodmodidx(I2));
-                switch goodmodidx(I2)
+                logpdf1array(~goodmodidx)=0;                
+                [~,maxlogpdf1]=max(logpdf1array(:));
+                [selectedlab,I2]=ind2sub([nparallel,7],maxlogpdf1);
+                logpdf1local=logpdf1{selectedlab};
+                logpdf2local=logpdf2{selectedlab};
+                if DEBUG
+                    fprintf('delta logpdf1 is %g\n',logpdf1local(I2)-logpdfpre1);
+                    fprintf('delta logpdf2 is %g\n',logpdf2local(I2)-logpdfpre2);
+                end
+                logpdfpre1=logpdf1local(I2);
+                logpdfpre2=logpdf2local(I2);
+                tmclocal=tmc{selectedlab};
+                sjl=sj{selectedlab};
+                skl=sk{selectedlab};
+                switch I2
                     case 1
-                        bdctimg=bdctmod(bdctimg,sj,sk,[1 0 0]);
-                        tm3=tmc(:,:,1);
-                        modified(sj,sk)=true;
+                        bdctimg=bdctmod(bdctimg,sjl,skl,[1 0 0]);
+                        tm3=tmclocal(:,:,1);
+                        modified(sjl,skl)=true;
                         n_mod=n_mod+1;
                         modflag=true;
                     case 2
-                        bdctimg=bdctmod(bdctimg,sj,sk,[0 1 0]);
-                        tm3=tmc(:,:,2);
-                        modified(sj,sk+1)=true;
+                        bdctimg=bdctmod(bdctimg,sjl,skl,[0 1 0]);
+                        tm3=tmclocal(:,:,2);
+                        modified(sjl,skl+1)=true;
                         n_mod=n_mod+1;
                         modflag=true;
                     case 3
-                        bdctimg=bdctmod(bdctimg,sj,sk,[0 0 1]);
-                        tm3=tmc(:,:,3);
-                        modified(sj,sk+2)=true;
+                        bdctimg=bdctmod(bdctimg,sjl,skl,[0 0 1]);
+                        tm3=tmclocal(:,:,3);
+                        modified(sjl,skl+2)=true;
                         n_mod=n_mod+1;
                         modflag=true;
                     case 4
-                        bdctimg=bdctmod(bdctimg,sj,sk,[1 1 0]);
-                        tm3=tmc(:,:,4);
-                        modified(sj,sk)=true;
-                        modified(sj,sk+1)=true;
+                        bdctimg=bdctmod(bdctimg,sjl,skl,[1 1 0]);
+                        tm3=tmclocal(:,:,4);
+                        modified(sjl,skl)=true;
+                        modified(sjl,skl+1)=true;
                         n_mod=n_mod+2;
                         modflag=true;
                     case 5
-                        bdctimg=bdctmod(bdctimg,sj,sk,[0 1 1]);
-                        tm3=tmc(:,:,5);
-                        modified(sj,sk+1)=true;
-                        modified(sj,sk+2)=true;
+                        bdctimg=bdctmod(bdctimg,sjl,skl,[0 1 1]);
+                        tm3=tmclocal(:,:,5);
+                        modified(sjl,skl+1)=true;
+                        modified(sjl,skl+2)=true;
                         n_mod=n_mod+2;
                         modflag=true;
                     case 6
-                        bdctimg=bdctmod(bdctimg,sj,sk,[1 0 1]);
-                        tm3=tmc(:,:,6);
-                        modified(sj,sk)=true;
-                        modified(sj,sk+2)=true;
+                        bdctimg=bdctmod(bdctimg,sjl,skl,[1 0 1]);
+                        tm3=tmclocal(:,:,6);
+                        modified(sjl,skl)=true;
+                        modified(sjl,skl+2)=true;
                         n_mod=n_mod+2;
                         modflag=true;
                     otherwise
-                        bdctimg=bdctmod(bdctimg,sj,sk,[1 1 1]);
-                        tm3=tmc(:,:,7);
-                        modified(sj,sk)=true;
-                        modified(sj,sk+1)=true;
-                        modified(sj,sk+2)=true;
+                        bdctimg=bdctmod(bdctimg,sjl,skl,[1 1 1]);
+                        tm3=tmclocal(:,:,7);
+                        modified(sjl,skl)=true;
+                        modified(sjl,skl+1)=true;
+                        modified(sjl,skl+2)=true;
                         n_mod=n_mod+3;
                         modflag=true;
                 end
@@ -245,7 +207,7 @@ while n_mod<NMOD
                 end                
             end
             if modflag, break; end
-            loc_idx=loc_idx+1;
+            loc_idx=loc_idx+nparallel;
         end %end of trying all candidate coeff
         if modflag,break;end
         t_bin=t_bin+1;
@@ -292,9 +254,11 @@ if DEBUG
     subplot(2,4,1);
     imagesc(simg,[0 255]),colormap gray
     axis image off
+    title('Original Image');
     subplot(2,4,2);
     imagesc(ximg,[0 255]),colormap gray
     axis image off
+    title('Restored Image');
     subplot(2,4,3);
     plot(logpdfrec1);
     title('log pdf authentic model');
@@ -305,10 +269,12 @@ if DEBUG
     mesh(tm2);
     a1=gca;
     zlim1=get(a1,'zlim');
+    title('Original co-oc matrix');
     subplot(2,4,6);
     mesh(tm3);
     a2=gca;
     zlim2=get(a2,'zlim');
+    title('Restored co-oc matrix');
     
     zmax=max([zlim1(2) zlim2(2)]);
     set(a1,'zlim',[0 zmax]);
@@ -331,10 +297,9 @@ for i=1:3
     end
 end
 
-function tm=tmmod(bdctimg,tm,sj,sk,flag)
+function tm=tmmod(bdctimg,tm,sj,sk,flag,T)
 %modify transmition probability directly
 
-T=3;
 S=1/(128*126);
 for i=1:3
     if flag(i)==1
