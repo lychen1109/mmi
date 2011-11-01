@@ -4,5 +4,6 @@ function clustersize(idx)
 K=max(idx);
 for i=1:K
     ni=sum(idx==i);
-    fprintf('cluster %d: %d\n',i,ni);
+    fprintf('%d, ',ni);
 end
+fprintf('\n');
