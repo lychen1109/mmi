@@ -2,8 +2,8 @@ function accu=gmmclassify(labeltrain,datatrain,labeltest,datatest,k)
 % classify with GMM model
 
 %remove the last column
-datatrain=datatrain(:,1:end-1);
-datatest=datatest(:,1:end-1);
+% datatrain=datatrain(:,1:end-1);
+% datatest=datatest(:,1:end-1);
 
 class1=datatrain(labeltrain==1,:);
 class2=datatrain(labeltrain==0,:);
