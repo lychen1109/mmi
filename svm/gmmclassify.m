@@ -7,10 +7,10 @@ function accu=gmmclassify(labeltrain,datatrain,labeltest,datatest,k)
 
 class1=datatrain(labeltrain==1,:);
 class2=datatrain(labeltrain==0,:);
-idx1=kmeans(class1,k,'replicates',20);
-idx2=kmeans(class2,k,'replicates',20);
+
 while true
     try
+        idx1=kmeans(class1,k,'replicates',20);
         gm1=gmdistribution.fit(class1,k,'start',idx1,'covtype','diagonal','SharedCov',false);
         break;
     catch ME
@@ -21,6 +21,7 @@ end
 
 while true
     try
+        idx2=kmeans(class2,k,'replicates',20);
         gm2=gmdistribution.fit(class2,k,'start',idx2,'covtype','diagonal','SharedCov',false);
         break;
     catch ME
