@@ -1,7 +1,7 @@
 function ac=svmtestk(label,data,cvpk,theta)
 %test accuracy of a set of splits
 
-ac=zeros(5,1);
+ac=zeros(1,5);
 
 for i=1:5    
     dataTrain=data(cvpk.training(i),:);
