@@ -16,6 +16,7 @@ parfor i=1:nc*ng
 end
 
 bestcv=max(cvmat(:));
+fprintf('bestcv found is %g\n',bestcv);
 selection=(cvmat==bestcv);
 thetas=thetas(selection(:),:);
 
