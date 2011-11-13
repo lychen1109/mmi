@@ -20,6 +20,7 @@ iter=0;
 while any(notfinish) && iter<Maxiter
     iter=iter+1;
     fprintf('iter=%d\n',iter);
+    fprintf('percentage notfinished=%g\n',sum(notfinish)/N);
     parfor i=1:N
         if notfinish(i)
             fprintf('processing image %d\n',i);
