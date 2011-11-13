@@ -1,4 +1,4 @@
-function ac=histhackrun3(data,gm1,gm2)
+function ac=histhackrun3(data,gm1,gm2,Maxiter)
 %batch run of histhackm2step, using parfor
 
 nworker=matlabpool('size');
@@ -10,25 +10,32 @@ end
 
 datavalidate=data.datavalidate;
 labelvalidate=data.labelvalidate;
-ac=zeros(21,5);
-ac(1,:)=svmcheck(labelvalidate,datavalidate);
+ac=svmcheck(labelvalidate,datavalidate);
 
 ximages=datavalidate(labelvalidate==0,:);
 N=size(ximages,1);
 modified=false(N,128^2);
-for k=1:20
-    for i=1:N
-        fprintf('processing image %d\n',i);
-        simg=ximages(i,:);
-        simg=reshape(simg,128,128);
-        modifiedtmp=modified(i,:);
-        modifiedtmp=reshape(modifiedtmp,128,128);
-        [ximg,modifiedtmp]=histhackm2step(simg,modifiedtmp,gm1,gm2);
-        ximages(i,:)=ximg(:)';
-        modified(i,:)=modifiedtmp(:)';
+notfinish=true(N,1);
+iter=0;
+while any(notfihish) && iter<Maxiter
+    iter=iter+1;
+    fprintf('iter=%d\n',iter);
+    parfor i=1:N
+        if notfinish(i)
+            fprintf('processing image %d\n',i);
+            simg=ximages(i,:);
+            simg=reshape(simg,128,128);
+            modifiedtmp=modified(i,:);
+            modifiedtmp=reshape(modifiedtmp,128,128);
+            [ximg,modifiedtmp,output]=histhackm2step(simg,modifiedtmp,gm1,gm2);
+            ximages(i,:)=ximg(:)';
+            modified(i,:)=modifiedtmp(:)';
+            notfinish(i)=(output.n_mod>0);
+        end
     end
     datavalidate(labelvalidate==0,:)=ximages;
-    ac(k+1,:)=svmcheck(labelvalidate,datavalidate);
+    actmp=svmcheck(labelvalidate,datavalidate);
+    ac=cat(2,ac,actmp);    
 end
 
 
