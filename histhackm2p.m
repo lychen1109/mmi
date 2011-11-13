@@ -3,6 +3,7 @@ function [ximg,output]=histhackm2p(sp,gm1,gm2,nworker,varargin)
 %This is based on histhack2 and using GMM model
 %this is based on histhackm and use 2 GMM models
 %sorttype: 'diff' or 'ratio', default is 'ratio'
+%This version use parallel inside the function
 
 flagstr=[1 0 0; 0 1 0;0 0 1;1 1 0;0 1 1;1 0 1;1 1 1];
 
