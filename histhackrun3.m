@@ -17,7 +17,7 @@ N=size(ximages,1);
 modified=false(N,128^2);
 notfinish=true(N,1);
 iter=0;
-while any(notfihish) && iter<Maxiter
+while any(notfinish) && iter<Maxiter
     iter=iter+1;
     fprintf('iter=%d\n',iter);
     parfor i=1:N
