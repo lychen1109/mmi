@@ -254,6 +254,7 @@ output.logpdfori2=logpdfori2;
 output.modlogpdf1=modlogpdf1;
 output.modlogpdf2=modlogpdf2;
 output.psnrfinal=psnrfinal;
+output.n_mod=n_mod;
 
 if DEBUG
     fprintf('binmiss=%d\n',binmiss);
