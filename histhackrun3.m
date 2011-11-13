@@ -1,5 +1,5 @@
 function ac=histhackrun3(data,gm1,gm2)
-%batch run of histhackm, using parfor
+%batch run of histhackm2step, using parfor
 
 nworker=matlabpool('size');
 if nworker<2
