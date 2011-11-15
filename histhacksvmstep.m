@@ -20,7 +20,7 @@ bdctimg=round(abs(bdctimg));
 tm2=tpm1(bdctimg,T);
 tm3=tm2;
 
-NMOD=20; %maximum allowed number of modified coeff
+NMOD=5; %maximum allowed number of modified coeff
 
 if DEBUG
     logpdfrec1=zeros(1,NMOD); %record logpdf
@@ -65,9 +65,10 @@ while n_mod<NMOD
     t_bin=1; %index of target bin
     modflag=false;
     while t_bin<=length(candibins)
-        %find candidate dct coeff
-        bdctimgx=dcnan(bdctimg);
-        diffimg=bdctimgx(:,1:end-1)-bdctimgx(:,2:end);
+        %find candidate dct coeff        
+        diffimg=bdctimg(:,1:end-1)-bdctimg(:,2:end);
+        diffimg(diffimg>T)=T;
+        diffimg(diffimg<-T)=-T;
         [j,k]=ind2sub(size(tm3),candibins(I(t_bin)));
         diffimg1=(diffimg(:,1:end-1)==(j-T-1));
         diffimg2=(diffimg(:,2:end)==(k-T-1));

@@ -1,4 +1,4 @@
-function ac=histhackrun3(data,model,range,Maxiter)
+function [ac,moddouts]=histhackrun3(data,model,range,Maxiter)
 %batch run of histhackm2step, using parfor
 
 nworker=matlabpool('size');
@@ -14,13 +14,20 @@ ac=svmcheck(labelvalidate,datavalidate,range);
 
 ximages=datavalidate(labelvalidate==0,:);
 N=size(ximages,1);
-modified=false(N,128^2);
+
+%mark dc component as modified
+mask=false(8,8);
+mask(1,1)=true;
+mask=repmat(mask,16,16);
+modified=repmat(mask(:)',N,1);
+
 notfinish=true(N,1);
+moddouts=zeros(N,Maxiter);
 iter=0;
 while any(notfinish) && iter<Maxiter
     iter=iter+1;
     fprintf('iter=%d\n',iter);
-    fprintf('percentage notfinished=%g\n',sum(notfinish)/N);
+    fprintf('percentage notfinished=%g\n',sum(notfinish)/N);    
     parfor i=1:N
         if notfinish(i)
             fprintf('processing image %d\n',i);
@@ -32,6 +39,7 @@ while any(notfinish) && iter<Maxiter
             ximages(i,:)=ximg(:)';
             modified(i,:)=modifiedtmp(:)';
             notfinish(i)=(output.n_mod>0);
+            moddouts(i,iter)=output.moddout;
         end
     end
     datavalidate(labelvalidate==0,:)=ximages;
