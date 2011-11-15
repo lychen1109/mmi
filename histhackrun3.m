@@ -10,7 +10,7 @@ end
 
 datavalidate=data.datavalidate;
 labelvalidate=data.labelvalidate;
-ac=svmcheck(labelvalidate,datavalidate);
+ac=svmcheck(labelvalidate,datavalidate,range);
 
 ximages=datavalidate(labelvalidate==0,:);
 N=size(ximages,1);
