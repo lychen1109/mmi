@@ -84,12 +84,14 @@ while n_mod<NMOD
             loc=locations(randidx(loc_idx));
             [sj,sk]=ind2sub(size(bdctimg),loc);
             %bdctimgc=zeros(128,128,7);
-            dout=zeros(1,7);            
+            dout=zeros(1,7);
+            dout(1:7)=-inf;
             if bdctimg(sj,sk)>=2 && ~modified(sj,sk)
                 %bdctimgc(:,:,1)=bdctmod(bdctimg,sj,sk,[1 0 0]);
                 tmnew=tmmod(bdctimg,tm3,sj,sk,[1 0 0]);
                 tmc(:,:,1)=tmnew;
-                [~,~,dout(1)]=svmpredict(0,svmrescale(tmnew(:)',range),model);                
+                [~,~,dout(1)]=svmpredict(0,svmrescale(tmnew(:)',range),model);
+                %dout_calc(1)=true;
             end
             
             if bdctimg(sj,sk+1)>=2 && ~modified(sj,sk+1)
@@ -97,6 +99,7 @@ while n_mod<NMOD
                 tmnew=tmmod(bdctimg,tm3,sj,sk,[0 1 0]);
                 tmc(:,:,2)=tmnew;
                 [~,~,dout(2)]=svmpredict(0,svmrescale(tmnew(:)',range),model);
+                %dout_calc(2)=true;
             end
             
             if bdctimg(sj,sk+2)>=2 && ~modified(sj,sk+2)
@@ -104,6 +107,7 @@ while n_mod<NMOD
                 tmnew=tmmod(bdctimg,tm3,sj,sk,[0 0 1]);
                 tmc(:,:,3)=tmnew;
                 [~,~,dout(3)]=svmpredict(0,svmrescale(tmnew(:)',range),model);
+                %dout_calc(3)=true;
             end
             
             if bdctimg(sj,sk)>=2 && bdctimg(sj,sk+1)>=2 && ~modified(sj,sk) && ~modified(sj,sk+1)
@@ -111,6 +115,7 @@ while n_mod<NMOD
                 tmnew=tmmod(bdctimg,tm3,sj,sk,[1 1 0]);
                 tmc(:,:,4)=tmnew;
                 [~,~,dout(4)]=svmpredict(0,svmrescale(tmnew(:)',range),model);
+                %dout_calc(4)=true;
             end
             
             if bdctimg(sj,sk+1)>=2 && bdctimg(sj,sk+2)>=2 && ~modified(sj,sk+1) && ~modified(sj,sk+2)
@@ -118,6 +123,7 @@ while n_mod<NMOD
                 tmnew=tmmod(bdctimg,tm3,sj,sk,[0 1 1]);
                 tmc(:,:,5)=tmnew;
                 [~,~,dout(5)]=svmpredict(0,svmrescale(tmnew(:)',range),model);
+                %dout_calc(5)=true;
             end
             
             if bdctimg(sj,sk)>=2 && bdctimg(sj,sk+2)>=2 && ~modified(sj,sk) && ~modified(sj,sk+2)
@@ -125,6 +131,7 @@ while n_mod<NMOD
                 tmnew=tmmod(bdctimg,tm3,sj,sk,[1 0 1]);
                 tmc(:,:,6)=tmnew;
                 [~,~,dout(6)]=svmpredict(0,svmrescale(tmnew(:)',range),model);
+                %dout_calc(6)=true;
             end
             
             if bdctimg(sj,sk)>=2 && bdctimg(sj,sk+1)>=2 && bdctimg(sj,sk+2)>=2 && ...
@@ -133,6 +140,7 @@ while n_mod<NMOD
                 tmnew=tmmod(bdctimg,tm3,sj,sk,[1 1 1]);
                 tmc(:,:,7)=tmnew;
                 [~,~,dout(7)]=svmpredict(0,svmrescale(tmnew(:)',range),model);
+                %dout_calc(7)=true;
             end
             
             %goodmodidx=(logpdf1>logpdfpre1) & (logpdf2<logpdfpre2);
