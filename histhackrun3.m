@@ -1,4 +1,4 @@
-function ac=histhackrun3(data,gm1,gm2,Maxiter)
+function ac=histhackrun3(data,model,range,Maxiter)
 %batch run of histhackm2step, using parfor
 
 nworker=matlabpool('size');
@@ -28,25 +28,25 @@ while any(notfinish) && iter<Maxiter
             simg=reshape(simg,128,128);
             modifiedtmp=modified(i,:);
             modifiedtmp=reshape(modifiedtmp,128,128);
-            [ximg,modifiedtmp,output]=histhackm2step(simg,modifiedtmp,gm1,gm2);
+            [ximg,modifiedtmp,~,output]=histhacksvmstep(simg,modifiedtmp,model,range);
             ximages(i,:)=ximg(:)';
             modified(i,:)=modifiedtmp(:)';
             notfinish(i)=(output.n_mod>0);
         end
     end
     datavalidate(labelvalidate==0,:)=ximages;
-    actmp=svmcheck(labelvalidate,datavalidate);
-    ac=cat(2,ac,actmp);    
+    actmp=svmcheck(labelvalidate,datavalidate,range);
+    ac=cat(1,ac,actmp);    
 end
 
 
-function ac=svmcheck(label,images)
+function ac=svmcheck(label,images,range)
 %feature extraction and svm test
 
 N=size(images,1);
-tm=transmatgen(images,3,@tpm1);
+tm=transmatgen(images,3);
 feat=reshape(tm,49,N)';
-feat=svmrescale(feat);
+feat=svmrescale(feat,range);
 cvpk=cvpartition(label,'kfold',5);
 thetas=runsvmgridk(label,feat,cvpk,0:2:10,-6:2:6);
 ac=svmtestk(label,feat,cvpk,median(thetas));
