@@ -11,7 +11,7 @@ for i=1:5
     labelTest=label(cvpk.test(i));
     thetas=svmgrid2(labelTrain,dataTrain,rangec,rangeg);    
     fprintf('parameter used for split %d: (%d,%d)\n',i,thetas(1,:));
-    [~,accu]=mysvmfun(labelTrain,dataTrain,labelTest,dataTest,theta);
+    [~,accu]=mysvmfun(labelTrain,dataTrain,labelTest,dataTest,thetas(1,:));
     ac(i)=accu(1);
     fprintf('accuracy of set %d is %g\n',i,ac(i));
 end
