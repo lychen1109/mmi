@@ -10,7 +10,11 @@ for i=1:5
     dataTest=data(cvpk.test(i),:);
     labelTest=label(cvpk.test(i));
     thetas=svmgrid2(labelTrain,dataTrain,rangec,rangeg);
-    theta=median(thetas);
+    if size(thetas,1)>1
+        theta=median(thetas);
+    else
+        theta=thetas;
+    end
     fprintf('parameter used for split %d: (%d,%d)\n',i,theta);
     [~,accu]=mysvmfun(labelTrain,dataTrain,labelTest,dataTest,theta);
     ac(i)=accu(1);
