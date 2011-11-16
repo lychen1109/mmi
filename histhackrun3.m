@@ -48,13 +48,3 @@ while any(notfinish) && iter<Maxiter
 end
 
 
-function ac=svmcheck(label,images,range)
-%feature extraction and svm test
-
-N=size(images,1);
-tm=transmatgen(images,3);
-feat=reshape(tm,49,N)';
-feat=svmrescale(feat,range);
-cvpk=cvpartition(label,'kfold',5);
-thetas=runsvmgridk(label,feat,cvpk,0:2:10,-6:2:6);
-ac=svmtestk(label,feat,cvpk,median(thetas));
