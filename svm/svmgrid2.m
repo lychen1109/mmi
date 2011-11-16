@@ -16,10 +16,9 @@ parfor i=1:nc*ng
 end
 
 bestcv=max(cvmat(:));
-fprintf('bestcv found is %g\n',bestcv);
+fprintf('bestcv found %g at ',bestcv);
 selection=(cvmat==bestcv);
 thetas=thetas(selection(:),:);
-fprintf('best parameters are: ');
 for i=1:size(thetas,1)
     fprintf('(%d,%d) ',thetas(i,1),thetas(i,2));
 end
