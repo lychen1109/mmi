@@ -9,13 +9,8 @@ for i=1:5
     labelTrain=label(cvpk.training(i));
     dataTest=data(cvpk.test(i),:);
     labelTest=label(cvpk.test(i));
-    thetas=svmgrid2(labelTrain,dataTrain,rangec,rangeg);
-    if size(thetas,1)>1
-        theta=median(thetas);
-    else
-        theta=thetas;
-    end
-    fprintf('parameter used for split %d: (%d,%d)\n',i,theta);
+    thetas=svmgrid2(labelTrain,dataTrain,rangec,rangeg);    
+    fprintf('parameter used for split %d: (%d,%d)\n',i,thetas(1,:));
     [~,accu]=mysvmfun(labelTrain,dataTrain,labelTest,dataTest,theta);
     ac(i)=accu(1);
     fprintf('accuracy of set %d is %g\n',i,ac(i));
