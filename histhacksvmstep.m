@@ -1,8 +1,6 @@
-function [ximg,modified,tm3,output]=histhacksvmstep(simg,modified,model,range,varargin)
-%reshape histogram by modifying LSB
-%This is based on histhack2 and using GMM model
-%this is based on histhackm and use 2 GMM models
-%sorttype: 'diff' or 'ratio', default is 'ratio'
+function [ximg,modified,tm3,output]=histhacksvmstep(simg,model,range,varargin)
+%reshape histogram by modifying bdct coeff
+% SVM model is used as likelihood model
 
 DEBUG=false;
 T=3;
@@ -17,10 +15,17 @@ end
 bdctimg=blkproc(simg,[8 8],@dct2);
 bdctimg_ori=bdctimg;
 bdctimg=round(abs(bdctimg));
+modified=false(size(bdctimg));
 tm2=tpm1(bdctimg,T);
 tm3=tm2;
 
-NMOD=5; %maximum allowed number of modified coeff
+[~,~,dout_ori]=svmpredict(0,svmrescale(tm3(:)',range),model);
+if dout_ori>=0.9
+    fprintf('The image already looks like authentic. No need to process.\n');
+    return;
+end
+
+NMOD=inf; %maximum allowed number of modified coeff
 
 if DEBUG
     logpdfrec1=zeros(1,NMOD); %record logpdf
@@ -30,11 +35,23 @@ if DEBUG
     binmiss=0;
 end
 n_mod=0; %number of modified coef
-
-[~,~,dout_ori]=svmpredict(0,svmrescale(tm3(:)',range),model);
 dout_pre=dout_ori;
 
-while n_mod<NMOD    
+%construct flagstr
+flagstr=zeros(26,3);
+idx=0;
+for i=-1:1
+    for j=-1:1
+        for k=-1:1
+            if any([i j k])
+                idx=idx+1;
+                flagstr(idx,:)=[i j k];
+            end
+        end
+    end
+end
+
+while dout_pre<0.9 && n_mod<NMOD    
     if DEBUG
         recidx=recidx+1;
         ximg=bdctdec(bdctimg.*sign(bdctimg_ori));
@@ -85,64 +102,18 @@ while n_mod<NMOD
             loc=locations(randidx(loc_idx));
             [sj,sk]=ind2sub(size(bdctimg),loc);
             %bdctimgc=zeros(128,128,7);
-            dout=zeros(1,7);
-            dout(1:7)=-inf;
-            if bdctimg(sj,sk)>=2 && ~modified(sj,sk)
-                %bdctimgc(:,:,1)=bdctmod(bdctimg,sj,sk,[1 0 0]);
-                tmnew=tmmod(bdctimg,tm3,sj,sk,[1 0 0]);
-                tmc(:,:,1)=tmnew;
-                [~,~,dout(1)]=svmpredict(0,svmrescale(tmnew(:)',range),model);
-                %dout_calc(1)=true;
-            end
-            
-            if bdctimg(sj,sk+1)>=2 && ~modified(sj,sk+1)
-                %bdctimgc(:,:,2)=bdctmod(bdctimg,sj,sk,[0 1 0]);
-                tmnew=tmmod(bdctimg,tm3,sj,sk,[0 1 0]);
-                tmc(:,:,2)=tmnew;
-                [~,~,dout(2)]=svmpredict(0,svmrescale(tmnew(:)',range),model);
-                %dout_calc(2)=true;
-            end
-            
-            if bdctimg(sj,sk+2)>=2 && ~modified(sj,sk+2)
-                %bdctimgc(:,:,3)=bdctmod(bdctimg,sj,sk,[0 0 1]);
-                tmnew=tmmod(bdctimg,tm3,sj,sk,[0 0 1]);
-                tmc(:,:,3)=tmnew;
-                [~,~,dout(3)]=svmpredict(0,svmrescale(tmnew(:)',range),model);
-                %dout_calc(3)=true;
-            end
-            
-            if bdctimg(sj,sk)>=2 && bdctimg(sj,sk+1)>=2 && ~modified(sj,sk) && ~modified(sj,sk+1)
-                %bdctimgc(:,:,4)=bdctmod(bdctimg,sj,sk,[1 1 0]);
-                tmnew=tmmod(bdctimg,tm3,sj,sk,[1 1 0]);
-                tmc(:,:,4)=tmnew;
-                [~,~,dout(4)]=svmpredict(0,svmrescale(tmnew(:)',range),model);
-                %dout_calc(4)=true;
-            end
-            
-            if bdctimg(sj,sk+1)>=2 && bdctimg(sj,sk+2)>=2 && ~modified(sj,sk+1) && ~modified(sj,sk+2)
-                %bdctimgc(:,:,5)=bdctmod(bdctimg,sj,sk,[0 1 1]);
-                tmnew=tmmod(bdctimg,tm3,sj,sk,[0 1 1]);
-                tmc(:,:,5)=tmnew;
-                [~,~,dout(5)]=svmpredict(0,svmrescale(tmnew(:)',range),model);
-                %dout_calc(5)=true;
-            end
-            
-            if bdctimg(sj,sk)>=2 && bdctimg(sj,sk+2)>=2 && ~modified(sj,sk) && ~modified(sj,sk+2)
-                %bdctimgc(:,:,6)=bdctmod(bdctimg,sj,sk,[1 0 1]);
-                tmnew=tmmod(bdctimg,tm3,sj,sk,[1 0 1]);
-                tmc(:,:,6)=tmnew;
-                [~,~,dout(6)]=svmpredict(0,svmrescale(tmnew(:)',range),model);
-                %dout_calc(6)=true;
-            end
-            
-            if bdctimg(sj,sk)>=2 && bdctimg(sj,sk+1)>=2 && bdctimg(sj,sk+2)>=2 && ...
-                    ~modified(sj,sk) && ~modified(sj,sk+1) && ~modified(sj,sk+2)
-                %bdctimgc(:,:,7)=bdctmod(bdctimg,sj,sk,[1 1 1]);
-                tmnew=tmmod(bdctimg,tm3,sj,sk,[1 1 1]);
-                tmc(:,:,7)=tmnew;
-                [~,~,dout(7)]=svmpredict(0,svmrescale(tmnew(:)',range),model);
-                %dout_calc(7)=true;
-            end
+            dout=zeros(1,26);
+            dout(1:26)=-inf;
+            tmc=zeros(7,7,26);
+            for i=1:26
+                if ~any(bdctimg(sj,sk+(0:2))+flagstr(i,:)<0) && ~any(flagstr(i,:)~=0 & modified(sj,sk:sk+2))
+                    %bdctimgc(:,:,1)=bdctmod(bdctimg,sj,sk,[1 0 0]);
+                    tmnew=tmmod(bdctimg,tm3,sj,sk,flagstr(i,:),T);
+                    tmc(:,:,i)=tmnew;
+                    [~,~,dout(i)]=svmpredict(0,svmrescale(tmnew(:)',range),model);
+                    %dout_calc(1)=true;
+                end
+            end            
             
             %goodmodidx=(logpdf1>logpdfpre1) & (logpdf2<logpdfpre2);
             goodmodidx=( dout > dout_pre );
@@ -156,56 +127,12 @@ while n_mod<NMOD
                     fprintf('delta logpdf1 is %g\n',logpdf1(goodmodidx(I2))-logpdfpre1);
                     fprintf('delta logpdf2 is %g\n',logpdf2(goodmodidx(I2))-logpdfpre2);
                 end
-                dout_pre=dout(goodmodidx(I2));                
-                switch goodmodidx(I2)
-                    case 1
-                        bdctimg=bdctmod(bdctimg,sj,sk,[1 0 0]);
-                        tm3=tmc(:,:,1);
-                        modified(sj,sk)=true;
-                        n_mod=n_mod+1;
-                        modflag=true;
-                    case 2
-                        bdctimg=bdctmod(bdctimg,sj,sk,[0 1 0]);
-                        tm3=tmc(:,:,2);
-                        modified(sj,sk+1)=true;
-                        n_mod=n_mod+1;
-                        modflag=true;
-                    case 3
-                        bdctimg=bdctmod(bdctimg,sj,sk,[0 0 1]);
-                        tm3=tmc(:,:,3);
-                        modified(sj,sk+2)=true;
-                        n_mod=n_mod+1;
-                        modflag=true;
-                    case 4
-                        bdctimg=bdctmod(bdctimg,sj,sk,[1 1 0]);
-                        tm3=tmc(:,:,4);
-                        modified(sj,sk)=true;
-                        modified(sj,sk+1)=true;
-                        n_mod=n_mod+2;
-                        modflag=true;
-                    case 5
-                        bdctimg=bdctmod(bdctimg,sj,sk,[0 1 1]);
-                        tm3=tmc(:,:,5);
-                        modified(sj,sk+1)=true;
-                        modified(sj,sk+2)=true;
-                        n_mod=n_mod+2;
-                        modflag=true;
-                    case 6
-                        bdctimg=bdctmod(bdctimg,sj,sk,[1 0 1]);
-                        tm3=tmc(:,:,6);
-                        modified(sj,sk)=true;
-                        modified(sj,sk+2)=true;
-                        n_mod=n_mod+2;
-                        modflag=true;
-                    otherwise
-                        bdctimg=bdctmod(bdctimg,sj,sk,[1 1 1]);
-                        tm3=tmc(:,:,7);
-                        modified(sj,sk)=true;
-                        modified(sj,sk+1)=true;
-                        modified(sj,sk+2)=true;
-                        n_mod=n_mod+3;
-                        modflag=true;
-                end
+                dout_pre=dout(goodmodidx(I2));
+                bdctimg=bdctmod(bdctimg,sj,sk,flagstr(goodmodidx(I2),:));
+                tm3=tmc(:,:,goodmodidx(I2));
+                modified(sj,sk:sk+2)=modified(sj,sk:sk+2)&(flagstr(goodmodidx(I2),:)~=0);
+                n_mod=n_mod+sum(flagstr(goodmodidx(I2),:)~=0);
+                modflag=true;                
                 if DEBUG
                     fprintf('%d in %d (%g) coeffs modified\n',n_mod,avaicoeff,n_mod/avaicoeff);
                 end                
@@ -281,35 +208,21 @@ end
 function bdctimg=bdctmod(bdctimg,sj,sk,flag)
 %modify bdctcoeff
 
-for i=1:3
-    if flag(i)==1
-        if mod(bdctimg(sj,sk+i-1),2)==0
-            bdctimg(sj,sk+i-1)=bdctimg(sj,sk+i-1)+1;
-        else
-            bdctimg(sj,sk+i-1)=bdctimg(sj,sk+i-1)-1;
-        end
-    end
-end
+bdctimg(sj,sk:sk+2)=bdctimg(sj,sk:sk+2)+flag;
 
-function tm=tmmod(bdctimg,tm,sj,sk,flag)
+function tm=tmmod(bdctimg,tm,sj,sk,flag,T)
 %modify transmition probability directly
 
-T=3;
 S=1/(128*126);
 for i=1:3
-    if flag(i)==1
+    if flag(i)~=0
         rj=sj;
-        rk=sk+i-1;
-        if mod(bdctimg(rj,rk),2)==0
-            l=1;
-        else
-            l=-1;
-        end
+        rk=sk+i-1;        
         if rk-2>0
             y1=threshold(bdctimg(rj,rk-2)-bdctimg(rj,rk-1),T);
             y2=threshold(bdctimg(rj,rk-1)-bdctimg(rj,rk),T);
             y3=y1;
-            y4=threshold(bdctimg(rj,rk-1)-bdctimg(rj,rk)-l,T);
+            y4=threshold(bdctimg(rj,rk-1)-bdctimg(rj,rk)-flag(i),T);
             tm(y1+T+1,y2+T+1)=tm(y1+T+1,y2+T+1)-S;
             tm(y3+T+1,y4+T+1)=tm(y3+T+1,y4+T+1)+S;
         end
@@ -317,8 +230,8 @@ for i=1:3
         if rk-1>0 && rk+1<129
             y1=threshold(bdctimg(rj,rk-1)-bdctimg(rj,rk),T);
             y2=threshold(bdctimg(rj,rk)-bdctimg(rj,rk+1),T);
-            y3=threshold(bdctimg(rj,rk-1)-bdctimg(rj,rk)-l,T);
-            y4=threshold(bdctimg(rj,rk)-bdctimg(rj,rk+1)+l,T);
+            y3=threshold(bdctimg(rj,rk-1)-bdctimg(rj,rk)-flag(i),T);
+            y4=threshold(bdctimg(rj,rk)-bdctimg(rj,rk+1)+flag(i),T);
             tm(y1+T+1,y2+T+1)=tm(y1+T+1,y2+T+1)-S;
             tm(y3+T+1,y4+T+1)=tm(y3+T+1,y4+T+1)+S;
         end
@@ -326,7 +239,7 @@ for i=1:3
         if rk+2<129
             y1=threshold(bdctimg(rj,rk)-bdctimg(rj,rk+1),T);
             y2=threshold(bdctimg(rj,rk+1)-bdctimg(rj,rk+2),T);
-            y3=threshold(bdctimg(rj,rk)-bdctimg(rj,rk+1)+l,T);
+            y3=threshold(bdctimg(rj,rk)-bdctimg(rj,rk+1)+flag(i),T);
             y4=y2;
             tm(y1+T+1,y2+T+1)=tm(y1+T+1,y2+T+1)-S;
             tm(y3+T+1,y4+T+1)=tm(y3+T+1,y4+T+1)+S;
