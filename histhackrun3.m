@@ -1,4 +1,4 @@
-function [ac,moddouts]=histhackrun3(data,model,range,Maxiter)
+function [datavalidate,modified,tm,output]=histhackrun3(data,model,range)
 %batch run of histhackm2step, using parfor
 
 nworker=matlabpool('size');
@@ -10,41 +10,32 @@ end
 
 datavalidate=data.datavalidate;
 labelvalidate=data.labelvalidate;
-ac=svmcheck(labelvalidate,datavalidate,range);
 
 ximages=datavalidate(labelvalidate==0,:);
 N=size(ximages,1);
+modified=false(N,128^2);
+dout_ori=zeros(N,1);
+moddout=zeros(N,1);
+n_mod=zeros(N,1);
+tm=zeros(N,49);
 
-%mark dc component as modified
-mask=false(8,8);
-mask(1,1)=true;
-mask=repmat(mask,16,16);
-modified=repmat(mask(:)',N,1);
-
-notfinish=true(N,1);
-moddouts=zeros(N,Maxiter);
-iter=0;
-while any(notfinish) && iter<Maxiter
-    iter=iter+1;
-    fprintf('iter=%d\n',iter);
-    fprintf('percentage notfinished=%g\n',sum(notfinish)/N);    
-    parfor i=1:N
-        if notfinish(i)
-            fprintf('processing image %d\n',i);
-            simg=ximages(i,:);
-            simg=reshape(simg,128,128);
-            modifiedtmp=modified(i,:);
-            modifiedtmp=reshape(modifiedtmp,128,128);
-            [ximg,modifiedtmp,~,output]=histhacksvmstep(simg,modifiedtmp,model,range);
-            ximages(i,:)=ximg(:)';
-            modified(i,:)=modifiedtmp(:)';
-            notfinish(i)=(output.n_mod>0);
-            moddouts(i,iter)=output.moddout;
-        end
-    end
-    datavalidate(labelvalidate==0,:)=ximages;
-    actmp=svmcheck(labelvalidate,datavalidate,range);
-    ac=cat(1,ac,actmp);    
+parfor i=1:N
+    fprintf('processing image %d\n',i);
+    simg=ximages(i,:);
+    simg=reshape(simg,128,128);    
+    [ximg,modifiedtmp,tmtmp,outputtmp]=histhacksvmstep(simg,model,range);
+    ximages(i,:)=ximg(:)';
+    modified(i,:)=modifiedtmp(:)';
+    tm(i,:)=tmtmp(:)';
+    dout_ori(i)=outputtmp.dout_ori;
+    moddout(i)=outputtmp.moddout;
+    n_mod(i)=outputtmp.n_mod;
 end
+datavalidate(labelvalidate==0,:)=ximages;
+output.dout_ori=dout_ori;
+output.moddout=moddout;
+output.n_mod=n_mod;
+
+
 
 
