@@ -130,7 +130,7 @@ while dout_pre<0.9 && n_mod<NMOD
                 dout_pre=dout(goodmodidx(I2));
                 bdctimg=bdctmod(bdctimg,sj,sk,flagstr(goodmodidx(I2),:));
                 tm3=tmc(:,:,goodmodidx(I2));
-                modified(sj,sk:sk+2)=modified(sj,sk:sk+2)&(flagstr(goodmodidx(I2),:)~=0);
+                modified(sj,sk:sk+2)=modified(sj,sk:sk+2)|(flagstr(goodmodidx(I2),:)~=0);
                 n_mod=n_mod+sum(flagstr(goodmodidx(I2),:)~=0);
                 modflag=true;                
                 if DEBUG
@@ -151,7 +151,8 @@ while dout_pre<0.9 && n_mod<NMOD
 %             fprintf('tmx(I(t_bin))=%g\n',tmx(I(t_bin)));
 %         end
     end %end of trying all positive delta bins
-    if modflag==false, break;end    
+    if modflag==false, break;end
+    fprintf('n_mod=%d, dout_pre=%g\n',n_mod,dout_pre);    
 end
 
 ximg=bdctdec(bdctimg.*sign(bdctimg_ori));
