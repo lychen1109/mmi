@@ -3,10 +3,9 @@ function dvalues=checkdvalues(model,range,data)
 
 images=data.datavalidate;
 label=data.labelvalidate;
-simages=images(label==0,:);
-N_sp=size(simages,1);
-tm=transmatgen(simages,3);
-feat=reshape(tm,49,N_sp)';
+N=size(images,1);
+tm=transmatgen(images,3);
+feat=reshape(tm,49,N)';
 feat=svmrescale(feat,range);
-[~,~,dvalues]=svmpredict(label(label==0),feat,model);
+[~,~,dvalues]=svmpredict(label,feat,model);
 
