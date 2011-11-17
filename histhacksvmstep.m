@@ -22,6 +22,10 @@ tm3=tm2;
 [~,~,dout_ori]=svmpredict(0,svmrescale(tm3(:)',range),model);
 if dout_ori>=0.9
     fprintf('The image already looks like authentic. No need to process.\n');
+    ximg=simg;
+    output.dout_ori=dout_ori;
+    output.moddout=0;
+    output.n_mod=0;
     return;
 end
 
