@@ -1,8 +1,8 @@
 function data_scale=svmrescale(data,range)
 %rescale data to [0 1]
 
-maxsample=max(data);
-minsample=min(data);
+maxsample=max(data,[],1);
+minsample=min(data,[],1);
 zeroidx=(maxsample==0) & (minsample==0);
 data=data(:,~zeroidx);
 if isempty(range)
