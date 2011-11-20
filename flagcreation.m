@@ -13,7 +13,7 @@ bdctimg=blkproc(img,[8 8],@dct2);
 bdctimg=abs(round(bdctimg));
 tm=tpm1(bdctimg,3);
 [~,~,dout_ori]=svmpredict(0,svmrescale(tm(:)',range),model);
-if dour_ori>tdout
+if dout_ori>tdout
     fprintf('the image looks authentic enough. dout_ori=%g\n',dout_ori);
     output=[];
     return;
