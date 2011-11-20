@@ -37,8 +37,8 @@ de=svmgrad(model,svmrescale(tm(:)',range));
 
 for i=1:128^2-256;
     [sj,sk]=ind2sub(size(bdctimg),i);
-    y1=threshold(bdctimg(sj,sk)-bdctimg(sj,sk+1),T);
-    y2=threshold(bdctimg(sj,sk+1)-bdctimg(sj,sk+2),T);
+    y1=threshold(bdctimg(sj,sk)-bdctimg(sj,sk+1),T)+T+1;
+    y2=threshold(bdctimg(sj,sk+1)-bdctimg(sj,sk+2),T)+T+1;
     deidx=sub2ind(size(tm),y1,y2);
     if de(deidx)<0
         dout=zeros(1,26);
