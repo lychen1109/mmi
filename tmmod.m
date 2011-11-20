@@ -35,6 +35,3 @@ for i=1:3
     end
 end
 
-function t=threshold(t,T)
-t=min(t,T);
-t=max(t,-T);
