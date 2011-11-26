@@ -1,4 +1,4 @@
-function ximg=histhacksvm2(img,tdout,model,range)
+function [ximg,doutrec]=histhacksvm2(img,tdout,model,range)
 %modify image in pixel domain, with SVM soft output as likelihood
 
 ximg=img;
