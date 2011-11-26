@@ -1,4 +1,4 @@
-function decibels=PSNR(A,B)
+function decibels=psnr(A,B)
 
 % PURPOSE: To find the PSNR (peak signal-to-noise ratio) between two
 %          intensity images A and B, each having values in the interval
