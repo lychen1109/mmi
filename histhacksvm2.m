@@ -14,6 +14,7 @@ tm=tpm1(bdctimg,T);
 doutrec=dout_ori;%record dout in every iteration
 if dout_ori>tdout
     fprintf('dout is %g, already larer than tdout %g\n',dout_ori,tdout);
+    returntype=0;%no changes
     return;
 else
     fprintf('dout_ori is %g, tdout is %g\n',dout_ori,tdout);
