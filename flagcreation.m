@@ -1,12 +1,12 @@
-function output=flagcreation(img,model,range,tdout)
+function output=flagcreation(img,model,range,tdout,N)
 %create location and flags that can improve the image svm output
 %also output the potential improvement
 %tdout: target svm output
 
-coeftomod=false(128^2-256,1);
-coefidx=(1:128^2-256)';
-flags=zeros(128^2-256,3);
-moddout=zeros(128^2-256,1);
+coefidx=randperm(128^2-256);
+coefidx=coefidx(1:N);
+flags=zeros(N,3);
+moddout=zeros(N,1);
 T=3;
 
 bdctimg=blkproc(img,[8 8],@dct2);
@@ -33,35 +33,25 @@ for i=-1:1
     end
 end
 
-de=svmgrad(model,svmrescale(tm(:)',range));
-
-for i=1:128^2-256;
-    [sj,sk]=ind2sub(size(bdctimg),i);
-    y1=threshold(bdctimg(sj,sk)-bdctimg(sj,sk+1),T)+T+1;
-    y2=threshold(bdctimg(sj,sk+1)-bdctimg(sj,sk+2),T)+T+1;
-    deidx=sub2ind(size(tm),y1,y2);
-    if de(deidx)<0
-        dout=zeros(1,26);
-        dout(1:26)=-inf;
-        for j=1:26
-            if ~any(bdctimg(sj,sk+(0:2))+flagstr(j,:)<0)
-                tmnew=tmmod(bdctimg,tm,sj,sk,flagstr(j,:),T);
-                [~,~,dout(j)]=svmpredict(0,svmrescale(tmnew(:)',range),model);
-            end
-        end
-        [maxdout,maxdoutidx]=max(dout);
-        if maxdout>dout_ori
-            coeftomod(i)=true;
-            flags(i,:)=flagstr(maxdoutidx,:);
-            moddout(i)=maxdout-dout_ori;
+for i=1:N
+    [sj,sk]=ind2sub(size(bdctimg),coefidx(i));
+    %     y1=threshold(bdctimg(sj,sk)-bdctimg(sj,sk+1),T)+T+1;
+    %     y2=threshold(bdctimg(sj,sk+1)-bdctimg(sj,sk+2),T)+T+1;
+    dout=zeros(1,26);
+    dout(1:26)=-inf;
+    for j=1:26
+        if ~any(bdctimg(sj,sk+(0:2))+flagstr(j,:)<0)
+            tmnew=tmmod(bdctimg,tm,sj,sk,flagstr(j,:),T);
+            [~,~,dout(j)]=svmpredict(0,svmrescale(tmnew(:)',range),model);
         end
     end
+    [maxdout,maxdoutidx]=max(dout);
+    flags(i,:)=flagstr(maxdoutidx,:);
+    moddout(i)=maxdout-dout_ori;    
 end
 
-output.coefidx=coefidx(coeftomod);
-output.flags=flags(coeftomod,:);
-output.moddout=moddout(coeftomod);
-
-
+output.coefidx=coefidx;
+output.flags=flags;
+output.moddout=moddout;
 
     
