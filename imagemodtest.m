@@ -17,7 +17,9 @@ dvalues(1)=imgmodeltest(simg,model,range);
 [~,sortedidx]=sort(moddout,1,'descend');
 %sortedidx=randperm(length(moddout));
 bdctarray=blkproc(simg,[8 8],@dct2);
+bdctarray=round(bdctarray);
 bdctsign=sign(bdctarray);
+bdctsign(bdctsign==0)=1;
 bdctmod=zeros(size(simg));
 iter=1;
 
