@@ -1,4 +1,4 @@
-function [ximages,returntypes]=histhackrun3(images,samplevalues,model,range)
+function [ximages]=histhackrun3(images,timages)
 %batch run of histhack* function, using parfor
 
 nworker=matlabpool('size');
@@ -10,17 +10,18 @@ end
 
 N=size(images,1);
 ximages=zeros(size(images));
-returntypes=zeros(N,1);
 
 parfor i=1:N
     fprintf('processing image %d\n',i);
     simg=images(i,:);
-    simg=reshape(simg,128,128);    
-    [ximg,~,returntypes(i)]=histhacksvm2(simg,samplevalues(i),model,range);
+    simg=reshape(simg,128,128);
+    aimg=timages(i,:);
+    aimg=reshape(aimg,128,128);
+    [ximg]=histhacknew(simg,aimg);
     ximages(i,:)=ximg(:)';    
 end
 
-save histhacksvm2result ximages returntypes
+save histhacknewresult ximages
 
 
 
