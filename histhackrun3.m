@@ -22,7 +22,7 @@ parfor i=1:N
     ximages(i,:)=ximg(:)';    
 end
 
-save histhacknewresult ximages
+save histhacknewresult ximages record
 
 
 
