@@ -31,16 +31,16 @@ for i=1:N
     %     y1=threshold(bdctimg(sj,sk)-bdctimg(sj,sk+1),T)+T+1;
     %     y2=threshold(bdctimg(sj,sk+1)-bdctimg(sj,sk+2),T)+T+1;
     dist=zeros(1,26);
-    dist(1:26)=-inf;
+    dist(1:26)=inf;
     for j=1:26
         if ~any(bdctimg(sj,sk+(0:2))+flagstr(j,:)<0)
             tmnew=tmmod(bdctimg,tm,sj,sk,flagstr(j,:),T);
             dist(j)=norm(tmnew(:)-tmtarget(:));
         end
     end
-    [maxdist,maxdistidx]=max(dist);
-    flags(i,:)=flagstr(maxdistidx,:);
-    moddist(i)=maxdist-dist_ori;    
+    [mindist,mindistidx]=min(dist);
+    flags(i,:)=flagstr(mindistidx,:);
+    moddist(i)=mindist-dist_ori;    
 end
 
 output.coefidx=coefidx;
