@@ -5,6 +5,7 @@ coefidx=randperm(128^2-256);
 coefidx=coefidx(1:N);
 flags=zeros(N,3);
 moddist=zeros(N,1);
+bingrads=zeros(N,1);
 T=3;
 
 bdctimg=blkproc(img,[8 8],@dct2);
@@ -28,8 +29,11 @@ end
 
 for i=1:N
     [sj,sk]=ind2sub(size(bdctimg),coefidx(i));
-    %     y1=threshold(bdctimg(sj,sk)-bdctimg(sj,sk+1),T)+T+1;
-    %     y2=threshold(bdctimg(sj,sk+1)-bdctimg(sj,sk+2),T)+T+1;
+    y1=threshold(bdctimg(sj,sk)-bdctimg(sj,sk+1),T)+T+1;
+    y2=threshold(bdctimg(sj,sk+1)-bdctimg(sj,sk+2),T)+T+1;
+    binidx=sub2ind(size(tm),y1,y2);
+    grad=(tm(binidx)-tmtarget(binidx))/dist_ori;
+    bingrads(i)=grad;
     dist=zeros(1,26);
     dist(1:26)=inf;
     for j=1:26
@@ -46,5 +50,6 @@ end
 output.coefidx=coefidx;
 output.flags=flags;
 output.moddist=moddist;
+output.bingrads=bingrads;
 
     
