@@ -1,4 +1,4 @@
-function [ximages,record,bestiter,dist_best]=histhackrun3(images,timages)
+function [bdctimgs,dist_ori,dist]=histhackrun3(images,timages)
 %batch run of histhack* function, using parfor
 
 nworker=matlabpool('size');
@@ -9,10 +9,9 @@ else
 end
 
 N=size(images,1);
-ximages=zeros(size(images));
-record=cell(N,1);
-bestiter=zeros(N,1);
-dist_best=zeros(N,1);
+bdctimgs=zeros(size(images));
+dist_ori=zeros(N,1);
+dist=zeros(N,1);
 
 parfor i=1:N
     fprintf('processing image %d\n',i);
@@ -20,8 +19,8 @@ parfor i=1:N
     simg=reshape(simg,128,128);
     aimg=timages(i,:);
     aimg=reshape(aimg,128,128);
-    [ximg,record{i},bestiter(i),dist_best(i)]=histhacknew(simg,aimg);
-    ximages(i,:)=ximg(:)';    
+    [bdctimg,dist_ori(i),dist(i)]=histhacknew(simg,aimg);
+    bdctimgs(i,:)=bdctimg(:)';    
 end
 
 
