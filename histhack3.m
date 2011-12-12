@@ -1,4 +1,4 @@
-function [img,dist_ori,dist]=histhack3(img,timg)
+function [bdctimg,dist_ori,dist]=histhack3(img,timg)
 %change only on bdct domain
 
 bdcttarget=blkproc(timg,[8 8],@dct2);
