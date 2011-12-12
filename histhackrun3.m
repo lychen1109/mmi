@@ -19,7 +19,7 @@ parfor i=1:N
     simg=reshape(simg,128,128);
     aimg=timages(i,:);
     aimg=reshape(aimg,128,128);
-    [bdctimg,dist_ori(i),dist(i)]=histhacknew(simg,aimg);
+    [bdctimg,dist_ori(i),dist(i)]=histhack3(simg,aimg);
     bdctimgs(i,:)=bdctimg(:)';    
 end
 
