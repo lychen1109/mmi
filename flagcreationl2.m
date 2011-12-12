@@ -1,4 +1,4 @@
-function [flag]=flagcreationl2(bdctimg,tmtarget,sj,sk)
+function [flag,mindist]=flagcreationl2(bdctimg,tmtarget,sj,sk)
 %create location and flags that can improve image and target distance
 
 T=3;
@@ -24,7 +24,7 @@ for j=1:27
         dist(j)=norm(tmnew(:)-tmtarget(:));
     end
 end
-[~,mindistidx]=min(dist);
+[mindist,mindistidx]=min(dist);
 flag=flagstr(mindistidx,:);
 
 
