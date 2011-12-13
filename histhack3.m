@@ -20,7 +20,7 @@ while iter<5000 && dist>1e-3
     idx=1;
     [sj,sk]=ind2sub(size(img),randidx(idx));
     [flag,mindist]=flagcreationl2(bdctimg,tmtarget,sj,sk);
-    while isequal(flag,[0 0 0]) || any(modified(sj,sk:sk+2)&(flag~=0))
+    while (isequal(flag,[0 0 0]) || any(modified(sj,sk:sk+2)&(flag~=0))) && idx<128^2-256
         idx=idx+1;
         [sj,sk]=ind2sub(size(img),randidx(idx));
         [flag,mindist]=flagcreationl2(bdctimg,tmtarget,sj,sk);
