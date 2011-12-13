@@ -7,7 +7,7 @@ tp=zeros(k,1);
 tn=zeros(k,1);
 
 for i=1:k    
-    CVP=cvpa(i);
+    CVP=cvpa{i};
     dataTrain=data(CVP.training,:);    
     grpTrain=class(CVP.training);
     dataTest=data(CVP.test,:);
