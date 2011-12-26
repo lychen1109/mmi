@@ -5,6 +5,7 @@
 *.doc
 *.bmp
 *.png
+output/
 
 
 
