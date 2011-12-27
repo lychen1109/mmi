@@ -1,10 +1,9 @@
-function h=marginhist(img)
+function h=marginhist(img,T)
 %image histogram
 
 bdctimg=blkproc(img,[8 8],@dct2);
 bdctimg=abs(round(bdctimg));
 diff=bdctimg(:,1:end-1)-bdctimg(:,2:end);
-T=8;
 [N,M]=size(img);
 diff(diff>T)=T;
 diff(diff<-T)=-T;
