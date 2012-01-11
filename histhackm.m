@@ -9,32 +9,30 @@ bdctimgsign(bdctimgsign==0)=1;
 bdctimg=round(abs(bdctimg));
 [N,M]=size(bdctimg);
 diffimg=bdctimg(1:N-1,1:M-1)-bdctimg(1:N-1,2:M);
+diffimgori=diffimg;
 tm=tpmf(diffimg,T);
 tmnorm=rownorm(tm);
-modified=false(size(diffimg));%record if a coef has been modified
 logpdfori=log10(tmpdfcalc(gm,tmnorm,PCAstruct));
 logpdfnew=logpdfori;
 
-while true    
-    loc_candidate=~(modified(:,1:end-1)&modified(:,2:end));
-    loc_candidate=find(loc_candidate);
+while true
+    loc_candidate=1:127*126;
     randidx=randperm(length(loc_candidate));
     loc_idx=1; %start from the first location
-    outstruct=flaggen(diffimg,loc_candidate(randidx(loc_idx)),bdctimg,PCAstruct,modified,logpdfnew,gm,tm);
+    outstruct=flaggen(diffimg,diffimgori,loc_candidate(randidx(loc_idx)),bdctimg,PCAstruct,logpdfnew,gm,tm);
     while loc_idx<length(loc_candidate) && outstruct.modflag==false
         loc_idx=loc_idx+1;
-        outstruct=flaggen(diffimg,loc_candidate(randidx(loc_idx)),bdctimg,PCAstruct,modified,logpdfnew,gm,tm);
+        outstruct=flaggen(diffimg,diffimgori,loc_candidate(randidx(loc_idx)),bdctimg,PCAstruct,logpdfnew,gm,tm);
     end
     if outstruct.modflag
         [sj,sk]=ind2sub(size(diffimg),loc_candidate(randidx(loc_idx)));
-        diffimg(sj,sk:sk+1)=diffimg(sj,sk:sk+1)+outstruct.flag;
-        modified(sj,sk:sk+1)=modified(sj,sk:sk+1)|(outstruct.flag~=0);
+        diffimg(sj,sk:sk+1)=diffimg(sj,sk:sk+1)+outstruct.flag;        
         logpdfnew=outstruct.logpdfnew;
     else
         break
     end
 end
-n_mod=sum(sum(modified));
+n_mod=sum(sum(diffimgori~=diffimg));
 bdctimg(1:end-1,1:end-1)=bdctimg(1:end-1,2:end)+diffimg;
 bdctimg=bdctimg.*bdctimgsign;
 
@@ -45,7 +43,7 @@ means=PCAstruct.means;
 score=(tm(1:42)-means)*coeff;
 pdfvalue=pdf(gm,score);
        
-function output=flaggen(diffimg,loc,bdctimg,PCAstruct,modified,logpdfori,gm,tm)
+function output=flaggen(diffimg,diffimgori,loc,bdctimg,PCAstruct,logpdfori,gm,tm)
 %check if logpdf can be improved
 output.modflag=false;
 logpdfnew=logpdfori;
@@ -56,17 +54,14 @@ for i=-1:1
         if i==0 && j==0
             continue;
         end
-        if i~=0 && modified(sj,sk)
-            continue;
-        end
-        if j~=0 && modified(sj,sk+1)
-            continue;
-        end
-        if any(bdctimgp(sj,sk:sk+1)+diffimg(sj,sk:sk+1)+[i,j]<0)
-            continue;
-        end
         diffimgnew=diffimg;
         diffimgnew(sj,sk:sk+1)=diffimgnew(sj,sk:sk+1)+[i,j];
+        if any(bdctimgp(sj,sk:sk+1)+diffimgnew(sj,sk:sk+1)<0)
+            continue;
+        end
+        if max(max(abs(diffimgnew-diffimgori)))>2
+            continue;
+        end    
         %tmnew=tpmf(diffimgnew,3);
         tmnew=tmmod2(diffimgnew,tm,sj,sk,[i j],3);
         tmnorm=rownorm(tmnew);
