@@ -1,4 +1,4 @@
-function [bdctimg,n_mod,logpdfori,logpdfnew]=histhackm(simg,gm,PCAstruct)
+function [bdctimg,delta,logpdfori,logpdfnew]=histhackm(simg,gm,PCAstruct)
 %reshape histogram by modifying BDCT coeff
 %target histogram is modeled with GMM
 
@@ -32,7 +32,7 @@ while true
         break
     end
 end
-n_mod=sum(sum(diffimgori~=diffimg));
+delta=diffimgori-diffimg;
 bdctimg(1:end-1,1:end-1)=bdctimg(1:end-1,2:end)+diffimg;
 bdctimg=bdctimg.*bdctimgsign;
 
