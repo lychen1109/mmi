@@ -43,7 +43,7 @@ function pdfvalue=tmpdfcalc(gm,tm,PCAstruct)
 coeff=PCAstruct.coeff;
 means=PCAstruct.means;
 score=(tm(1:42)-means)*coeff;
-pdfvalue=pdf(gm,score);
+pdfvalue=gmmpdf(gm.mu,gm.Sigma,gm.PComponents,score);
        
 function output=flaggen(diffimg,loc,bdctimg,PCAstruct,modified,logpdfori,gm,tm)
 %check if logpdf can be improved
