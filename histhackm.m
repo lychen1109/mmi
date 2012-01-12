@@ -13,21 +13,22 @@ diffimgori=diffimg;
 tm=tpmf(diffimg,T);
 tmnorm=rownorm(tm);
 logpdfori=log10(tmpdfcalc(gm,tmnorm,PCAstruct));
+fprintf('logpdfori=%g\n',logpdfori);
 logpdfnew=logpdfori;
 
 while true
-    loc_candidate=1:127*126;
-    randidx=randperm(length(loc_candidate));
+    randidx=randperm(127*126);
     loc_idx=1; %start from the first location
-    outstruct=flaggen(diffimg,diffimgori,loc_candidate(randidx(loc_idx)),bdctimg,PCAstruct,logpdfnew,gm,tm);
-    while loc_idx<length(loc_candidate) && outstruct.modflag==false
+    outstruct=flaggen(diffimg,diffimgori,randidx(loc_idx),bdctimg,PCAstruct,logpdfnew,gm,tm);
+    while outstruct.modflag==false && loc_idx<127*126
         loc_idx=loc_idx+1;
-        outstruct=flaggen(diffimg,diffimgori,loc_candidate(randidx(loc_idx)),bdctimg,PCAstruct,logpdfnew,gm,tm);
+        outstruct=flaggen(diffimg,diffimgori,randidx(loc_idx),bdctimg,PCAstruct,logpdfnew,gm,tm);
     end
     if outstruct.modflag
-        [sj,sk]=ind2sub(size(diffimg),loc_candidate(randidx(loc_idx)));
+        [sj,sk]=ind2sub(size(diffimg),randidx(loc_idx));
         diffimg(sj,sk:sk+1)=diffimg(sj,sk:sk+1)+outstruct.flag;        
         logpdfnew=outstruct.logpdfnew;
+        fprintf('logpdfnew=%g\n',logpdfnew);
     else
         break
     end
@@ -49,8 +50,8 @@ output.modflag=false;
 logpdfnew=logpdfori;
 [sj,sk]=ind2sub(size(diffimg),loc);
 bdctimgp=bdctimg(1:end-1,2:end);
-for i=-1:1
-    for j=-1:1
+for i=-2:2
+    for j=-2:2
         if i==0 && j==0
             continue;
         end
