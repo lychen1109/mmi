@@ -21,12 +21,14 @@ if sk+2<129
     tm(y3+T+1,y4+T+1)=tm(y3+T+1,y4+T+1)+S;
 end
 
-y1=threshold(bdctimg(sj,sk-1)-bdctimg(sj,sk),T);
-y2=threshold(bdctimg(sj,sk)-bdctimg(sj,sk+1),T);
-y3=threshold(bdctimg(sj,sk-1)-bdctimg(sj,sk)-flag,T);
-y4=threshold(bdctimg(sj,sk)-bdctimg(sj,sk+1)+flag,T);
-tm(y1+T+1,y2+T+1)=tm(y1+T+1,y2+T+1)-S;
-tm(y3+T+1,y4+T+1)=tm(y3+T+1,y4+T+1)+S;
+if sk-1>0 && sk+1<129
+    y1=threshold(bdctimg(sj,sk-1)-bdctimg(sj,sk),T);
+    y2=threshold(bdctimg(sj,sk)-bdctimg(sj,sk+1),T);
+    y3=threshold(bdctimg(sj,sk-1)-bdctimg(sj,sk)-flag,T);
+    y4=threshold(bdctimg(sj,sk)-bdctimg(sj,sk+1)+flag,T);
+    tm(y1+T+1,y2+T+1)=tm(y1+T+1,y2+T+1)-S;
+    tm(y3+T+1,y4+T+1)=tm(y3+T+1,y4+T+1)+S;
+end
 out.tm=tm;
 if ~isequal(tm,tmold)
     out.changed=true;
