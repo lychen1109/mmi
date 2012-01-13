@@ -12,8 +12,11 @@ for i=1:k
     grpTrain=class(CVP.training);
     dataTest=data(CVP.test,:);
     grpTest=class(CVP.test);
-    thetas=svmgrid2(grpTrain,dataTrain,0:2:12,-6:2:6);
-    [predict]=mysvmfun(grpTrain,dataTrain,grpTest,dataTest,thetas(1,:));      
+    %thetas=svmgrid2(grpTrain,dataTrain,0:2:12,-6:2:6);
+    [thetas,thresholds]=svmgridtp(label,feat,rangec,rangeg);
+    [~,~,dvalues]=mysvmfun(grpTrain,dataTrain,grpTest,dataTest,thetas(1,:));
+    predict=ones(size(grpTest));
+    predict(dvalues<thresholds(1))=0;
     ac(i)=sum(predict==grpTest)/length(grpTest);
     tp(i)=sum(grpTest==0 & predict==grpTest)/sum(grpTest==0);
     tn(i)=sum(grpTest==1 & predict==grpTest)/sum(grpTest==1);
