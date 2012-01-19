@@ -1,50 +1,66 @@
-function [bdctimg,bdctsign,dist_ori,dist,nmod]=histhack3(img,timg)
+function [bdctimg,delta,dist_ori,dist]=histhack3(img,timg)
 %change only on bdct domain
 
 bdcttarget=blkproc(timg,[8 8],@dct2);
 bdcttarget=abs(round(bdcttarget));
 T=3;
 tmtarget=tpm1(bdcttarget,T);
+tmtarget=rownorm(tmtarget);
 
 bdctimg=blkproc(img,[8 8],@dct2);
 bdctimg=round(bdctimg);
+bdctimgori=bdctimg;
 bdctsign=sign(bdctimg);
 bdctsign(bdctsign==0)=1;
 bdctimg=abs(bdctimg);
 tm=tpm1(bdctimg,T);
+tmnorm=rownorm(tm);
 
-dist_ori=norm(tm(:)-tmtarget(:));
-modified=false(size(img));
+dist_ori=norm(tmnorm(:)-tmtarget(:));
 dist=dist_ori;
-iter=0;
-
-while iter<5000 && dist>.01
-    randidx=randperm(128^2-256);
-    idx=1;
-    [sj,sk]=ind2sub(size(img),randidx(idx));
-    [flag,mindist]=flagcreationl2(bdctimg,tmtarget,sj,sk);
-    while (isequal(flag,[0 0 0]) || any(modified(sj,sk:sk+2)&(flag~=0))) && idx<128^2-256
-        idx=idx+1;
-        [sj,sk]=ind2sub(size(img),randidx(idx));
-        [flag,mindist]=flagcreationl2(bdctimg,tmtarget,sj,sk);
+randidx=randperm(127*128);
+for i=1:127*128
+    [sj,sk]=ind2sub([127 128],randidx(i));
+    output=flaggen(bdctimg,tmtarget,sj,sk,tm);
+    if output.modified
+        bdctimg(sj,sk)=bdctimg(sj,sk)+output.flag;
+        tm=output.tm;
+        dist=output.dist;
     end
-    if ~(isequal(flag,[0 0 0]) || any(modified(sj,sk:sk+2)&(flag~=0)))
-        iter=iter+1;
-        bdctimg(sj,sk:sk+2)=bdctimg(sj,sk:sk+2)+flag;
-        modified(sj,sk:sk+2)=modified(sj,sk:sk+2)|(flag~=0);
-        dist=mindist;
-        if mod(iter,500)==0
-            %         img2=bdctdec(bdctimg.*bdctsign);
-            %         psnrvalue=psnr(img,img2);
-            fprintf('iter %d: %g\n',iter,dist);
-            %         fprintf('psnr at iter %d is %g\n',iter,psnrvalue);
-        end
-    else
-        break
-    end    
+    if mod(i,1000)==0
+        fprintf('i %d: %g\n',i,dist);
+    end
 end
 
-fprintf('iter %d: %g\n',iter,dist);
-nmod=sum(modified(:));
+fprintf('final dist: %g\n',dist);
+bdctimg=bdctimg.*bdctsign;
+delta=bdctimgori-bdctimg;
+
+function output=flaggen(bdctimg,tmtarget,sj,sk,tm)
+%calculate the best flag for current pixel
+tmnorm=rownorm(tm);
+dist_ori=norm(tmnorm(:)-tmtarget(:));
+output.modified=false;
+for i=max(-1,-bdctimg(sj,sk)):1
+    if i==0
+        continue;
+    end
+    out=tmmod2(bdctimg,tm,sj,sk,i,3);
+    if ~out.changed
+        continue;
+    end
+    tmnorm=rownorm(out.tm);
+    dist=norm(tmnorm(:)-tmtarget(:));
+    if dist<dist_ori
+        output.modified=true;
+        dist_ori=dist;
+        output.tm=out.tm;
+        output.flag=i;
+        output.dist=dist;
+    end
+end
+
+
+
 
 
