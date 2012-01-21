@@ -14,7 +14,7 @@ parfor i=1:N
    bdct=blkproc(img,[8 8],@dct2);
    bdct=abs(round(bdct));
    D=tpm1(bdct,T);
-   D=rownorm(D);
+   %D=rownorm(D);
    fm(:,:,i)=D;
 end
 

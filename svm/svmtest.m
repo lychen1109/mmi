@@ -1,13 +1,17 @@
-function [ac,tp,tn]=svmtest(class,data,cvpa)
+function [ac,tp,tn]=svmtest(class,data,ratio)
 %test the svm accuracy with k split
+%ratio is the percentage of training samples
 
-k=length(cvpa);
+k=20;
 ac=zeros(k,1);
 tp=zeros(k,1);
 tn=zeros(k,1);
+N=size(class,1);
+ntest=round(N*(1-ratio));
+fprintf('test sample size is %d\n',ntest);
 
 for i=1:k    
-    CVP=cvpa{i};
+    CVP=cvpartition(class,'holdout',ntest);
     dataTrain=data(CVP.training,:);    
     grpTrain=class(CVP.training);
     dataTest=data(CVP.test,:);

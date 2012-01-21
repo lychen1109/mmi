@@ -5,7 +5,6 @@ bdcttarget=blkproc(timg,[8 8],@dct2);
 bdcttarget=abs(round(bdcttarget));
 T=3;
 tmtarget=tpm1(bdcttarget,T);
-tmtarget=rownorm(tmtarget);
 
 bdctimg=blkproc(img,[8 8],@dct2);
 bdctimg=round(bdctimg);
@@ -14,9 +13,8 @@ bdctsign=sign(bdctimg);
 bdctsign(bdctsign==0)=1;
 bdctimg=abs(bdctimg);
 tm=tpm1(bdctimg,T);
-tmnorm=rownorm(tm);
 
-dist_ori=norm(tmnorm(:)-tmtarget(:));
+dist_ori=norm(tm(:)-tmtarget(:));
 dist=dist_ori;
 randidx=randperm(127*128);
 for i=1:127*128
@@ -38,8 +36,8 @@ delta=bdctimgori-bdctimg;
 
 function output=flaggen(bdctimg,tmtarget,sj,sk,tm)
 %calculate the best flag for current pixel
-tmnorm=rownorm(tm);
-dist_ori=norm(tmnorm(:)-tmtarget(:));
+
+dist_ori=norm(tm(:)-tmtarget(:));
 output.modified=false;
 for i=max(-1,-bdctimg(sj,sk)):1
     if i==0
@@ -49,8 +47,8 @@ for i=max(-1,-bdctimg(sj,sk)):1
     if ~out.changed
         continue;
     end
-    tmnorm=rownorm(out.tm);
-    dist=norm(tmnorm(:)-tmtarget(:));
+    tmnew=out.tm;
+    dist=norm(tmnew(:)-tmtarget(:));
     if dist<dist_ori
         output.modified=true;
         dist_ori=dist;
