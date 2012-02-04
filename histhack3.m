@@ -1,48 +1,58 @@
-function [bdctimg,delta,dist_ori,dist]=histhack3(img,timg)
+function [bdctimg,delta,dist_ori,dist]=histhack3(img,tmtarget)
 %change only on bdct domain
 
-bdcttarget=blkproc(timg,[8 8],@dct2);
-bdcttarget=abs(round(bdcttarget));
-T=3;
-tmtarget=tpm1(bdcttarget,T);
-
+T=10;
 bdctimg=blkproc(img,[8 8],@dct2);
 bdctimg=round(bdctimg);
 bdctimgori=bdctimg;
 bdctsign=sign(bdctimg);
-bdctsign(bdctsign==0)=1;
 bdctimg=abs(bdctimg);
 tm=tpm1(bdctimg,T);
 
+%create mark for dc component and zero component
+dcmark=false(8,8);
+dcmark(1,1)=true;
+dcmark=repmat(dcmark,16,16);
+zeromark=(bdctimg==0);
+
 dist_ori=norm(tm(:)-tmtarget(:));
-dist=dist_ori;
-randidx=randperm(127*128);
-for i=1:127*128
-    [sj,sk]=ind2sub([127 128],randidx(i));
-    output=flaggen(bdctimg,tmtarget,sj,sk,tm);
-    if output.modified
-        bdctimg(sj,sk)=bdctimg(sj,sk)+output.flag;
-        tm=output.tm;
-        dist=output.dist;
-    end
-    if mod(i,1000)==0
-        fprintf('i %d: %g\n',i,dist);
+
+%generate mindistortion potential for every qualified component
+potential=zeros(size(bdctimg));
+for i=1:128
+    for j=1:128
+        if dcmark(i,j) || zeromark(i,j)
+            potential=-1;
+            continue;
+        end
+        output=flaggen(bdctimg,tmtarget,i,j,tm);
+        potential(i,j)=output.dist;
     end
 end
 
-fprintf('final dist: %g\n',dist);
+%modify components sorted by potentials
+pointavailable=find(potential~=-1);
+[~,sorted]=sort(potential(pointavailable),1,'ascend');
+pointsize=length(poitavailable);
+for i=1:pointsize
+    [sj,sk]=ind2sub(size(bdctimg),pointavailable(sorted(i)));
+    output=flaggen(bdctimg,tmtarget,sj,sk,tm);
+    if ~output.modified
+        continue;
+    end
+    bdctimg(sj,sk)=bdctimg(sj,sk)+output.flag;
+    tm=output.tm;
+    dist=output.dist;
+end
+
 bdctimg=bdctimg.*bdctsign;
 delta=bdctimgori-bdctimg;
 
 function output=flaggen(bdctimg,tmtarget,sj,sk,tm)
 %calculate the best flag for current pixel
-
 dist_ori=norm(tm(:)-tmtarget(:));
 output.modified=false;
-for i=max(-1,-bdctimg(sj,sk)):1
-    if i==0
-        continue;
-    end
+for i=[-1,1]
     out=tmmod2(bdctimg,tm,sj,sk,i,3);
     if ~out.changed
         continue;
