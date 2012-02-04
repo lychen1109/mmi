@@ -11,7 +11,6 @@ parfor i=1:N
    bdctimg=bdctimgs(i,:);
    bdctimg=reshape(bdctimg,128,128);
    D=tpm1(bdctimg,T);
-   D=rownorm(D);
    fm(:,:,i)=D;
 end
 
