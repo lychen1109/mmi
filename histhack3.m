@@ -1,4 +1,4 @@
-function [bdctimg,delta,dist_ori,dist]=histhack3(img,tmtarget)
+function [bdctimg,delta,dist_ori,dist]=histhack3(img,tmtarget,K)
 %change only on bdct domain
 
 T=10;
@@ -26,7 +26,7 @@ for i=1:128
             potential(i,j)=-1;
             continue;
         end
-        output=flaggen(bdctimg,tmtarget,i,j,tm,T);
+        output=flaggen(bdctimg,tmtarget,i,j,tm,T,K);
         potential(i,j)=output.dist;
     end
 end
@@ -37,7 +37,7 @@ pointavailable=find(potential~=-1);
 pointsize=length(pointavailable);
 for i=1:pointsize
     [sj,sk]=ind2sub(size(bdctimg),pointavailable(sorted(i)));
-    output=flaggen(bdctimg,tmtarget,sj,sk,tm,T);
+    output=flaggen(bdctimg,tmtarget,sj,sk,tm,T,K);
     if ~output.modified
         continue;
     end
@@ -49,12 +49,15 @@ end
 bdctimg=bdctimg.*bdctsign;
 delta=bdctimgori-bdctimg;
 
-function output=flaggen(bdctimg,tmtarget,sj,sk,tm,T)
+function output=flaggen(bdctimg,tmtarget,sj,sk,tm,T,K)
 %calculate the best flag for current pixel
 dist_ori=norm(tm(:)-tmtarget(:));
 output.dist=dist_ori;
 output.modified=false;
-for i=[-1,1]
+for i=max(-K,-bdctimg(sj,sk)):K
+    if i==0
+        continue;
+    end
     out=tmmod2(bdctimg,tm,sj,sk,i,T);
     if ~out.changed
         continue;
