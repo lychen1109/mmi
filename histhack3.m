@@ -16,16 +16,17 @@ dcmark=repmat(dcmark,16,16);
 zeromark=(bdctimg==0);
 
 dist_ori=norm(tm(:)-tmtarget(:));
+dist=dist_ori;
 
 %generate mindistortion potential for every qualified component
 potential=zeros(size(bdctimg));
 for i=1:128
     for j=1:128
         if dcmark(i,j) || zeromark(i,j)
-            potential=-1;
+            potential(i,j)=-1;
             continue;
         end
-        output=flaggen(bdctimg,tmtarget,i,j,tm);
+        output=flaggen(bdctimg,tmtarget,i,j,tm,T);
         potential(i,j)=output.dist;
     end
 end
@@ -33,10 +34,10 @@ end
 %modify components sorted by potentials
 pointavailable=find(potential~=-1);
 [~,sorted]=sort(potential(pointavailable),1,'ascend');
-pointsize=length(poitavailable);
+pointsize=length(pointavailable);
 for i=1:pointsize
     [sj,sk]=ind2sub(size(bdctimg),pointavailable(sorted(i)));
-    output=flaggen(bdctimg,tmtarget,sj,sk,tm);
+    output=flaggen(bdctimg,tmtarget,sj,sk,tm,T);
     if ~output.modified
         continue;
     end
@@ -48,12 +49,13 @@ end
 bdctimg=bdctimg.*bdctsign;
 delta=bdctimgori-bdctimg;
 
-function output=flaggen(bdctimg,tmtarget,sj,sk,tm)
+function output=flaggen(bdctimg,tmtarget,sj,sk,tm,T)
 %calculate the best flag for current pixel
 dist_ori=norm(tm(:)-tmtarget(:));
+output.dist=dist_ori;
 output.modified=false;
 for i=[-1,1]
-    out=tmmod2(bdctimg,tm,sj,sk,i,3);
+    out=tmmod2(bdctimg,tm,sj,sk,i,T);
     if ~out.changed
         continue;
     end
