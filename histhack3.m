@@ -1,7 +1,8 @@
-function [bdctimg,delta,dist_ori,dist]=histhack3(img,tmtarget,K)
+function [bdctimg,delta,dist_ori,dist]=histhack3(img,tmtarget,K,range)
 %change only on bdct domain
 
 T=10;
+tmtarget=svmrescale(tmtarget(:)',range);
 bdctimg=blkproc(img,[8 8],@dct2);
 bdctimg=round(bdctimg);
 bdctimgori=bdctimg;
@@ -15,7 +16,8 @@ dcmark(1,1)=true;
 dcmark=repmat(dcmark,16,16);
 zeromark=(bdctimg==0);
 
-dist_ori=norm(tm(:)-tmtarget(:));
+%dist_ori=norm(tm(:)-tmtarget(:));
+dist_ori=sampledist(tm(:)',tmtarget(:)',range);
 dist=dist_ori;
 
 %generate mindistortion potential for every qualified component
@@ -26,7 +28,7 @@ for i=1:128
             potential(i,j)=-1;
             continue;
         end
-        output=flaggen(bdctimg,tmtarget,i,j,tm,T,K);
+        output=flaggen(bdctimg,tmtarget,i,j,tm,T,K,range);
         potential(i,j)=output.dist;
     end
 end
@@ -37,7 +39,7 @@ pointavailable=find(potential~=-1);
 pointsize=length(pointavailable);
 for i=1:pointsize
     [sj,sk]=ind2sub(size(bdctimg),pointavailable(sorted(i)));
-    output=flaggen(bdctimg,tmtarget,sj,sk,tm,T,K);
+    output=flaggen(bdctimg,tmtarget,sj,sk,tm,T,K,range);
     if ~output.modified
         continue;
     end
@@ -49,9 +51,10 @@ end
 bdctimg=bdctimg.*bdctsign;
 delta=bdctimgori-bdctimg;
 
-function output=flaggen(bdctimg,tmtarget,sj,sk,tm,T,K)
+function output=flaggen(bdctimg,tmtarget,sj,sk,tm,T,K,range)
 %calculate the best flag for current pixel
-dist_ori=norm(tm(:)-tmtarget(:));
+%dist_ori=norm(tm(:)-tmtarget(:));
+dist_ori=sampledist(tm(:)',tmtarget(:)',range);
 output.dist=dist_ori;
 output.modified=false;
 for i=max(-K,-bdctimg(sj,sk)):K
@@ -63,7 +66,8 @@ for i=max(-K,-bdctimg(sj,sk)):K
         continue;
     end
     tmnew=out.tm;
-    dist=norm(tmnew(:)-tmtarget(:));
+    %dist=norm(tmnew(:)-tmtarget(:));
+    dist=sampledist(tmnew(:)',tmtarget(:)',range);
     if dist<dist_ori
         output.modified=true;
         dist_ori=dist;
@@ -72,6 +76,15 @@ for i=max(-K,-bdctimg(sj,sk)):K
         output.dist=dist;
     end
 end
+
+function dist=sampledist(tm1,tm2,range)
+%return normalized distance
+%tm1=tm1(:)';
+%tm2=tm2(:)';
+%tm1=svmrescale(tm1,range);
+%tm2=svmrescale(tm2,range);
+tm1=(tm1-range(2,:)).*(range(1,:)-range(2,:));
+dist=norm(tm1-tm2);
 
 
 
