@@ -1,4 +1,4 @@
-function data_scale=svmrescale(data,range)
+function [data_scale,range]=svmrescale(data,range)
 %rescale data to [0 1]
 
 % maxsample=max(data,[],1);
