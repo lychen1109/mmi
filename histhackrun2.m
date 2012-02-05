@@ -1,4 +1,4 @@
-function output=histhackrun2(images,targets,K,range)
+function output=histhackrun2(images,targets,K,w)
 %batch run of histhack3, using parfor
 
 N=size(images,1);
@@ -12,7 +12,7 @@ parfor i=1:N
     img=reshape(img,128,128);
     target=targets(i,:);
     target=reshape(target,21,21);
-    [ximg,delta,dist_ori(i),dist(i)]=histhack3(img,target,K,range);    
+    [ximg,delta,dist_ori(i),dist(i)]=histhack3(img,target,K,w);    
     ximages(i,:)=ximg(:)';
     deltas(i,:)=delta(:)';
 end
