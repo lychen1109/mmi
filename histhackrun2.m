@@ -1,4 +1,4 @@
-function output=histhackrun2(images,targets,K,w)
+function output=histhackrun2(images,targets,K,T)
 %batch run of histhack3, using parfor
 
 N=size(images,1);
@@ -8,11 +8,7 @@ dist_ori=zeros(N,1);
 dist=zeros(N,1);
 parfor i=1:N    
     fprintf('processing image %d\n',i);
-    img=images(i,:);
-    img=reshape(img,128,128);
-    target=targets(i,:);
-    target=reshape(target,21,21);
-    [ximg,delta,dist_ori(i),dist(i)]=histhack3(img,target,K,w);    
+    [ximg,delta,dist_ori(i),dist(i)]=histhack3(images(i,:),targets(i,:),K,T);    
     ximages(i,:)=ximg(:)';
     deltas(i,:)=delta(:)';
 end
