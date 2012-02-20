@@ -3,9 +3,13 @@ function [bdctimg,delta,dist_ori,dist]=histhack3(img,imgtarget,K,T)
 %K: dymamic range of coefficients
 %T: threshold of co-occurrence matrix
 
+%reshape images
+img=reshape(img,128,128);
+imgtarget=reshape(imgtarget,128,128);
+
 %create target matrix
 bdcttarget=blkproc(imgtarget,[8 8],@dct2);
-bdcttarget=abs(round(bdcttarget);
+bdcttarget=abs(round(bdcttarget));
 tmtarget=tpm1(bdcttarget,T);
 
 bdctimg=blkproc(img,[8 8],@dct2);
