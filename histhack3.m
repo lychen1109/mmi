@@ -1,7 +1,13 @@
-function [bdctimg,delta,dist_ori,dist]=histhack3(img,tmtarget,K,w)
+function [bdctimg,delta,dist_ori,dist]=histhack3(img,imgtarget,K,T)
 %change only on bdct domain
+%K: dymamic range of coefficients
+%T: threshold of co-occurrence matrix
 
-T=10;
+%create target matrix
+bdcttarget=blkproc(imgtarget,[8 8],@dct2);
+bdcttarget=abs(round(bdcttarget);
+tmtarget=tpm1(bdcttarget,T);
+
 bdctimg=blkproc(img,[8 8],@dct2);
 bdctimg=round(bdctimg);
 bdctimgori=bdctimg;
@@ -16,7 +22,7 @@ dcmark=repmat(dcmark,16,16);
 zeromark=(bdctimg==0);
 
 %dist_ori=norm(tm(:)-tmtarget(:));
-dist_ori=sampledist(tm(:),tmtarget(:),w);
+dist_ori=sampledist(tm(:),tmtarget(:));
 dist=dist_ori;
 
 %generate mindistortion potential for every qualified component
@@ -27,7 +33,7 @@ for i=1:128
             potential(i,j)=-1;
             continue;
         end
-        output=flaggen(bdctimg,tmtarget,i,j,tm,T,K,w);
+        output=flaggen(bdctimg,tmtarget,i,j,tm,T,K);
         potential(i,j)=output.dist;
     end
 end
@@ -38,7 +44,7 @@ pointavailable=find(potential~=-1);
 pointsize=length(pointavailable);
 for i=1:pointsize
     [sj,sk]=ind2sub(size(bdctimg),pointavailable(sorted(i)));
-    output=flaggen(bdctimg,tmtarget,sj,sk,tm,T,K,w);
+    output=flaggen(bdctimg,tmtarget,sj,sk,tm,T,K);
     if ~output.modified
         continue;
     end
@@ -50,10 +56,10 @@ end
 bdctimg=bdctimg.*bdctsign;
 delta=bdctimgori-bdctimg;
 
-function output=flaggen(bdctimg,tmtarget,sj,sk,tm,T,K,w)
+function output=flaggen(bdctimg,tmtarget,sj,sk,tm,T,K)
 %calculate the best flag for current pixel
 %dist_ori=norm(tm(:)-tmtarget(:));
-dist_ori=sampledist(tm(:),tmtarget(:),w);
+dist_ori=sampledist(tm(:),tmtarget(:));
 output.dist=dist_ori;
 output.modified=false;
 for i=max(-K,-bdctimg(sj,sk)):K
@@ -66,7 +72,7 @@ for i=max(-K,-bdctimg(sj,sk)):K
     end
     tmnew=out.tm;
     %dist=norm(tmnew(:)-tmtarget(:));
-    dist=sampledist(tmnew(:),tmtarget(:),w);
+    dist=sampledist(tmnew(:),tmtarget(:));
     if dist<dist_ori
         output.modified=true;
         dist_ori=dist;
@@ -76,13 +82,14 @@ for i=max(-K,-bdctimg(sj,sk)):K
     end
 end
 
-function dist=sampledist(tm1,tm2,w)
+function dist=sampledist(tm1,tm2)
 %return normalized distance
 %tm1=tm1(:)';
 %tm2=tm2(:)';
 %tm1=svmrescale(tm1,range);
 %tm2=svmrescale(tm2,range);
-dist=sum(abs(tm1-tm2).*w(:));
+%dist=sum(abs(tm1-tm2).*w(:));
+dist=norm(tm1-tm2);
 
 
 
