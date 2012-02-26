@@ -2,7 +2,7 @@ function fm=transmatgenbdct(bdctimgs,T)
 % extract transition matrix from bdctimgs
 % T is the bound
 
-bdctimgs=abs(bdctimgs);
+%bdctimgs=abs(bdctimgs);
 N=size(bdctimgs,1);
 m_size=T*2+1;
 fm=zeros(m_size,m_size,N);
