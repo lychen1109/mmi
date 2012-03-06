@@ -8,7 +8,7 @@ dist_ori=zeros(N,1);
 dist=zeros(N,1);
 parfor i=1:N    
     fprintf('processing image %d\n',i);
-    [ximg,delta,dist_ori(i),dist(i)]=histhack4(images(i,:),targets(i,:),K,T);    
+    [ximg,delta,dist_ori(i),dist(i)]=histhack3b(images(i,:),targets(i,:),K,T);    
     ximages(:,:,i)=ximg;
     deltas(:,:,i)=delta;
 end
