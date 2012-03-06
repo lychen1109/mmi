@@ -1,5 +1,6 @@
 function out=tmmod2(bdctimg,tm,sj,sk,flag,T)
-%tmmod used for diffimg
+%tmmod used for diffimg, compared with tmmod, this only consider one pixel
+%at a time
 
 S=1/127/126;
 tmold=tm;
