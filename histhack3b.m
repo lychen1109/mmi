@@ -68,11 +68,13 @@ for i=max(-K,-bdctimg(sj,sk)):K
         %check spatial changes and effects on distance
         %%%%%%%%%%%%%%%%%%%%
         %locate 8x8 location
-        j0=floor(sj/8)*8;
-        k0=floor(sk/8)*8;
+        j0=floor((sj-1)/8)*8;
+        k0=floor((sk-1)/8)*8;
         
         %calculate new 8x8 on spatial
-        newsblock=idct2(bdctimg(j0+1:j0+8,k0+1:k0+8));
+        newbdctimg=bdctimg;
+        newbdctimg(sj,sk)=newbdctimg(sj,sk)+i;
+        newsblock=idct2(newbdctimg(j0+1:j0+8,k0+1:k0+8));
         newsblock=round(newsblock);
         newsblock(newsblock>255)=255;
         newsblock(newsblock<0)=0;
@@ -87,7 +89,7 @@ for i=max(-K,-bdctimg(sj,sk)):K
         for s=1:length(changed)
             [jdelta,kdelta]=ind2sub([8 8],changed(s));
             outspatial=tmmod2(newimg,newtms,j0+jdelta,k0+kdelta,diffblock(jdelta,kdelta),T);
-            newimg(j0+jdelta,k0+kdelta)=newsblock(j0+jdelta,k0+kdelta);            
+            newimg(j0+jdelta,k0+kdelta)=newsblock(jdelta,kdelta);            
             newtms=outspatial.tm;
         end
     end
