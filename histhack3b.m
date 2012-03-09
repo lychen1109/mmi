@@ -11,7 +11,6 @@ imgtarget=reshape(imgtarget,128,128);
 bdcttarget=blkproc(imgtarget,[8 8],@dct2);
 bdcttarget=abs(round(bdcttarget));
 tmtarget=tpm1(bdcttarget,T);
-tmtargets=tpm1(imgtarget,T);
 
 bdctimg=blkproc(img,[8 8],@dct2);
 bdctimg=round(bdctimg);
@@ -20,6 +19,7 @@ bdctsign=sign(bdctimg);
 bdctimg=abs(bdctimg);
 tm=tpm1(bdctimg,T);
 tms=tpm1(img,T);
+tms_ori=tms;
 
 %create mark for dc component and zero component
 dcmark=false(8,8);
@@ -27,7 +27,7 @@ dcmark(1,1)=true;
 dcmark=repmat(dcmark,16,16);
 zeromark=(bdctimg==0);
 
-dist_ori=sampledist(tm,tms,tmtarget,tmtargets);
+dist_ori=sampledist(tm,tms,tmtarget,tms_ori);
 dist=dist_ori;
 
 %modify components sorted by potentials
@@ -37,7 +37,7 @@ pointsize=length(pointavailable);
 randidx=randperm(pointsize);
 for i=1:pointsize
     [sj,sk]=ind2sub(size(bdctimg),pointavailable(randidx(i)));
-    output=flaggen(bdctimg,tm,tmtarget,img,tms,tmtargets,sj,sk,T,K);
+    output=flaggen(bdctimg,tm,tmtarget,img,tms,tms_ori,sj,sk,T,K);
     if ~output.modified
         continue;
     end
@@ -51,9 +51,9 @@ end
 bdctimg=bdctimg.*bdctsign;
 delta=bdctimgori-bdctimg;
 
-function output=flaggen(bdctimg,tm,tmtarget,img,tms,tmtargets,sj,sk,T,K)
+function output=flaggen(bdctimg,tm,tmtarget,img,tms,tms_ori,sj,sk,T,K)
 %calculate the best flag for current pixel
-dist_ori=sampledist(tm,tms,tmtarget,tmtargets);
+dist_ori=sampledist(tm,tms,tmtarget,tms_ori);
 output.dist=dist_ori;
 output.modified=false;
 for i=max(-K,-bdctimg(sj,sk)):K
@@ -94,7 +94,7 @@ for i=max(-K,-bdctimg(sj,sk)):K
         end
     end
     tmnew=out.tm;    
-    dist=sampledist(tmnew,newtms,tmtarget,tmtargets);
+    dist=sampledist(tmnew,newtms,tmtarget,tms_ori);
     if dist<dist_ori
         output.modified=true;
         dist_ori=dist;
@@ -106,10 +106,10 @@ for i=max(-K,-bdctimg(sj,sk)):K
     end
 end
 
-function dist=sampledist(tm,tms,tmtarget,tmtargets)
+function dist=sampledist(tm,tms,tmtarget,tms_ori)
 %return normalized distance
 %dist=sum(abs(tm1-tm2).*w(:));
-dist=norm(tm(:)-tmtarget(:))+norm(tms(:)-tmtargets(:));
+dist=norm(tm(:)-tmtarget(:))+norm(tms(:)-tms_ori(:));
 
 
 
