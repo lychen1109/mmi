@@ -5,7 +5,7 @@ function [data_scale,range]=svmrescale(data,range)
 % minsample=min(data,[],1);
 % zeroidx=(maxsample==0) & (minsample==0);
 % data=data(:,~zeroidx);
-if isempty(range)
+if nargin<2
     range(1,:)=max(data,[],1);
     range(2,:)=min(data,[],1);
 end
