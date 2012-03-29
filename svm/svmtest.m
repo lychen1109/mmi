@@ -1,4 +1,4 @@
-function ac=svmtest(class,data,ratio,k,rangec,rangeg)
+function ac=svmtest(class,data,ratio,k,rangec,rangeg,thetai)
 %test the svm accuracy with k split
 %ratio is the percentage of training samples
 
@@ -17,9 +17,13 @@ for i=1:k
     grpTrain=class(CVP.training);
     dataTest=data(CVP.test,:);
     grpTest=class(CVP.test);
-    thetas=svmgrid2(grpTrain,dataTrain,rangec,rangeg);
-    %[thetas,thresholds]=svmgridtp(grpTrain,dataTrain,0:2:12,-6:2:6);
-    [~,~,dvalues]=mysvmfun(grpTrain,dataTrain,grpTest,dataTest,thetas(1,:));
+    if nargin<7
+        thetas=svmgrid2(grpTrain,dataTrain,rangec,rangeg);
+        %[thetas,thresholds]=svmgridtp(grpTrain,dataTrain,0:2:12,-6:2:6);
+        [~,~,dvalues]=mysvmfun(grpTrain,dataTrain,grpTest,dataTest,thetas(1,:));
+    else
+        [~,~,dvalues]=mysvmfun(grpTrain,dataTrain,grpTest,dataTest,thetai);
+    end
     predict=ones(size(grpTest));
     predict(dvalues<0)=0;
     ac(i,1)=sum(predict==grpTest)/length(grpTest);
