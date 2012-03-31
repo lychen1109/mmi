@@ -7,7 +7,7 @@ N=size(class,1);
 ntest=round(N*(1-ratio));
 fprintf('test sample size is %d\n',ntest);
 if nargin<5
-    rangec=0:4;
+    rangec=0:2:12;
     rangeg=-7:2:3;
 end
 
