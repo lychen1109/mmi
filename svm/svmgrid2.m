@@ -27,6 +27,6 @@ fprintf('\n');
 function cmd=cmdgen(theta)
 %generate SVM cmd according to thetas
 
-C=10^theta(1);
+C=2^theta(1);
 g=2^theta(2);
 cmd=['-v 5 -c ' num2str(C) ' -g ' num2str(g)];
