@@ -13,7 +13,7 @@ for i=1:N
        D(diffimg(i,j),diffimg(i,j+1))=D(diffimg(i,j),diffimg(i,j+1))+1;
     end
 end
-D=D/(N*(M-1));
+%D=D/(N*(M-1));
 % for i=1:2*T+1
 %     if sum(D(i,:))>0
 %         D(i,:)=D(i,:)/sum(D(i,:));

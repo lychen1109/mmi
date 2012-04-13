@@ -2,7 +2,8 @@ function out=tmmod2(bdctimg,tm,sj,sk,flag,T)
 %tmmod used for diffimg, compared with tmmod, this only consider one pixel
 %at a time
 
-S=1/127/126;
+%S=1/127/126;
+S=1;
 tmold=tm;
 if sk-2>0
     y1=threshold(bdctimg(sj,sk-2)-bdctimg(sj,sk-1),T);
