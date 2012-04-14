@@ -42,8 +42,15 @@ for s=1:length(changed)
 end
 toc;
 
+%use tmmod3
+tic;
+[tms3,tm3]=tmmod3(img,bdctimg,tms,tm,sj,sk,1,3);
+toc;
+
 isequal(newtms1,newtms2)
 isequal(newtm1,newtm2)
+isequal(newtms1,tms3)
+isequal(newtm1,tm3)
 
 
 
