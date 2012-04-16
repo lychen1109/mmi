@@ -1,4 +1,4 @@
-function [tms2,tm2]=tmmod3(img,bdctimg,tms,tm,sj,sk,flag,T)
+function [tms2,tm2,newbdctimg]=tmmod3(img,bdctimg,tms,tm,sj,sk,flag,T)
 %calculate new tm and tms according to single pixel change
 
 out=tmmod2(img,tms,sj,sk,flag,T);
