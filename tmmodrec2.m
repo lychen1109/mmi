@@ -13,7 +13,7 @@ change=zeros(2*T+1,2*T+1);
 for s=1:length(bdctchange)
     [jdelta,kdelta]=ind2sub([8 8],bdctchange(s));
     change1=tmmodrec(bdctimg,j0+jdelta,k0+kdelta,diff(jdelta,kdelta),T);
-    %newbdctimg(j0+jdelta,k0+kdelta)=newblock(jdelta,kdelta);
+    bdctimg(j0+jdelta,k0+kdelta)=newblock(jdelta,kdelta);
     change(change1(:,1))=change(change1(:,1))+change1(:,2);
 end
 change=nzelements(change);
