@@ -51,7 +51,7 @@ toc;
 
 tic;
 changes=tmmodrec(img,sj,sk,flag,T);
-changef=tmmodrec2(img,bdctimg,sj,sk,flag,T);
+[changef,diff]=tmmodrec2(img,bdctimg,sj,sk,flag,T);
 tms4=tms;
 tms4(changes(:,1))=tms4(changes(:,1))+changes(:,2);
 tm4=tm;
@@ -64,6 +64,7 @@ isequal(newtms1,tms3)
 isequal(newtm1,tm3)
 isequal(newtms1,tms4)
 isequal(newtm1,tm4)
+isequal(newbdctimg,bdctimg+diff)
 
 
 
