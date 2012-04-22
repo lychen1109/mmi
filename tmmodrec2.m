@@ -18,5 +18,5 @@ for s=1:length(bdctchange)
     change(change1(:,1))=change(change1(:,1))+change1(:,2);
 end
 change=nzelements(change);
-
+diff=nzelements(diff);
 

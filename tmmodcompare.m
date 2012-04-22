@@ -56,6 +56,8 @@ tms4=tms;
 tms4(changes(:,1))=tms4(changes(:,1))+changes(:,2);
 tm4=tm;
 tm4(changef(:,1))=tm4(changef(:,1))+changef(:,2);
+newbdctimg4=bdctimg;
+newbdctimg4(diff(:,1))=newbdctimg4(diff(:,1))+diff(:,2);
 toc;
 
 isequal(newtms1,newtms2)
@@ -64,7 +66,7 @@ isequal(newtms1,tms3)
 isequal(newtm1,tm3)
 isequal(newtms1,tms4)
 isequal(newtm1,tm4)
-isequal(newbdctimg,bdctimg+diff)
+isequal(newbdctimg,newbdctimg4)
 
 
 
