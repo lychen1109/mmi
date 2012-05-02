@@ -32,9 +32,10 @@ end
 
 [difftm,difftms,diffbdctimg]=diffgen(img,bdctimg,K,T);
 modified=false(size(img));
+modsum=sum(sum(modified));
 delta=1;
 
-while delta>0.001
+while delta>0.001 || (delta>0 && modsum<100)
     candidates=find(~modified);
     CL=length(candidates);
     minidx=zeros(CL,1);
@@ -56,6 +57,7 @@ while delta>0.001
         delta=(dist_ori-newdist)/dist_ori;
         dist_ori=newdist;
         modified(bestj,bestk)=true;
+        modsum=sum(sum(modified));
         [difftm,difftms,diffbdctimg]=diffupdate(img,bdctimg,K,T,difftm,difftms,diffbdctimg,bestj,bestk,modified);
     else
         break;
