@@ -19,7 +19,7 @@ bdctimg=abs(bdctimg);
 tm=tpm1(bdctimg,T);
 tms=tpm1(img,T);
 [dist_ori,dist_ori1,dist_ori2]=sampledist(tm,tms,tmtarget,tmstarget);
-
+currentdist=dist_ori;
 if nargout>2
     distarray=[];
     distarray1=[];
@@ -27,77 +27,68 @@ if nargout>2
     distarray=cat(1,distarray,dist_ori);
     distarray1=cat(1,distarray1,dist_ori1);
     distarray2=cat(1,distarray2,dist_ori2);
+    disp([dist_ori dist_ori1 dist_ori2]);
 end
 
-%modify components sorted by potentials
+[difftm,difftms,diffbdctimg]=diffgen(img,bdctimg,K,T);
 modified=false(size(img));
+delta=1;
 
-while true
+while delta>0.001
     candidates=find(~modified);
-    bestmod.location=[];
-    bestmod.flag=[];
-    bestmod.dist=inf;
-    for i=1:length(candidates)
-        [sj,sk]=ind2sub(size(bdctimg),candidates(i));
-        output=flaggen(img,bdctimg,tm,tmtarget,tms,tmstarget,sj,sk,K,T);
-        if output.modified && output.dist<bestmod.dist
-            bestmod.dist=output.dist;
-            bestmod.dist1=output.dist1;
-            bestmod.dist2=output.dist2;
-            bestmod.location=[sj,sk];
-            bestmod.flag=output.flag;
-            bestmod.tms=output.tms;
-            bestmod.tm=output.tm;
-            bestmod.bdctimg=output.bdctimg;
-        end
+    CL=length(candidates);
+    minidx=zeros(CL,1);
+    mindists=zeros(CL,1);
+    for i=1:CL
+        [mindists(i),minidx(i)]=flaggen(tm,tmtarget,tms,tmstarget,difftm(candidates(i),:),difftms(candidates(i),:),currentdist);
     end
-    if (dist_ori-bestmod.dist)/dist_ori>0.01
-        sj=bestmod.location(1);
-        sk=bestmod.location(2);
-        modified(sj,sk)=true;
-        img(sj,sk)=img(sj,sk)+bestmod.flag;
-        tms=bestmod.tms;
-        bdctimg=bestmod.bdctimg;
-        tm=bestmod.tm;
-        dist_ori=bestmod.dist;
-        if nargout>2
-            distarray=cat(1,distarray,bestmod.dist);
-            distarray1=cat(1,distarray1,bestmod.dist1);
-            distarray2=cat(1,distarray2,bestmod.dist2);
-        end
+    [bestnewdist,bestpt]=min(mindists);
+    if bestnewdist<currentdist
+        [bestj,bestk]=ind2sub(size(bdctimg),candidates(bestpt));
+        img(bestj,bestk)=img(bestj,bestk)+ind2flag(minidx(bestpt),K);
+        tmcache=difftm{candidates(bestpt),minidx(bestpt)};
+        tmscache=difftms{candidates(bestpt),minidx(bestpt)};
+        bdctimgcache=diffbdctimg{candidates(bestpt),minidx(bestpt)};
+        tm(tmcache(:,1))=tm(tmcache(:,1))+tmcache(:,2);
+        tms(tmscache(:,1))=tms(tmscache(:,1))+tmscache(:,2);
+        bdctimg(bdctimgcache(:,1))=bdctimg(bdctimgcache(:,1))+bdctimgcache(:,2);
+        [newdist,newdist1,newdist2]=sampledist(tm,tms,tmtarget,tmstarget);
+        delta=(dist_ori-newdist)/dist_ori;
+        dist_ori=newdist;
+        modified(bestj,bestk)=true;
+        [difftm,difftms,diffbdctimg]=diffupdate(img,bdctimg,K,T,difftm,difftms,diffbdctimg,bestj,bestk,modified);
     else
         break;
     end
-    fprintf('modified pixel %d\n',sum(sum(modified)));
-    fprintf('current dist %g\n',bestmod.dist);
+    if nargout>2
+        distarray=cat(1,distarray,newdist);
+        distarray1=cat(1,distarray1,newdist1);
+        distarray2=cat(1,distarray2,newdist2);
+        disp([newdist newdist1 newdist2]);
+    end
 end
 
 
-function output=flaggen(img,bdctimg,tm,tmtarget,tms,tmstarget,sj,sk,K,T)
+function [mindist,minidx]=flaggen(tm,tmtarget,tms,tmstarget,difftm,difftms,currentdist)
 %calculate the best flag for current pixel
-[dist_ori,dist_ori1,dist_ori2]=sampledist(tm,tms,tmtarget,tmstarget);
-output.dist=dist_ori;
-output.dist1=dist_ori1;
-output.dist2=dist_ori2;
-output.modified=false;
-for i=max(-K,-img(sj,sk)):min(K,255-img(sj,sk))
-    if i==0
-        continue;
-    end
-    [newtms,newtm,newbdctimg]=tmmod3(img,bdctimg,tms,tm,sj,sk,i,T);
-    [dist,dist1,dist2]=sampledist(newtm,newtms,tmtarget,tmstarget);
-    if dist<dist_ori
-        output.modified=true;
-        dist_ori=dist;
-        output.tms=newtms;
-        output.flag=i;
-        output.bdctimg=newbdctimg;
-        output.tm=newtm;
-        output.dist=dist;
-        output.dist1=dist1;
-        output.dist2=dist2;
-    end
+
+L=length(difftm);
+distance=zeros(L,1);
+for i=1:L
+    tmschange=difftms{i};
+    tmchange=difftm{i};
+    newtms=tms;
+    newtms(tmschange(:,1))=newtms(tmschange(:,1))+tmschange(:,2);
+    newtm=tm;
+    newtm(tmchange(:,1))=newtm(tmchange(:,1))+tmchange(:,2);
+    distance(i)=sampledist(newtm,newtms,tmtarget,tmstarget);
 end
+[mindist,minidx]=min(distance);
+if mindist>=currentdist
+    minidx=0;
+    mindist=currentdist;
+end
+
 
 function [dist,dist1,dist2]=sampledist(tm,tms,tmtarget,tmstarget)
 Z=sum(sum(tm));
@@ -111,7 +102,70 @@ feat=[tm(:);tms(:)];
 feattarget=[tmtarget(:);tmstarget(:)];
 dist=norm(feat-feattarget);
 
+function [difftm,difftms,diffbdctimg]=diffgen(img,bdctimg,K,T)
+%generate difference matrix for whole image
+[m,n]=size(img);
+difftm=cell(m*n,2*K);
+difftms=cell(m*n,2*K);
+diffbdctimg=cell(m*n,2*K);
+rangek=-K:-1;
+rangek=cat(2,rangek,1:K);
+for i=1:m
+    for j=1:n
+        l=sub2ind(size(img),i,j);
+        for k=1:length(rangek)
+            if img(i,j)+rangek(k)<0 || img(i,j)+rangek(k)>255
+                difftm{l,k}=[];
+                difftms{l,k}=[];
+                diffbdctimg{l,k}=[];
+            else
+                difftm{l,k}=tmmodrec(img,i,j,rangek(k),T);
+                [difftms{l,k},diffbdctimg{l,k}]=tmmodrec2(img,bdctimg,i,j,rangek(k),T);
+            end
+        end
+    end
+end
 
+function [difftm,difftms,diffbdctimg]=diffupdate(img,bdctimg,K,T,difftm,difftms,diffbdctimg,sj,sk,modified)
+mark=false(size(img));
+rangek=-K:-1;
+rangek=cat(2,rangek,1:K);
+j0=floor((sj-1)/8)*8;
+k0=floor((sk-1)/8)*8;
+if k0==0
+    mark(j0+1:j0+8,k0+1:k0+16)=true;
+elseif k0==120
+    mark(j0+1:j0+8,k0-7:k0+8)=true;
+else
+    mark(j0+1:j0+8,k0-7:k0+16)=true;
+end
+mark=mark&(~modified);
+toupdate=find(mark);
+for i=1:length(toupdate)
+    [j1,k1]=ind2sub(size(img),toupdate(i));
+    for k=1:length(rangek)
+        if img(j1,k1)+rangek(k)<0 || img(j1,k1)+rangek(k)>255
+            difftm{toupdate(i),k}=[];
+            difftms{toupdate(i),k}=[];
+            diffbdctimg{toupdate(i),k}=[];
+        else
+            difftm{toupdate(i),k}=tmmodrec(img,j1,k1,range(k),T);
+            [difftms{toupdate(i),k},diffbdctimg{toupdate(i),k}]=tmmodrec2(img,bdctimg,j1,k1,range(k),T);
+        end
+    end
+end
+          
+
+
+function flag=ind2flag(idx,K)
+%index to flag
+if idx>K/2
+    flag=idx-K/2;
+else
+    flag=idx-K/2-1;
+end
+
+            
 
 
 
