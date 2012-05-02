@@ -75,13 +75,17 @@ function [mindist,minidx]=flaggen(tm,tmtarget,tms,tmstarget,difftm,difftms,curre
 L=length(difftm);
 distance=zeros(L,1);
 for i=1:L
-    tmschange=difftms{i};
-    tmchange=difftm{i};
-    newtms=tms;
-    newtms(tmschange(:,1))=newtms(tmschange(:,1))+tmschange(:,2);
-    newtm=tm;
-    newtm(tmchange(:,1))=newtm(tmchange(:,1))+tmchange(:,2);
-    distance(i)=sampledist(newtm,newtms,tmtarget,tmstarget);
+    if isempty(difftm{i})
+        distance(i)=currentdist;
+    else
+        tmschange=difftms{i};
+        tmchange=difftm{i};
+        newtms=tms;
+        newtms(tmschange(:,1))=newtms(tmschange(:,1))+tmschange(:,2);
+        newtm=tm;
+        newtm(tmchange(:,1))=newtm(tmchange(:,1))+tmchange(:,2);
+        distance(i)=sampledist(newtm,newtms,tmtarget,tmstarget);
+    end
 end
 [mindist,minidx]=min(distance);
 if mindist>=currentdist
