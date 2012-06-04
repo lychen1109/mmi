@@ -19,7 +19,6 @@ bdctimg=abs(bdctimg);
 tm=tpm1(bdctimg,T);
 tms=tpm1(img,T);
 [dist_ori,dist_ori1,dist_ori2]=sampledist(tm,tms,tmtarget,tmstarget);
-currentdist=dist_ori;
 if nargout>2
     distarray=[];
     distarray1=[];
@@ -31,42 +30,46 @@ if nargout>2
 end
 
 [difftm,difftms,diffbdctimg]=diffgen(img,bdctimg,K,T);
+result=diffgentest(difftm,img,K,T);
 modified=false(size(img));
-modsum=sum(sum(modified));
 delta=1;
 
-while delta>0.001 || (delta>0 && modsum<100)
+while delta>0.001
     candidates=find(~modified);
     CL=length(candidates);
     minidx=zeros(CL,1);
     mindists=zeros(CL,1);
     for i=1:CL
-        [mindists(i),minidx(i)]=flaggen(tm,tmtarget,tms,tmstarget,difftm(candidates(i),:),difftms(candidates(i),:),currentdist);
+        [mindists(i),minidx(i)]=flaggen(tm,tmtarget,tms,tmstarget,difftm(candidates(i),:),difftms(candidates(i),:),dist_ori);
     end
     [bestnewdist,bestpt]=min(mindists);
-    if bestnewdist<currentdist
+    if bestnewdist<dist_ori
         [bestj,bestk]=ind2sub(size(bdctimg),candidates(bestpt));
-        img(bestj,bestk)=img(bestj,bestk)+ind2flag(minidx(bestpt),K);
+        img(bestj,bestk)=img(bestj,bestk)+ind2flag(minidx(bestpt),2*K);
         tmcache=difftm{candidates(bestpt),minidx(bestpt)};
         tmscache=difftms{candidates(bestpt),minidx(bestpt)};
         bdctimgcache=diffbdctimg{candidates(bestpt),minidx(bestpt)};
         tm(tmcache(:,1))=tm(tmcache(:,1))+tmcache(:,2);
         tms(tmscache(:,1))=tms(tmscache(:,1))+tmscache(:,2);
         bdctimg(bdctimgcache(:,1))=bdctimg(bdctimgcache(:,1))+bdctimgcache(:,2);
-        [newdist,newdist1,newdist2]=sampledist(tm,tms,tmtarget,tmstarget);
-        delta=(dist_ori-newdist)/dist_ori;
-        dist_ori=newdist;
+        delta=(dist_ori-bestnewdist)/dist_ori;
+        dist_ori=bestnewdist;
         modified(bestj,bestk)=true;
-        modsum=sum(sum(modified));
         [difftm,difftms,diffbdctimg]=diffupdate(img,bdctimg,K,T,difftm,difftms,diffbdctimg,bestj,bestk,modified);
     else
         break;
     end
-    if nargout>2
+    if 0 %nargout>2
         distarray=cat(1,distarray,newdist);
         distarray1=cat(1,distarray1,newdist1);
         distarray2=cat(1,distarray2,newdist2);
         disp([newdist newdist1 newdist2]);
+    end
+    distrecalc=distcalc(img,imgtarget);
+    if distrecalc~=bestnewdist
+        fprintf('re-calculated distance does not match program output\n');
+        fprintf('re-calculated distance %g, program output %g\n',distrecalc,bestnewdist);
+        break
     end
 end
 
@@ -125,12 +128,44 @@ for i=1:m
                 difftms{l,k}=[];
                 diffbdctimg{l,k}=[];
             else
-                difftm{l,k}=tmmodrec(img,i,j,rangek(k),T);
-                [difftms{l,k},diffbdctimg{l,k}]=tmmodrec2(img,bdctimg,i,j,rangek(k),T);
+                difftms{l,k}=tmmodrec(img,i,j,rangek(k),T);
+                [difftm{l,k},diffbdctimg{l,k}]=tmmodrec2(img,bdctimg,i,j,rangek(k),T);
             end
         end
     end
 end
+
+function result=diffgentest(difftm,img,K,T)
+%test output of diffgen
+bdctimg=blkproc(img,[8 8],@dct2);
+bdctimg=abs(round(bdctimg));
+tm=tpm1(bdctimg,T);
+rangek=-K:-1;
+rangek=cat(2,rangek,1:K);
+result=false(1,2*K);
+for i=1:K*2
+    fprintf('loop param i=%d\n',i);
+    flag=rangek(i);
+    if img(1,1)+flag<0 || img(1,1)+flag>255
+        result(1,i)=isequal(difftm{1,i},[]);
+    else
+        img(1,1)=img(1,1)+flag;
+        bdctimg=blkproc(img,[8 8],@dct2);
+        bdctimg=abs(round(bdctimg));
+        tmnew=tpm1(bdctimg,T);
+        fprintf('calculated diff\n');
+        disp(nzelements(tmnew-tm));
+        diff=difftm{1,i};
+        fprintf('cached diff\n');
+        disp(diff);
+        tmconstruct=tm;
+        tmconstruct(diff(:,1))=tmconstruct(diff(:,1))+diff(:,2);
+        result(1,i)=isequal(tmnew,tmconstruct);
+    end
+end
+        
+
+
 
 function [difftm,difftms,diffbdctimg]=diffupdate(img,bdctimg,K,T,difftm,difftms,diffbdctimg,sj,sk,modified)
 mark=false(size(img));
