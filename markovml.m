@@ -9,7 +9,7 @@ T=4;
 %Calculate the target TPM
 bdcttarget=blkproc(targetimg,[8 8],@dct2);
 bdcttarget=abs(round(bdcttarget));
-tmtarget=tpm1(bdcttarget,opt.T);
+tmtarget=tpm1(bdcttarget,T);
 tmtarget=tpmrownorm(tmtarget);
 
 %Transfer the image to BDCT domain
