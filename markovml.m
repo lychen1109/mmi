@@ -19,6 +19,7 @@ bdctimg=round(bdctimg);
 bdctsign=sign(bdctimg);
 %Take absolute value of BDCT coefficients
 bdctimg=abs(bdctimg);
+bdctimgori=bdctimg;
 
 tm=tpm1(bdctimg,T);
 tm=tpmrownorm(tm);
@@ -26,6 +27,7 @@ diff=tm-tmtarget;
 [~,idx]=sort(diff(:),1,'descend');
 i=1;%index for bin of TPM
 modified=false;
+modnum=0;%record how many modification take place
 %While there's pixels to change, do the loop
 while diff(idx(i))>0
     [row,col]=ind2sub([2*T+1 2*T+1],idx(i));
@@ -57,7 +59,7 @@ while diff(idx(i))>0
             end
             currentmod=0;
             currentlogml=logml;
-            if bdctimg(k,l+shift)>0
+            if bdctimg(k,l+shift)>max(0,bdctimgori(k,l+shift)-1)
                 y1=threshold(bdctimg(k,l+shift-1)-bdctimg(k,l+shift)+1,T)+T+1;
                 y2=threshold(bdctimg(k,l+shift)-bdctimg(k,l+shift+1)-1,T)+T+1;
                 if tmtarget(y0,y1)==0 || tmtarget(y1,y2)==0 || tmtarget(y2,y3)==0
@@ -70,19 +72,26 @@ while diff(idx(i))>0
                     currentlogml=logml;
                 end
             end
-            y1=threshold(bdctimg(k,l+shift-1)-bdctimg(k,l+shift)-1,T)+T+1;
-            y2=threshold(bdctimg(k,l+shift)-bdctimg(k,l+shift+1)+1,T)+T+1;
-            if tmtarget(y0,y1)==0 || tmtarget(y1,y2)==0 || tmtarget(y2,y3)==0
-                logml=-inf;
-            else
-                logml=log(tmtarget(y0,y1))+log(tmtarget(y1,y2))+log(tmtarget(y2,y3));
-            end
-            if logml>currentlogml
-                currentmod=1;
+            if bdctimg(k,l+shift)<bdctimgori(k,l+shift)+1
+                y1=threshold(bdctimg(k,l+shift-1)-bdctimg(k,l+shift)-1,T)+T+1;
+                y2=threshold(bdctimg(k,l+shift)-bdctimg(k,l+shift+1)+1,T)+T+1;
+                if tmtarget(y0,y1)==0 || tmtarget(y1,y2)==0 || tmtarget(y2,y3)==0
+                    logml=-inf;
+                else
+                    logml=log(tmtarget(y0,y1))+log(tmtarget(y1,y2))+log(tmtarget(y2,y3));
+                end
+                if logml>currentlogml
+                    currentmod=1;
+                end
             end
             if currentmod~=0
                 bdctimg(k,l+shift)=bdctimg(k,l+shift)+currentmod;
                 modified=true;
+                modnum=modnum+1;
+                fprintf('%dth modification take place\n',modnum);
+                maxmod=max(max(abs(bdctimg-bdctimgori)));
+                fprintf('Max modification is %d\n',maxmod);
+                fprintf('number of modified coefficients is %d\n',sum(sum(bdctimg~=bdctimgori)));
                 break
             end
         end
