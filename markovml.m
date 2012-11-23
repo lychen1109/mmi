@@ -10,7 +10,7 @@ T=4;
 bdcttarget=blkproc(targetimg,[8 8],@dct2);
 bdcttarget=abs(round(bdcttarget));
 tmtarget=tpm1(bdcttarget,T);
-tmtarget=tpmrownorm(tmtarget);
+tmtarget=tpmnorm(tmtarget);
 
 %Transfer the image to BDCT domain
 bdctimg=blkproc(img,[8 8],@dct2);
@@ -22,11 +22,10 @@ bdctimg=abs(bdctimg);
 bdctimgori=bdctimg;
 
 tm=tpm1(bdctimg,T);
-tm=tpmrownorm(tm);
+tm=tpmnorm(tm);
 diff=tm-tmtarget;
 [~,idx]=sort(diff(:),1,'descend');
 i=1;%index for bin of TPM
-modified=false;
 modnum=0;%record how many modification take place
 %While there's pixels to change, do the loop
 while diff(idx(i))>0
@@ -86,29 +85,15 @@ while diff(idx(i))>0
             end
             if currentmod~=0
                 bdctimg(k,l+shift)=bdctimg(k,l+shift)+currentmod;
-                modified=true;
                 modnum=modnum+1;
                 fprintf('%dth modification take place\n',modnum);
-                maxmod=max(max(abs(bdctimg-bdctimgori)));
-                fprintf('Max modification is %d\n',maxmod);
-                fprintf('number of modified coefficients is %d\n',sum(sum(bdctimg~=bdctimgori)));
-                break
+%                 maxmod=max(max(abs(bdctimg-bdctimgori)));
+%                 fprintf('Max modification is %d\n',maxmod);
+%                 fprintf('number of modified coefficients is %d\n',sum(sum(bdctimg~=bdctimgori)));
             end
         end
-        if modified
-            break
-        end
-    end
-    if modified
-        tm=tpm1(bdctimg,T);
-        tm=tpmrownorm(tm);
-        diff=tm-tmtarget;
-        [~,idx]=sort(diff(:),1,'descend');
-        i=1;%index for bin of TPM
-        modified=false;
-    elseif i<length(diff(:))
-        i=i+1;
-    end
+    end 
+    i=i+1;
 end
     
 bdctimg=bdctimg.*bdctsign;
