@@ -1,4 +1,4 @@
-function D=tpmf(diffimg,T)
+function D=tpmf(diffimg,T,opt)
 %seperate pixel count function out of tpm1
 
 [N,M]=size(diffimg);
@@ -13,9 +13,13 @@ for i=1:N
        D(diffimg(i,j),diffimg(i,j+1))=D(diffimg(i,j),diffimg(i,j+1))+1;
     end
 end
-%D=D/(N*(M-1));
-% for i=1:2*T+1
-%     if sum(D(i,:))>0
-%         D(i,:)=D(i,:)/sum(D(i,:));
-%     end
-% end
+
+if opt==2
+    D=D/(N*(M-1));
+elseif opt==3
+    for i=1:2*T+1
+        if sum(D(i,:))>0
+            D(i,:)=D(i,:)/sum(D(i,:));
+        end
+    end
+end
