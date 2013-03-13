@@ -1,4 +1,4 @@
-function [bdctimg,dist_ori,dist]=histhack3(img,imgtarget,K,T,type)
+function [bdctimg]=histhack3(img,imgtarget,K,T,type)
 %change only on bdct domain
 %K: dymamic range of coefficients
 %T: threshold of co-occurrence matrix
@@ -25,10 +25,6 @@ dcmark=false(8,8);
 dcmark(1,1)=true;
 dcmark=repmat(dcmark,16,16);
 zeromark=(bdctimg==0);
-
-%dist_ori=norm(tm(:)-tmtarget(:));
-dist_ori=sampledist(tm(:),tmtarget(:));
-dist=dist_ori;
 
 if type==1
     %generate mindistortion potential for every qualified component
