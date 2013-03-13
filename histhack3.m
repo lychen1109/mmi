@@ -1,8 +1,10 @@
-function [bdctimg,delta,dist_ori,dist]=histhack3(img,imgtarget,K,T)
+function [bdctimg,dist_ori,dist]=histhack3(img,imgtarget,K,T,type)
 %change only on bdct domain
 %K: dymamic range of coefficients
 %T: threshold of co-occurrence matrix
+%type: 1 - potential selection; 2 - random
 
+tpmopt=1;
 %reshape images
 img=reshape(img,128,128);
 imgtarget=reshape(imgtarget,128,128);
@@ -10,14 +12,13 @@ imgtarget=reshape(imgtarget,128,128);
 %create target matrix
 bdcttarget=blkproc(imgtarget,[8 8],@dct2);
 bdcttarget=abs(round(bdcttarget));
-tmtarget=tpm1(bdcttarget,T);
+tmtarget=tpm1(bdcttarget,T,tpmopt);
 
 bdctimg=blkproc(img,[8 8],@dct2);
 bdctimg=round(bdctimg);
-bdctimgori=bdctimg;
 bdctsign=sign(bdctimg);
 bdctimg=abs(bdctimg);
-tm=tpm1(bdctimg,T);
+tm=tpm1(bdctimg,T,tpmopt);
 
 %create mark for dc component and zero component
 dcmark=false(8,8);
@@ -29,23 +30,33 @@ zeromark=(bdctimg==0);
 dist_ori=sampledist(tm(:),tmtarget(:));
 dist=dist_ori;
 
-%generate mindistortion potential for every qualified component
-potential=zeros(size(bdctimg));
-for i=1:128
-    for j=1:128
-        if dcmark(i,j) || zeromark(i,j)
-            potential(i,j)=-1;
-            continue;
+if type==1
+    %generate mindistortion potential for every qualified component
+    potential=zeros(size(bdctimg));
+    for i=1:128
+        for j=1:128
+            if dcmark(i,j) || zeromark(i,j)
+                potential(i,j)=-1;
+                continue;
+            end
+            output=flaggen(bdctimg,tmtarget,i,j,tm,T,K);
+            potential(i,j)=output.dist;
         end
-        output=flaggen(bdctimg,tmtarget,i,j,tm,T,K);
-        potential(i,j)=output.dist;
     end
+    
+    %modify components sorted by potentials
+    pointavailable=find(potential~=-1);
+    [~,sorted]=sort(potential(pointavailable),1,'ascend');
+    pointsize=length(pointavailable);
+else
+    potential=zeros(size(bdctimg));
+    potential(dcmark)=-1;
+    potential(zeromark)=-1;
+    pointavailable=find(potential~=-1);
+    pointsize=length(pointavailable);
+    sorted=randperm(pointsize);
 end
 
-%modify components sorted by potentials
-pointavailable=find(potential~=-1);
-[~,sorted]=sort(potential(pointavailable),1,'ascend');
-pointsize=length(pointavailable);
 for i=1:pointsize
     [sj,sk]=ind2sub(size(bdctimg),pointavailable(sorted(i)));
     output=flaggen(bdctimg,tmtarget,sj,sk,tm,T,K);
@@ -54,11 +65,9 @@ for i=1:pointsize
     end
     bdctimg(sj,sk)=bdctimg(sj,sk)+output.flag;
     tm=output.tm;
-    dist=output.dist;
 end
 
 bdctimg=bdctimg.*bdctsign;
-delta=bdctimgori-bdctimg;
 
 function output=flaggen(bdctimg,tmtarget,sj,sk,tm,T,K)
 %calculate the best flag for current pixel
