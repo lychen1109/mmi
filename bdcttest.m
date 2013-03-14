@@ -6,8 +6,10 @@ flag=1; %allways test flag==1
 T=10;
 
 %randomly select position of modified coefficients
-sj=ceil(rand*128);
-sk=ceil(rand*128);
+%sj=ceil(rand*128);
+%sk=ceil(rand*128);
+sj=127;
+sk=70;
 
 %calculate original tm and tms
 bdctimg=blkproc(img,[8 8],@dct2);
@@ -55,25 +57,25 @@ tt4=toc;
 
 if isequal(newbdctimg,newbdctimg2)
     %fprintf('newbdctimg and newbdctimg2 are same\n');
-    cr1=true;
+    cr1=1;
 else
     %fprintf('newbdctimg and newbdctimg2 are differenct\n');
-    cr1=false;
+    cr1=0;
 end
 
 if isequal(newbdctimg,newbdctimg3)
     %fprintf('newbdctimg and newbdctimg3 are same\n');
-    cr2=true;
+    cr2=1;
 else
     %fprintf('newbdctimg and newbdctimg3 are different\n');
-    cr2=false;
+    cr2=0;
 end
 
 if isequal(newtm,newtm2)
     %fprintf('tm is same\n');
-    cr3=true;
+    cr3=1;
 else
     %fprintf('tm is different\n');
-    cr3=false;
+    cr3=0;
 end
 
