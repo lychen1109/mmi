@@ -4,7 +4,7 @@ function markovmltest(bdctimg,spimage,targetimg)
 %print three TPM
 T=4;
 tm=tpm1(abs(bdctimg),T);
-tm=tpmrownorm(tm);
+tm=tpmnorm(tm);
 fprintf('tpm of output image\n');
 disp(tm);
 
@@ -12,7 +12,7 @@ spimage=reshape(spimage,128,128);
 bdctsp=blkproc(spimage,[8 8],@dct2);
 bdctsp=abs(round(bdctsp));
 tmsp=tpm1(bdctsp,T);
-tmsp=tpmrownorm(tmsp);
+tmsp=tpmnorm(tmsp);
 fprintf('tpm of spliced image\n');
 disp(tmsp);
 
@@ -20,7 +20,7 @@ targetimg=reshape(targetimg,128,128);
 bdcttg=blkproc(targetimg,[8 8],@dct2);
 bdcttg=abs(round(bdcttg));
 tmtg=tpm1(bdcttg,T);
-tmtg=tpmrownorm(tmtg);
+tmtg=tpmnorm(tmtg);
 fprintf('tpm of target image\n');
 disp(tmtg);
 
