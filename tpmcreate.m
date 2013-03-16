@@ -17,23 +17,26 @@ tmtarget=tpmrownorm(tmtarget);
 
 %calculate current tpm
 bdctimg=blkproc(img,[8 8],@dct2);
+bdctimg=round(bdctimg);
 bdctsign=sign(bdctimg);
 bdctsign(bdctsign==0)=1;
-bdctimg=abs(round(bdctimg));
+bdctimg=abs(bdctimg);
 % tm=tpm1(bdctimg,T);
 % tm=tpmrownorm(tm);
 
 %estimate coeff one block by one block
 for i=1:128
     for j=1:42
-        if mod(j*3,8)==1
+        if mod(j*3,8)==1 || bdctimg(i,j*3)==0
             continue;
         end
         y0=threshold(bdctimg(i,j*3-2)-bdctimg(i,j*3-1),T);
         p=tmtarget(y0+T+1,:);
-        y1=randgen(p);
+        y1=randgen(p)-T-1;
         x3=bdctimg(i,j*3-1)-y1;
-        bdctimg(i,j*3)=x3;
+        if x3>=0
+            bdctimg(i,j*3)=x3;
+        end
     end
 end
 
