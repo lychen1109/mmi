@@ -6,8 +6,10 @@ function [bdctimg]=histhack_sel(img,imgtarget,K,T,selection)
 
 tpmopt=1;
 %reshape images
-img=reshape(img,128,128);
-imgtarget=reshape(imgtarget,128,128);
+M=length(img(:));
+M=sqrt(M);
+img=reshape(img,M,M);
+imgtarget=reshape(imgtarget,M,M);
 
 %create target matrix
 bdcttarget=blkproc(imgtarget,[8 8],@dct2);
@@ -20,32 +22,9 @@ bdctsign=sign(bdctimg);
 bdctimg=abs(bdctimg);
 tm=tpm1(bdctimg,T,tpmopt);
 
-if type==1
-    %generate mindistortion potential for every qualified component
-    potential=zeros(size(bdctimg));
-    for i=1:128
-        for j=1:128
-            if dcmark(i,j) || zeromark(i,j)
-                potential(i,j)=-1;
-                continue;
-            end
-            output=flaggen(bdctimg,tmtarget,i,j,tm,T,K);
-            potential(i,j)=output.dist;
-        end
-    end
-    
-    %modify components sorted by potentials
-    pointavailable=find(potential~=-1);
-    [~,sorted]=sort(potential(pointavailable),1,'ascend');
-    pointsize=length(pointavailable);
-else
-    potential=zeros(size(bdctimg));
-    potential(dcmark)=-1;
-    potential(zeromark)=-1;
-    pointavailable=find(potential~=-1);
-    pointsize=length(pointavailable);
-    sorted=randperm(pointsize);
-end
+pointavailable=find(selection);
+pointsize=length(pointavailable);
+sorted=randperm(pointsize);
 
 for i=1:pointsize
     [sj,sk]=ind2sub(size(bdctimg),pointavailable(sorted(i)));
