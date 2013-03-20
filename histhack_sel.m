@@ -21,6 +21,7 @@ bdctimg=round(bdctimg);
 bdctsign=sign(bdctimg);
 bdctimg=abs(bdctimg);
 tm=tpm1(bdctimg,T,tpmopt);
+fprintf('initial distance of samples: %g\n',norm(tm(:)-tmtarget(:)));
 
 pointavailable=find(selection);
 pointsize=length(pointavailable);
@@ -35,7 +36,8 @@ for i=1:pointsize
     bdctimg(sj,sk)=bdctimg(sj,sk)+output.flag;
     tm=output.tm;
 end
-
+tm=tpm1(bdctimg,T,tpmopt);
+fprintf('Final distance of samples: %g\n',norm(tm(:)-tmtarget(:)));
 bdctimg=bdctimg.*bdctsign;
 
 function output=flaggen(bdctimg,tmtarget,sj,sk,tm,T,K)
