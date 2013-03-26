@@ -23,17 +23,17 @@ bdctimg=abs(bdctimg);
 tm=tpm1(bdctimg,T,tpmopt);
 fprintf('initial distance of samples: %g\n',norm(tm(:)-tmtarget(:)));
 
-pointavailable=find(selection);
-pointsize=length(pointavailable);
+[SJ,SK]=find(selection);
+pointsize=length(SJ);
 sorted=randperm(pointsize);
 
 for i=1:pointsize
-    [sj,sk]=ind2sub(size(bdctimg),pointavailable(sorted(i)));
-    output=flaggen(bdctimg,tmtarget,sj,sk,tm,T,K);
+    nodeidx=sorted(i);
+    output=flaggen(bdctimg,tmtarget,SJ(nodeidx),SK(nodeidx),tm,T,K);
     if ~output.modified
         continue;
     end
-    bdctimg(sj,sk)=bdctimg(sj,sk)+output.flag;
+    bdctimg(SJ(nodeidx),SK(nodeidx))=bdctimg(SJ(nodeidx),SK(nodeidx))+output.flag;
     tm=output.tm;
 end
 tm=tpm1(bdctimg,T,tpmopt);
